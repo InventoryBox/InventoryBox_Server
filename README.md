@@ -1,4 +1,4 @@
-# :package: Flood
+# :package: 재고창고
 
 <img style="border: 1px solid black !important; border-radius:20px; " src="https://github.com/InventoryBox/InventoryBox_Server/blob/master/img/logo.png" width="200px" />
 
@@ -16,7 +16,7 @@
 
 ## :bookmark_tabs: 프로젝트 설명
 
-<b>'나만의 다이어리를 관리하듯 매일매일 쉽게 기록하고 성장할 수 있는 재고관리 플랫폼', 재고창고입니다. :package: </b>
+<b>'나만의 다이어리를 관리하듯 매일매일 쉽게 기록하고 성장할 수 있는 재고관리 플랫폼', 재고창고입니다. :package: </b><br/>
 발주시점을 놓치지 않게 도와주는 발주 알림 기능, 데이터를 쉽게 축적할 수 있는 재고 기록 기능이 있습니다. 또한，재고교환 기능을 통해 재고가 떨어지는 갑작스러운 상황에도 개인 사업자들간 네트워크 형성을 통해 재고를 보충할 수 있습니다.
 <br>
 
