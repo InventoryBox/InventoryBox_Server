@@ -1,6 +1,6 @@
 # :package: Flood
 
-<img style="border: 1px solid black !important; border-radius:20px; " src="https://flood-master.s3.ap-northeast-2.amazonaws.com/.." width="200px" />
+<img style="border: 1px solid black !important; border-radius:20px; " src="https://github.com/InventoryBox/InventoryBox_Server/blob/master/img/logo.png" width="200px" />
 
 ![node_badge](https://img.shields.io/badge/node-%3E%3D%208.0.0-green)
 
@@ -16,15 +16,13 @@
 
 ## :bookmark_tabs: 프로젝트 설명
 
-<b>정보를 공유하는 가장 쉬운 방법, 재고창고입니다. :package: </b>
-회사내에 분산된, 정보 공유를 더 빠르고 쉽게 공유하는 플랫폼으로  정보의 홍수 속에서 
-각각 회사들이 공유하고 있는 정보를 필터링하여 일반 유저들에게 제공하는 서비스입니다.
-
+<b>'나만의 다이어리를 관리하듯 매일매일 쉽게 기록하고 성장할 수 있는 재고관리 플랫폼', 재고창고입니다. :package: </b>
+발주시점을 놓치지 않게 도와주는 발주 알림 기능, 데이터를 쉽게 축적할 수 있는 재고 기록 기능이 있습니다. 또한，재고교환 기능을 통해 재고가 떨어지는 갑작스러운 상황에도 개인 사업자들간 네트워크 형성을 통해 재고를 보충할 수 있습니다.
 <br>
 
 ## :bookmark_tabs: WorkFlow
 
-![node_badge](https://flood-master.s3.ap-northeast-2..)
+![node_badge](https://github.com/InventoryBox/InventoryBox_Server/blob/master/img/workflow.JPG)
 
 <br>
 
@@ -124,7 +122,7 @@
 
 ## :orange_book: DB ERD
 
-![ERD](https://flood-master.s3.ap-northeast-2.amazonaws.com/.png)
+![ERD](https://github.com/InventoryBox/InventoryBox_Server/blob/master/img/erd.png)
 
 <br>
 
