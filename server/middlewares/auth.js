@@ -21,7 +21,7 @@ const authUtil = {
             return res.json(util.fail(CODE.UNAUTHORIZED, MSG.INVALID_TOKEN));
         if (user.idx === undefined)
             return res.json(util.fail(CODE.UNAUTHORIZED, MSG.INVALID_TOKEN));
-        req.userIdx = user.idx;
+        req.idx = user.idx;
         next();
     }
 }
