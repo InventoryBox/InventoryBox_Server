@@ -24,7 +24,7 @@
 
 ![node_badge](https://github.com/InventoryBox/InventoryBox_Server/blob/master/img/workflow.JPG)
 
-<br>
+  <br>
 
 ## :earth_americas: Team Role 
 
