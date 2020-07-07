@@ -99,7 +99,6 @@
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
-    "mongoose": "^5.8.3",
     "morgan": "~1.9.1",
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
@@ -138,8 +137,8 @@
 * AWS EC2 - 클라우드 컴퓨팅 시스템
 * AWS elastic beanstlak - 서버 배포및 관리 프로비저닝 서비스
 * AWS S3 - 클라우드 데이터 저장소
-* Docker - 컨테이너 기반 가상화 소프트웨어 플랫폼
-* Nginx - 프록시 서버 (보안 향상 및 캐시를 활용한 전송 속도 향상)
+<!-- * Docker - 컨테이너 기반 가상화 소프트웨어 플랫폼
+* Nginx - 프록시 서버 (보안 향상 및 캐시를 활용한 전송 속도 향상) -->
 
 <br>
 
@@ -149,8 +148,8 @@
 * [Express.js](http://expressjs.com/ko/) 
 * [NPM](https://rometools.github.io/rome/) - 자바 스크립트 패키지 관리자
 * [PM2](http://pm2.keymetrics.io/) - 프로세스 관리자
-* [Docker](https://www.docker.com/) - 컨테이너 기반 가상화 플랫폼
-* [Nginx](https://www.nginx.com/) - 웹 서버 소프트웨어(프록시 서버용)
+<!--* [Docker](https://www.docker.com/) - 컨테이너 기반 가상화 플랫폼
+* [Nginx](https://www.nginx.com/) - 웹 서버 소프트웨어(프록시 서버용) -->
 
 <br>
 
