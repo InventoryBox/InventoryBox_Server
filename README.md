@@ -121,7 +121,7 @@
 
 ## :green_book: Architecture
 
-![architecture](https://flood-master.s3.ap-northeast-2.amazonaws.com/Untitled+Diagram+(1)+(2).png)
+![architecture](https://raw.githubusercontent.com/InventoryBox/InventoryBox_Server/master/img/architecture.png)
 
   
 
