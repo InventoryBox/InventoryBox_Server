@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-const User = require('../models/user')
-
 let responseMsg = require('../modules/responseMessage');
 let statusCode = require('../modules/statusCode');
 let util = require('../modules/util');
@@ -32,7 +29,7 @@ exports.signup= async(req,res)=>{
     const salt = crypto.randomBytes(32).toString()
     const hashedPw = crypto.pbkdf2Sync(password,salt,1,32,'sha512').toString('hex')
 
-    const result = User.signup(email,hashedPw,salt,nickname,repName,coName,img,longitude,latitude,location,phoneNumber,recordTime,orderTime,isSubscribed)
+    const result = await User.signup(email,hashedPw,salt,nickname,repName,coName,img,longitude,latitude,location,phoneNumber,recordTime,orderTime,isSubscribed)
     
     if(result==0){
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
@@ -43,6 +40,31 @@ exports.signup= async(req,res)=>{
 }
 
 exports.signin= async(req,res)=>{
+    const{
+        email,
+        password
+    } = req.body;
+
+    if(!email || !password){
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE))
+    }
+
+    if(await User.checkUser(email) === false){
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
+    }
+
+    const result = await User.signin(email,password)
+
+    if(result === false){
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.DB_ERROR,responseMsg.DB_ERROR))
+    }
+
+    const userData = await User.getUser(email)
+
+    const jwtToken = await jwt.sign(userData[0])
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.LOGIN_SUCCESS,{token:jwtToken}))
+
 
 }
 
@@ -88,19 +110,3 @@ exports.deleteUser= async(req,res)=>{
 
 
 
-=======
-const util = require('../modules/util');
-const statusCode = require('../modules/statusCode');
-const resMessage = require('../modules/responseMessage');
-const encrypt = require('../modules/crypto');
-const jwt = require('../modules/jwt');
-
-const user = {
-    func1 : async (req,res)=>{
-    },
-    func2 : async (req,res)=>{
-    }
-}
-
-module.exports = user;
->>>>>>> develop

@@ -1,5 +1,4 @@
 const pool = require('../modules/pool');
-<<<<<<< HEAD
 const table = 'user';
 const crypto = require('crypto');
 
@@ -11,14 +10,30 @@ const user = {
         const query = `INSERT INTO ${table}(${fields}) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
         try{
             const result = await pool.queryParamArr(query,values);
-            const insertIdx = result.insertIdx;
+            const insertIdx = result.insertId;
+            console.log(insertIdx)
             return insertIdx;
         }catch(err){
             throw err
         }
     },
-    signin:async()=>{
+    signin:async(email,password)=>{
+        const query = `SELECT * FROM ${table} WHERE email="${email}"`
+        try{
+            const userData = await pool.queryParam(query);
+            const hashedPw = crypto.pbkdf2Sync(password,userData[0].salt,1,32,'sha512').toString('hex')
 
+            console.log(userData[0].password)
+            console.log(hashedPw)
+            if(userData[0].password === hashedPw){
+                return true
+            }else{
+                return false
+            }
+
+        }catch(error){
+           throw error
+        }
     },
     email:async()=>{
 
@@ -26,8 +41,14 @@ const user = {
     find_id:async()=>{
 
     },
-    getUser:async()=>{
-
+    getUser:async(email)=>{
+        const query = `SELECT * FROM ${table} WHERE email="${email}"`;
+        try{
+            const result = await pool.queryParam(query);
+            return result;
+        }catch(error){
+        throw error
+        }
     },
     getNicknamePicture:async()=>{
 
@@ -49,6 +70,21 @@ const user = {
     },
     deleteUser:async()=>{
 
+    },
+    checkUser:async(email)=>{
+        const query = `SELECT * FROM ${table} WHERE email="${email}"`;
+        try{
+            const result = await pool.queryParam(query);
+            if(result.length===0){
+                return false;
+            }else return true;
+        }catch(error){
+            if(error.errno=1062){
+                console.log('checkUser ERROR :',err.errno,err.code);
+                return -1;
+            }
+            console.log('checkUser :',error)
+        }
     }
 
 }
@@ -56,11 +92,3 @@ const user = {
 
 
 module.exports=user;
-=======
-const user = {
-    func1: async () => {
-    }
-}
-
-module.exports = user;
->>>>>>> develop
