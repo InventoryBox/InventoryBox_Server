@@ -1,7 +1,7 @@
 const pool = require('../modules/pool');
-const user = {
+const post = {
     func1: async () => {
     }
 }
 
-module.exports = user;
+module.exports = post;

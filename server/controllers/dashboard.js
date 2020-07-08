@@ -4,11 +4,11 @@ const resMessage = require('../modules/responseMessage');
 const encrypt = require('../modules/crypto');
 const jwt = require('../modules/jwt');
 
-const user = {
+const dashboard = {
     func1 : async (req,res)=>{
     },
     func2 : async (req,res)=>{
     }
 }
 
-module.exports = user;
+module.exports = dashboard;
