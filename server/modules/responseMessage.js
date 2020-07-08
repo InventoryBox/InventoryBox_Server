@@ -24,5 +24,8 @@ module.exports = {
     // 프로필 조회
     READ_PROFILE_SUCCESS: '프로필 조회 성공',
 
-    DB_ERROR: 'DB 오류'
+    DB_ERROR: 'DB 오류',
+
+    //재고기록
+    RECORD_NULL_VALUES : '파라미터 값이 없습니다.'
 };

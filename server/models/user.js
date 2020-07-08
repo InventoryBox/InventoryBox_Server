@@ -1,4 +1,5 @@
 const pool = require('../modules/pool');
+<<<<<<< HEAD
 const table = 'user';
 const crypto = require('crypto');
 
@@ -55,3 +56,11 @@ const user = {
 
 
 module.exports=user;
+=======
+const user = {
+    func1: async () => {
+    }
+}
+
+module.exports = user;
+>>>>>>> develop
