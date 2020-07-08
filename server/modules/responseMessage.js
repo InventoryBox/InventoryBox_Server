@@ -20,7 +20,12 @@ module.exports = {
     INVALID_TOKEN: '유효하지 않은 토큰값입니다.',
     AUTH_SUCCESS: '인증에 성공했습니다.',
     ISSUE_SUCCESS: '새로운 토큰이 생성되었습니다.',
+
+    FIND_EMAIL_SUCCESS: '가입된 이메일을 성공적으로 찾았습니다',
+    NICKNAME_AND_PICTURE_SUCCESS: '닉네임과 사진 가져오기 성공',
+    DELETE_SUCCESS: '유저 삭제 성공',
     
+    GET_USER_SUCCESS:'유저 조회 성공',
     // 프로필 조회
     READ_PROFILE_SUCCESS: '프로필 조회 성공',
 

@@ -2,6 +2,7 @@ const pool = require('../modules/pool');
 const table_item = 'item';
 const table_icon = 'icon';
 const table_date = 'date';
+const table_user = 'user';
 
 const item = {
     searchInfo: async (userIdx) => {
@@ -19,6 +20,9 @@ const item = {
             console.log('searchInfo ERROR : ', err);
             throw err;
         }
+    },
+    getMemoOrder:async(userIdx,categoryIdx)=>{
+        const query = `SELECT * FROM `
     }
 }
 

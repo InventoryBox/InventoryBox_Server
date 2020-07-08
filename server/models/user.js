@@ -30,18 +30,21 @@ const user = {
             }else{
                 return false
             }
-
         }catch(error){
            throw error
         }
     },
-    email:async()=>{
+    findEmail:async(repName,coName,phoneNumber)=>{
+        const query = `SELECT * FROM ${table} WHERE repName="${repName}" AND coName="${coName}" AND phoneNumber="${phoneNumber}"`
+        try{
+            const findEmail = await pool.queryParam(query)
+            return findEmail[0].email
+        }catch(err){
+            throw err
+        }
 
     },
-    find_id:async()=>{
-
-    },
-    getUser:async(email)=>{
+    getUserByEmail:async(email)=>{
         const query = `SELECT * FROM ${table} WHERE email="${email}"`;
         try{
             const result = await pool.queryParam(query);
@@ -50,26 +53,36 @@ const user = {
         throw error
         }
     },
-    getNicknamePicture:async()=>{
-
+    
+    getUserByIdxCustom:async(idx)=>{
+        const query = `SELECT email,nickname,repName,coName,img,longitude,latitude,location,phoneNumber,recordTime,orderTime,isSubscribed FROM ${table} WHERE idx="${idx}"`;
+        try{
+            const result = await pool.queryParam(query);
+            return result;
+        }catch(error){
+        throw error
+        }
     },
-    getPersonal:async()=>{
 
+    // -password -salt
+    getUserByIdx:async(idx)=>{
+        const query = `SELECT * FROM ${table} WHERE idx="${idx}"`;
+        try{
+            const result = await pool.queryParam(query);
+            return result;
+        }catch(error){
+        throw error
+        }
     },
-    updateAlarm:async()=>{
-
-    },
-    updatePersonal:async()=>{
-
-    },
-    updateEmail:async()=>{
-
-    },
-    updateProfile:async()=>{
-
-    },
-    deleteUser:async()=>{
-
+    
+    deleteUser:async(idx)=>{
+        const query = `DELETE FROM ${table} WHERE idx=${idx}`
+        try{
+            const result = await pool.queryParam(query);
+            return result;
+        }catch(error){
+        throw error
+        }
     },
     checkUser:async(email)=>{
         const query = `SELECT * FROM ${table} WHERE email="${email}"`;
@@ -89,6 +102,25 @@ const user = {
 
 }
 
+
+/*
+보류
+getPersonal:async()=>{
+
+    },
+    updateAlarm:async()=>{
+
+    },
+    updatePersonal:async()=>{
+
+    },
+    updateEmail:async()=>{
+
+    },
+    updateProfile:async()=>{
+
+    },
+*/
 
 
 module.exports=user;

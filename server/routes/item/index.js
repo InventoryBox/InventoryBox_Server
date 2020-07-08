@@ -6,7 +6,8 @@ const itemController = require('../../controllers/itemController')
 const authUtil = require('../../middlewares/auth').checkToken
 
 
-router.get('/order/number',authUtil,itemController.getOrderNumber)
+router.get('/order/number/:categoryIdx',authUtil,itemController.getOrderNumber)
+
 router.get('/',authUtil,itemController.getAllItem)
 router.get('/five-days/:itemidx',authUtil,itemController.getFiveDaysItem)
 
