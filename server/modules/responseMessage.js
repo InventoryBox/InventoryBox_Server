@@ -33,6 +33,9 @@ module.exports = {
     RECORD_SEARCH_CATEGORY_SUCCESS : "카테고리 정보 조회 성공",
     RECORD_TODAY_VIEW_SUCCESS : "오늘 재고 기록하기 화면 조회 성공",
     RECORD_MODIFY_ITEM_SUCCESS : "재료 재고량 변경 성공",
-    RECORD_DELETE_ITEM_SUCCESS : "재료 삭제 성공"
+    RECORD_DELETE_ITEM_SUCCESS : "재료 삭제 성공",
+    RECORD_ADD_CATEGORY_SUCCESS : "카테고리 추가 성공",
+    RECORD_MODIFY_VIEW_SUCCESS : "기록수정 화면 조회 성공",
+    RECORD_MODIFY_VIEW_SUCCESS : "기록수정 화면 조회 성공"
 
 };
