@@ -11,6 +11,7 @@ router.get('/category',authUtil,itemController.getCategoryInfo)
 
 router.put('/order/memo',authUtil,itemController.updateOrderMemo)
 router.get('/',authUtil,itemController.getAllItem)
+router.get('/idx',authUtil,itemController.getItemIdx)
 
 //
 
