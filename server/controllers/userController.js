@@ -16,23 +16,20 @@ exports.signup= async(req,res)=>{
         repName,
         coName,
         img,
-        longitude,
-        latitude,
-        location,
-        phoneNumber,
-        recordTime,
-        orderTime,
-        isSubscribed
+        phoneNumber
     } = req.body;
 
-    if(!email || !password || !nickname || !repName || !coName || !img || !longitude || !latitude || !location || !phoneNumber || !recordTime || !orderTime || !isSubscribed){
+    if(!email || !password || !nickname || !repName || !coName || !img ||!phoneNumber){
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE))
+    }
+    if(User.checkUser(email)===true){
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.DUPLICATED_EMAIL))
     }
 
     const salt = crypto.randomBytes(32).toString()
     const hashedPw = crypto.pbkdf2Sync(password,salt,1,32,'sha512').toString('hex')
 
-    const result = await User.signup(email,hashedPw,salt,nickname,repName,coName,img,longitude,latitude,location,phoneNumber,recordTime,orderTime,isSubscribed)
+    const result = await User.signup(email,hashedPw,salt,nickname,repName,coName,img,phoneNumber)
     
     if(result==0){
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
@@ -194,14 +191,27 @@ exports.deleteUser= async(req,res)=>{
     return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.DELETE_SUCCESS,{result:result.protocol41}))
 }
 
+exports.getPersonal= async(req,res)=>{
+    const userIdx = req.idx
+
+    if(userIdx === null){
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE))
+    }
+
+    const result = await User.getPersonal(userIdx)
+
+    if(result === null){
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
+    }
+    
+    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_USER_SUCCESS,{result:result}))
+}
 
 /*
 
 보류
 
-exports.getPersonal= async(req,res)=>{
-    
-}
+
 
 exports.updateAlarm= async(req,res)=>{
 

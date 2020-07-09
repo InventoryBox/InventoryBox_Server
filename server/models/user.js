@@ -3,11 +3,11 @@ const table = 'user';
 const crypto = require('crypto');
 
 const user = {
-    signup: async(email,password,salt,nickname,repName,coName,img,longitude,latitude,location,phoneNumber,recordTime,orderTime,isSubscribed)=>{
-        const fields = 'email,password,salt,nickname,repName,coName,img,longitude,latitude,location,phoneNumber,recordTime,orderTime,isSubscribed'
-        const values = [email,password,salt,nickname,repName,coName,img,longitude,latitude,location,phoneNumber,recordTime,orderTime,isSubscribed]
+    signup: async(email,password,salt,nickname,repName,coName,img,phoneNumber)=>{
+        const fields = 'email,password,salt,nickname,repName,coName,img,phoneNumber'
+        const values = [email,password,salt,nickname,repName,coName,img,phoneNumber]
 
-        const query = `INSERT INTO ${table}(${fields}) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+        const query = `INSERT INTO ${table}(${fields}) VALUES(?,?,?,?,?,?,?,?)`
         try{
             const result = await pool.queryParamArr(query,values);
             const insertIdx = result.insertId;
@@ -55,7 +55,7 @@ const user = {
     },
     
     getUserByIdxCustom:async(idx)=>{
-        const query = `SELECT email,nickname,repName,coName,img,longitude,latitude,location,phoneNumber,recordTime,orderTime,isSubscribed FROM ${table} WHERE idx="${idx}"`;
+        const query = `SELECT email,nickname,repName,coName,img,location,phoneNumber FROM ${table} WHERE idx="${idx}"`;
         try{
             const result = await pool.queryParam(query);
             return result;
@@ -97,6 +97,14 @@ const user = {
                 return -1;
             }
             console.log('checkUser :',error)
+        }
+    },getPersonal:async(idx)=>{
+        const query = `SELECT repName,coName,location FROM ${table} WHERE idx="${idx}"`;
+        try{
+            const result = await pool.queryParam(query);
+            return result;
+        }catch(error){
+        throw error
         }
     }
 

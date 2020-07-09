@@ -28,6 +28,9 @@ module.exports = {
     GET_USER_SUCCESS:'유저 조회 성공',
     // 프로필 조회
     READ_PROFILE_SUCCESS: '프로필 조회 성공',
+    DUPLICATED_EMAIL:'이메일이 중복됐습니다',
+    GET_ALL_ITEM_SUCCESS:'전체 아이템 가져오기 성공',
+    UPDATE_MEMO_COUNT_SUCCESS:'재고 메모 업데이트 성공',
 
     DB_ERROR: 'DB 오류',
 
