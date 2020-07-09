@@ -27,5 +27,12 @@ module.exports = {
     DB_ERROR: 'DB 오류',
 
     //재고기록
-    RECORD_NULL_VALUES : '파라미터 값이 없습니다.'
+    RECORD_HOME_SUCCESS : '재고기록 홈화면 및 수정 성공',
+    RECORD_ITEMADD_VIEW_SUCCESS : "재료추가 화면 조회 성공",
+    RECORD_ITEMADD_DB_SUCCESS : "재료추가 저장 성공",
+    RECORD_SEARCH_CATEGORY_SUCCESS : "카테고리 정보 조회 성공",
+    RECORD_TODAY_VIEW_SUCCESS : "오늘 재고 기록하기 화면 조회 성공",
+    RECORD_MODIFY_ITEM_SUCCESS : "재료 재고량 변경 성공",
+    RECORD_DELETE_ITEM_SUCCESS : "재료 삭제 성공"
+
 };
