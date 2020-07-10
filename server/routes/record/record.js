@@ -4,7 +4,7 @@ const recordController= require('../../controllers/recordController');
 // 홈 & 기록수정 화면 조회
 router.get('/home/:date', recordController.home);
 // 카테고리 정보 조회
-//outer.get('/record/folder/category-info', recordController.searchCategory);
+//router.get('/record/folder/category-info', recordController.searchCategory);
 // 재료추가 화면 조회!
 router.get('/item-add', recordController.itemAdd_View);
 

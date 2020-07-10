@@ -19,7 +19,7 @@ const record = {
            // 재고기록 탭 눌렀을 때
            // 가장 최근 저장된 DB날짜 필요
            const date_send = await itemModel.searchLastDate();
-           //console.log(date_send);
+           console.log(date_send);
            // 전체 카테고리(0) 값 조회
            const result = await itemModel.searchInfo_Date(date_send);
            //console.log(result);
@@ -27,7 +27,7 @@ const record = {
            {
             const iconImg = await itemModel.searchIcon_ItemIdx(result[a].idx);
             result[a].img = iconImg.img;   
-           } 
+           }
            var itemInfo = result;
            // isRecorded 정보 조회
            var DateFunction = new Date();
@@ -117,7 +117,7 @@ const record = {
         var categoryInfo = await categoryModel.searchInfoAll();
         // 가장 최근 저장된 날짜를 구해서 item목록 정보 조회
         const date_send = await itemModel.searchLastDate();
-        console.log(date_send);
+        //console.log(date_send);
         const result = await itemModel.searchInfo_date_today(date_send);
         for(var a in result)
         {
@@ -135,7 +135,7 @@ const record = {
     modifyItem : async(req,res)=>{
         const itemInfo = req.body.itemInfo;
         const date = req.body.date;
-        console.log(date);
+        //console.log(date);
         var isRecorded = await itemModel.searchIsRecorded(date);
         for(var a in itemInfo)
         {
@@ -160,11 +160,11 @@ const record = {
         var month = (DateFunction.getMonth()+1) <10 ? '0'+(DateFunction.getMonth()+1) : (DateFunction.getMonth()+1);
         var day = DateFunction.getDate() < 10 ? '0'+DateFunction.getDate() : DateFunction.getDate();
         var date = DateFunction.getFullYear()+'-'+month+'-'+day; */
-        var date = "2020-06-12";
+        var date = "2020-07-11";
         for(var a in itemIdxList)
         {
             // item table에 반영
-            await itemModel.updateItem(itemIdxList[a]);
+            await itemModel.updateItem(itemIdxList[a]); 
             // date table에 반영
             await itemModel.deleteDate_Item(itemIdxList[a],date);
         }
@@ -177,7 +177,9 @@ const record = {
         } = req.body;
         const result = await categoryModel.addCategory(name,userIdx);
         res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_ADD_CATEGORY_SUCCESS,
-            insertId = result
+            {
+            insertId : result
+            }
         ));
     },
     modifyView : async (req,res) => {

@@ -7,7 +7,7 @@ const teble_itemDate = 'item-date';
 const item = {
     // date에 해당하는 item들의 정보 출력
     searchInfo_Date : async (date) => {
-        const query = `SELECT item.idx,item.name,item.alarmCnt,item.presentCnt,item.category_Idx
+        const query = `SELECT item.idx,item.name,item.alarmCnt,item.unit,date.stocksCnt,item.category_Idx
                         FROM ${table_item}, ${table_date} WHERE ${table_item}.idx = ${table_date}.item_idx and date like '${date}%'`;
         try {
             const result = await pool.queryParamArr(query);
@@ -85,7 +85,7 @@ const item = {
     },
     // 해당 재료(item) 삭제
     updateItem : async (itemIdx) =>{
-        const query = `UPDATE ${table_item} SET presentCnt=0 WHERE idx=${itemIdx}`;
+        const query = `UPDATE ${table_item} SET presentCnt=-1 WHERE idx=${itemIdx}`;
         try {
             const result = await pool.queryParam(query);
             return ;
@@ -145,7 +145,7 @@ const item = {
         }
     },
     searchModifyView : async (date) => {
-        const query = `SELECT item.idx,item.name,item.category_idx,item.presentCnt
+        const query = `SELECT item.idx,item.name,item.category_idx,date.stocksCnt
         FROM ${table_item}, ${table_date} WHERE ${table_item}.idx = ${table_date}.item_idx and date like '${date}%'`;
         try {
             const result = await pool.queryParamArr(query);
