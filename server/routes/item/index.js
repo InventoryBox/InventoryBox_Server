@@ -10,14 +10,15 @@ router.get('/order/memo/:categoryIdx',authUtil,itemController.getOrderNumber)
 router.get('/category',authUtil,itemController.getCategoryInfo)
 
 router.put('/order/memo',authUtil,itemController.updateOrderMemo)
-router.get('/',authUtil,itemController.getAllItem)
-router.get('/idx',authUtil,itemController.getItemIdx)
+router.get('/:categoryIdx',authUtil,itemController.getItemInfo)
+
+// router.get('/name/:name',authUtil,itemController.getItemIdx)
 
 //
 
 router.get('/five-days/:itemidx',authUtil,itemController.getFiveDaysItem)
 
-router.get('/',authUtil,itemController.getAllItem)
+// router.get('/',authUtil,itemController.getAllItem)
 
 
 

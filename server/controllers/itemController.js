@@ -66,20 +66,68 @@ exports.updateOrderMemo=async(req,res)=>{
 
 }
 
-exports.getAllItem=async(req,res)=>{
+exports.getItemInfo=async(req,res)=>{
     const userIdx = req.idx;
+
+    const categoryIdx = req.params.categoryIdx
 
     if(userIdx === null){
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE));
     }
 
-    const result = await Item.getAllItem(userIdx)
+    const result = await Item.getItemInfo(userIdx,categoryIdx)
 
     if(result === null){
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
     }
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_ALL_ITEM_SUCCESS,{result:result}))
+
+    // for(var a in result)
+    // {
+    //     result[a].img1 = img1;
+    // }  추가
+
+    for(var a in result)
+    {
+        delete result[a].category_idx
+        delete result[a].user_idx
+    }
+
+    // console.log(typeof(result[0].date))
+
+    function dateToString(DateFunction) {
+        var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
+        var day = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
+        var date = DateFunction.getFullYear() + '-' + month + '-' + day;
+        return date;
+    }
+
+    function pre5daysFromToday() {
+        var prev_dates = new Array();
+        for (var i = 0; i < 5; i++)
+            prev_dates[i] = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+        return prev_dates;
+    }
+    
+    var week = pre5daysFromToday();
+
+    var stocksInfo = new Array(5);
+
+    for (var i = 0; i < 5; i++) {
+                    const result = await Item.getStocksInfoOfDay(1, dateToString(week[i]));
+                    if (result == -1) stocksInfo[i] = result;
+                    else stocksInfo[i] = result[0].stocksCnt;
+                }
+
+ 
+    console.log(stocksInfo)
+
+    for(var a in result)
+    {
+        result[a].stocksInfo =stocksInfo;
+    } 
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_ITEM_INFO_SUCCESS,{result:result}))
 }
 
 

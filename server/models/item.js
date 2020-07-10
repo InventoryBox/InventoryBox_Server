@@ -34,7 +34,7 @@ const item = {
         }
     },
     getCategoryInfo:async()=>{
-        const query = `SELECT * FROM ${table_category}`
+        const query = `SELECT idx,name FROM ${table_category}`
         try{
             const result = await pool.queryParam(query);
             return result
@@ -43,11 +43,30 @@ const item = {
         }
 
     },
-    getAllItem:async(userIdx)=>{
-        const query = `SELECT * FROM ${table_item} JOIN ${table_category} ON item.category_idx=category.idx`
+    getItemInfo:async(userIdx,categoryIdx)=>{
+        const query = `
+        SELECT 
+        item.idx AS itemIdx,
+        item.name AS itemName,
+        item.category_idx,
+        category.user_idx,
+        item.unit,
+        item.alarmCnt,
+        item.memoCnt,
+        item.presentCnt,
+        item.icon_idx,
+        category.name AS categoryName,
+        date.stocksCnt,
+        date.date 
+        FROM 
+        item
+        JOIN category 
+        ON item.category_idx=category.idx 
+        JOIN date 
+        ON item.idx=date.item_idx`
         try{
             const result = await pool.queryParam(query);
-            const resultFilter = result.filter(item=>item.user_idx==userIdx)
+            const resultFilter = result.filter(item=>item.user_idx==userIdx).filter(item=>item.category_idx==categoryIdx)
             return resultFilter
         }catch(err){
             throw err;
@@ -59,6 +78,15 @@ const item = {
            const result = await pool.queryParam(query);
            return result
         }catch(err){
+            throw err;
+        }
+    },
+    getStocksInfoOfDay: async (itemIdx, date) => {
+        const query = `SELECT stocksCnt from ${table_date} where date="${date}" and item_idx = ${itemIdx}`;
+        try {
+            const result = await pool.queryParam(query);
+            return (!result.length) ? -1 : result;
+        } catch (err) {
             throw err;
         }
     }
