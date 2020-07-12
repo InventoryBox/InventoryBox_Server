@@ -69,31 +69,50 @@ exports.updateOrderMemo=async(req,res)=>{
 exports.getItemInfo=async(req,res)=>{
     const userIdx = req.idx;
 
-    const categoryIdx = req.params.categoryIdx
+    let result2;
 
     if(userIdx === null){
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE));
     }
 
-    const result = await Item.getItemInfo(userIdx,categoryIdx)
+    const result = await Item.getItemInfo(userIdx)
 
     if(result === null){
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
     }
-
 
     // for(var a in result)
     // {
     //     result[a].img1 = img1;
     // }  추가
 
-    for(var a in result)
-    {
-        delete result[a].category_idx
-        delete result[a].user_idx
-    }
+    // for(var a in result)
+    // {
+    //     delete result[a].iconIdx
+    //     delete result[a].categoryIdx
+    //     delete result[a].userIdx
+    // }
 
     // console.log(typeof(result[0].date))
+
+   
+
+ 
+    // console.log(stocksInfo)
+
+    // for(var a in result)
+    // {
+    //     result[a].stocksInfo =stocksInfo;
+    // } 
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_ITEM_INFO_SUCCESS,{result:result}))
+}
+
+exports.fiveDays=async(req,res)=>{
+    
+    const userIdx = req.idx;
+    const itemIdx = req.params.itemIdx;
+    
 
     function dateToString(DateFunction) {
         var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
@@ -114,24 +133,11 @@ exports.getItemInfo=async(req,res)=>{
     var stocksInfo = new Array(5);
 
     for (var i = 0; i < 5; i++) {
-                    const result = await Item.getStocksInfoOfDay(1, dateToString(week[i]));
+                    const result = await Item.getStocksInfoOfDay(itemIdx, dateToString(week[i]));
                     if (result == -1) stocksInfo[i] = result;
                     else stocksInfo[i] = result[0].stocksCnt;
                 }
 
- 
-    console.log(stocksInfo)
+    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_FIVE_DAYS_SUCCESS,{stocksInfo:stocksInfo}))
 
-    for(var a in result)
-    {
-        result[a].stocksInfo =stocksInfo;
-    } 
-
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_ITEM_INFO_SUCCESS,{result:result}))
 }
-
-
-exports.getFiveDaysItem=async(req,res)=>{
-    
-}
-

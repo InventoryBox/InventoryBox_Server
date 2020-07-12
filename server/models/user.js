@@ -117,6 +117,19 @@ const user = {
             console.log('update profile ERROR : ', err);
             throw err;
         }
+    },
+    insertSalt: async(hashedPw,salt,userIdx)=>{
+        let query = `UPDATE ${table} SET password="${hashedPw}",salt="${salt}" WHERE userIdx=${userIdx}`
+        try {
+            await pool.queryParam(query);
+            query = `SELECT * FROM ${table} WHERE userIdx="${userIdx}"`;
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('update profile ERROR : ', err);
+            throw err;
+        }
+
     }
 }
 

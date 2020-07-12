@@ -178,6 +178,21 @@ exports.profileSignup=async(req,res)=>{
     User.updateImg()
 }
 
+exports.insertSalt=async(req,res)=>{
+
+    const {
+        password,
+        userIdx
+    }=req.body;
+    
+    const salt = crypto.randomBytes(32).toString()
+    const hashedPw = crypto.pbkdf2Sync(password,salt,1,32,'sha512').toString('hex')
+
+    const result = await User.insertSalt(hashedPw,salt,userIdx)
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.SALT_PASSWORD_SUCCESS,{result:result}))
+}
+
 /*
 
 보류

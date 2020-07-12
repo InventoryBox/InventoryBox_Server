@@ -11,17 +11,31 @@ const userController = require('../../controllers/userController')
 
 const authUtil = require('../../middlewares/auth').checkToken
 
+// 회원가입 1
 router.post('/signup',userController.signup)
+
+// 로그인 2
 router.post('/signin',userController.signin)
+
+// 이메일 인증 3
 router.post('/email',userController.email)
+
+// 아이디 찾기 4
 router.post('/find-id',userController.find_id)
 
+// 홈 유저 정보 가져오기 5
 router.get('/user',authUtil,userController.getUser)
+
+// 유저 닉네임-사진 가져오기 6
 router.get('/user/nickname-picture',authUtil,userController.getNicknamePicture)
+
+// 유저 개인정보 가져오기 7
 router.get('/user/personal',authUtil,userController.getPersonal)
 
+// 회원가입 때 유저 사진 넣기 ( 구현 X ) 8
 router.post('/profile',upload.single('profile'),userController.profileSignup)
 
+router.post('/insertSalt',userController.insertSalt)
 
 // 카카오
 router.get("/kakao", passport.authenticate("kakao-login"));

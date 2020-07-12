@@ -43,30 +43,29 @@ const item = {
         }
 
     },
-    getItemInfo:async(userIdx,categoryIdx)=>{
+    getItemInfo:async(userIdx)=>{
         const query = `
         SELECT 
         item.itemIdx,
         item.name AS itemName,
-        item.categoryIdx,
-        category.userIdx,
         item.unit,
         item.alarmCnt,
         item.memoCnt,
         item.presentCnt,
-        item.iconIdx,
-        category.name AS categoryName,
-        date.stocksCnt,
-        date.date 
-        FROM 
-        item
-        JOIN category 
-        ON item.categoryIdx=category.categoryIdx 
-        JOIN date 
-        ON item.itemIdx=date.itemIdx`
+        icon.img,
+        icon.name AS iconName
+        FROM item
+        JOIN icon
+        ON item.iconIdx=icon.iconIdx
+        JOIN category
+        ON item.categoryIdx=category.categoryIdx
+        ORDER BY itemIdx
+        ;
+        `
         try{
             const result = await pool.queryParam(query);
-            const resultFilter = result.filter(item=>item.userIdx==userIdx).filter(item=>item.categoryIdx==categoryIdx)
+            // const resultFilter = result.filter(item=>item.userIdx==userIdx) userIdx=1 이므로 그냥 무시
+            const resultFilter = result.filter(item=>item.memoCnt>=item.presentCnt)
             return resultFilter
         }catch(err){
             throw err;
