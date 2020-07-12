@@ -1,48 +1,69 @@
-const itemModel = require('../models/item');
-const categoryModel = require('../models/category');
+const userModel = require('../models/user');
+const postModel = require('../models/post');
 const util = require('../modules/util');
 const statusCode = require('../modules/statusCode');
 const resMessage = require('../modules/responseMessage');
-const encrypt = require('../modules/encryption');
-const jwt = require('../modules/jwt');
-const item = require('../models/item');
-const {
-    return
-} = require('../config/database');
-
 
 const dashboard = {
     potsByDistance: async (req, res) => {
-        userIdx = req.idx;
+        const userIdx = req.idx;
+        const filter = req.params;
 
-        const postLoc = await postModel.getPostsLoc();
-        const postList = await postModel.getPostsInfo();
         const userLoc = await userModel.getUserLoc(userIdx);
-        if (postLoc == -1)
-            return res.status(statusCode.BAD_REQUEST)
-                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
-        if (userLoc == -1)
-            return res.status(statusCode.BAD_REQUEST)
-                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_LOC_INFO));
+        var postList;
 
-        console.log("postLoc", postLoc, "userloc", userLoc);
-        postLoc.sort((a, b) => (getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) > getDistance(b.latitude, b.longitude, userLoc[0].latitude, userLoc[0].longitude)) ? 1 : -1)
-        console.log("postLoc", postLoc, "userloc", userLoc);
+        // 최신순
+        if (filter == 0) {
+            postList = await postModel.getPostsInfoDist();
+            if (postList == -1)
+                return res.status(statusCode.BAD_REQUEST)
+                    .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
+            if (userLoc == -1)
+                return res.status(statusCode.BAD_REQUEST)
+                    .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_LOC_INFO));
 
-        const distList = new Array[postLoc.length];
-        for (var i = 0; i < postLoc.length; i++) {
-            var dist = Math.round(getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) / 100) * 100;
-            if (dist > 2000)
-                distList.push(dist);
+            console.log("DIST before postList", postList, "userLoc", userLoc);
+            postList.sort((a, b) => (getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) > getDistance(b.latitude, b.longitude, userLoc[0].latitude, userLoc[0].longitude)) ? 1 : -1)
+            console.log("DIST after postList", postList, "userLoc", userLoc);
+        }
+        // 업로드순
+        else if (filter == 1) {
+            postList = await postModel.getPostsInfoByDate();
+            if (postList == -1)
+                return res.status(statusCode.BAD_REQUEST)
+                    .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
+            console.log("DATE postList", postList);
+        }
+        // 가격순
+        else if (filter == 2) {
+            postList = await postModel.getPostsInfoByPrice();
+            if (postList == -1)
+                return res.status(statusCode.BAD_REQUEST)
+                    .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
+            console.log("PRICE postList", postList);
+
         }
 
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.POSTS_BY_DISTANCE_SUCCESS, {
-            postInfo: postList,
-            distance: distList
+        // 2km외인 거 빼고 전달
+        var postInfo = new Array[postList.length];
+        for (var i = 0; i < postList.length; i++) {
+            var dist = Math.round(getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) / 100) * 100;
+            if (dist > 2000)
+                postInfo.push({
+                    isFood: postInfo[i].isFood,
+                    liked: await postModel.searchLike(user, postInfo[i].postIdx),
+                    price: postInfo[i].price,
+                    distance: dist,
+                    productName: postInfo[i].productName,
+                    expDate: postInfo[i].expDate,
+                    uploadDate: postInfo[i].uploadDate
+                })
+        }
 
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.POSTS_HOME_SUCCESS, {
+            postInfo: postList
         }));
     }
-
 }
 
 function getDistance(lat1, lon1, lat2, lon2) {

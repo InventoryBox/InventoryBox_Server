@@ -2,24 +2,12 @@ const pool = require('../modules/pool');
 const table_item = 'item';
 const table_icon = 'icon';
 const table_date = 'date';
+const table_category = 'category';
 
 const item = {
-    // date에 해당하는 item들의 정보 출력
-    searchInfo_Date: async (date) => {
-        const query = `SELECT item.idx,item.name,item.alarmCnt,item.presentCnt,item.category_Idx FROM ${table_item}, ${table_date} 
-        WHERE ${table_item}.idx = ${table_date}.item_idx and date like '${date}%'`;
-        try {
-            const result = await pool.queryParamArr(query);
-            return result;
-        } catch (err) {
-            console.log('searchInfo_Date ERROR : ', err);
-            throw err;
-        }
-    },
-
     // 해당 date에 기록한 재료(item)의 정보 조회
-    searchInfo_date_today: async (date) => {
-        const query = `SELECT item.idx,item.name,item.category_idx FROM ${table_item}, ${table_date} WHERE ${table_item}.idx = ${table_date}.item_idx and date like '${date}%'`;
+    searchItemInfoToday: async (userIdx) => {
+        const query = `SELECT i.itemIdx, i.name, i.categoryIdx FROM ${table_item} i natural join  ${table_category} c where c.userIdx = ${userIdx} `;
         try {
             const result = await pool.queryParamArr(query);
             return result;
@@ -30,9 +18,9 @@ const item = {
     },
 
     // itemIdx에 해당하는 icon img 찾기
-    searchIcon_ItemIdx: async (itemIdx) => {
-        const query = `SELECT icon.img FROM ${table_icon}, ${table_item} 
-        WHERE ${table_icon}.idx = ${table_item}.icon_idx and ${table_item}.idx=${itemIdx}`;
+    searchIconByItemIdx: async (userIdx, itemIdx) => {
+        const query = `SELECT icon.img FROM ${table_icon} ic, ${table_item} i, ${table_category} c WHERE ic.iconIdx = i.iconIdx and i.categoryIdx = c.categoryIdx
+        and c.userIdx=${userIdx} and i.itemIdx = ${itemIdx}`;
         try {
             const result = await pool.queryParamArr(query);
             return result[0];
@@ -42,8 +30,21 @@ const item = {
         }
     },
 
-    getStocksInfoOfDay: async (itemIdx, date) => {
-        const query = `SELECT stocksCnt from ${table_date} where date="${date}" and item_idx = ${itemIdx}`;
+    // itemIdx에 해당하는 alarmCnt 찾기
+    getItemAlarmCnt: async (userIdx, itemIdx) => {
+        const query = `SELECT i.alarmCnt FROM ${table_item} i natural join ${table_category} c where c.userIdx = ${userIdx} and i.itemIdx = ${itemIdx} `;
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    // item에서 해당 date의 stocksCnt 찾기
+    getStocksInfoOfDay: async (userIdx, itemIdx, date) => {
+        const query = `SELECT stocksCnt from ${table_date} d, ${table_item} i, ${table_category} c WHERE  i.categoryIdx = c.categoryIdx and i.itemIdx = d.itemIdx 
+        and d.date = "${date}" and d.itemIdx = ${itemIdx} and c.userIdx = ${userIdx}`;
         try {
             const result = await pool.queryParam(query);
             return (!result.length) ? -1 : result;
@@ -52,26 +53,15 @@ const item = {
         }
     },
 
-    getItemAlarmCnt: async (itemIdx) => {
-        const query = `SELECT item.alarmCnt from ${table_item} where item.idx = ${itemIdx}`;
-        try {
-            const result = await pool.queryParam(query);
-            console.log('alarmCnt of item: ', result);
-            return result;
-        } catch (err) {
-            throw err;
-        }
-    },
 
-    modifyItemCnt: async (itemIdx, alarmCnt, memoCnt) => {
-        console.log("/models", alarmCnt, memoCnt);
-        const query = `UPDATE ${table_item} SET alarmCnt=${alarmCnt}, memoCnt=${memoCnt} WHERE idx=${itemIdx}`;
+    // 해당 itemIdx의 alarmCnt, memoCnt 수정하기 
+    modifyItemCnt: async (userIdx, itemIdx, alarmCnt, memoCnt) => {
+        const query = `UPDATE ${table_item} natural join SET alarmCnt = ${alarmCnt}, memoCnt = ${memoCnt} WHERE itemIdx = ${itemIdx} and userIdx = ${userIdx}`;
         try {
             const result = await pool.queryParam(query);
             console.log(result);
             return;
         } catch (err) {
-            console.log('modifyItem ERROR : ', err);
             throw err;
         }
     }

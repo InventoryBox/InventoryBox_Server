@@ -4,7 +4,7 @@ const table_icon = 'icon';
 
 const category = {
     searchInfoAll: async () => {
-        const query = `SELECT idx, name FROM ${table_category}`;
+        const query = `SELECT categoryIdx, name FROM ${table_category}`;
         try {
             const result = await pool.queryParamArr(query);
             return result;

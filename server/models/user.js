@@ -6,7 +6,7 @@ const user = {
             const fields = 'address, latitude, longitude';
             const questions = `?, ?, ?, ?, ?, ?`;
             const values = [address, latitude, longitude];
-            const query = `INSERT INTO ${table_user}(${fields}) VALUES(${questions}) where idx = ${userIdx}`;
+            const query = `INSERT INTO ${table_user}(${fields}) VALUES(${questions}) where userIdx = ${userIdx}`;
             try {
                 const result = await pool.queryParamArr(query, values);
                 const insertId = result.insertId;
@@ -17,7 +17,7 @@ const user = {
             }
         },
         getUserLoc: async (userIdx) => {
-                const query = `SELECT latitude, longitude from ${table_user} where idx = ${userIdx}';
+                const query = `SELECT latitude, longitude from ${table_user} where userIdx = ${userIdx}';
         try {
             const result = await pool.queryParam(query);
             return (result.length < 2) ? -1 : result;
