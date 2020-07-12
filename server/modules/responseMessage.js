@@ -7,6 +7,11 @@ module.exports = {
     ITEM_UPDATE_SUCCESS: "아이템 기본 설정 변경 성공",
     NULL_VALUE: '필요한 값이 없습니다',
 
+    // 위치 관련 정보
+    ADD_LOC_SUCCESS: '유저에 위치관련정보 업데이트 성공',
+    NO_LOC_INFO: '유저 사업장 위치 정보 없음',
+    NO_POSTS: '등록된 게시글 없음',
+    POSTS_BY_DISTANCE_SUCCESS: '거리순 게시글 전달 성공',
     OUT_OF_VALUE: '파라미터 값이 잘못되었습니다',
 
     // 회원가입
