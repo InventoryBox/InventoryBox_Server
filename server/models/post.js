@@ -10,7 +10,7 @@ const table_like = 'like';
 const post = {
 
     getPostsInfoByDist: async () => {
-        const query = `SELECT latitude, longitude,isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user}`;
+        const query = `SELECT postIdx,postImg, latitude, longitude,isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user}`;
         try {
             const result = await pool.queryParam(query);
             return (!result.length) ? -1 : result;
@@ -31,7 +31,7 @@ const post = {
     },
 
     getPostsInfoByDate: async () => {
-        const query = `SELECT latitude, longitude ,isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by uploadDate DESC`;
+        const query = `SELECT  postIdx,postImg,latitude, longitude ,isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by uploadDate DESC`;
         try {
             const result = await pool.queryParam(query);
             return (!result.length) ? -1 : result;
@@ -41,7 +41,7 @@ const post = {
     },
 
     getPostsInfoByPrice: async () => {
-        const query = `SELECT latitude, longitude,isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by price ASC`;
+        const query = `SELECT  postIdx,postImg,latitude, longitude,isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by price ASC`;
         try {
             const result = await pool.queryParam(query);
             return (!result.length) ? -1 : result;
