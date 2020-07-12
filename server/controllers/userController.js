@@ -15,27 +15,27 @@ exports.signup= async(req,res)=>{
         nickname,
         repName,
         coName,
-        img,
         phoneNumber
     } = req.body;
 
-    if(!email || !password || !nickname || !repName || !coName || !img ||!phoneNumber){
+    if(!email || !password || !nickname || !repName || !coName ||!phoneNumber){
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE))
     }
-    if(User.checkUser(email)===true){
+
+    if(await User.checkUser(email)){
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.DUPLICATED_EMAIL))
     }
 
     const salt = crypto.randomBytes(32).toString()
     const hashedPw = crypto.pbkdf2Sync(password,salt,1,32,'sha512').toString('hex')
 
-    const result = await User.signup(email,hashedPw,salt,nickname,repName,coName,img,phoneNumber)
+    const insertIdx = await User.signup(email,hashedPw,salt,nickname,repName,coName,phoneNumber)
     
-    if(result==0){
+    if(insertIdx==0){
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
     }
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.CREATED_USER,{insertIdx:result}))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.CREATED_USER,{insertIdx:insertIdx}))
 
 }
 
@@ -119,39 +119,6 @@ exports.getUser= async(req,res)=>{
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
     }
 
-    // let getUserDataParsing = (idx,email,nickname,repName,coName,img,longitude,latitude,location,phoneNumber,recordTime,orderTime,isSubscribed)=>{
-    //     idx,
-    //     email,
-    //     nickname,
-    //     repName,
-    //     coName,
-    //     img,
-    //     longitude,
-    //     latitude,
-    //     location,
-    //     phoneNumber,
-    //     recordTime,
-    //     orderTime,
-    //     isSubscribed
-    // }
-
-    // getUserDataParsing(getUserData[0].idx,getUserData[0].email,getUserData[0].nickname,getUserData[0].repName,getUserData[0].coName,getUserData[0].img,getUserData[0].longitude,getUserData[0].latitude,getUserData[0].location,getUserData[0].phoneNumber,getUserData[0].recordTime,getUserData[0].orderTime,getUserData[0].isSubscribed)
-   
-    // console.log(getUserDataParsing.idx)
-
-    // getUserDataParsing.idx = getUserData[0].idx;
-    // getUserDataParsing.email = getUserData[0].email;
-    // getUserDataParsing.nickname = getUserData[0].nickname;
-    // getUserDataParsing.repName = getUserData[0].repName;
-    // getUserDataParsing.coName = getUserData[0].coName;
-    // getUserDataParsing.img = getUserData[0].img;
-    // getUserDataParsing.longitude = getUserData[0].longitude;
-    // getUserDataParsing.latitude = getUserData[0].latitude;
-    // getUserDataParsing.location = getUserData[0].location;
-    // getUserDataParsing.phoneNumber = getUserData[0].phoneNumber;
-    // getUserDataParsing.recordTime = getUserData[0].recordTime;
-    // getUserDataParsing.orderTime = getUserData[0].orderTime;
-    // getUserDataParsing.isSubscribed = getUserData[0].isSubscribed;
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_USER_SUCCESS,{email:getUserData}))
 
@@ -205,6 +172,10 @@ exports.getPersonal= async(req,res)=>{
     }
     
     return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_USER_SUCCESS,{result:result}))
+}
+
+exports.profileSignup=async(req,res)=>{
+    User.updateImg()
 }
 
 /*
