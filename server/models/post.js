@@ -24,9 +24,9 @@ const post = {
             throw err;
         }
     },
-    // 특정 게시글 모든 정보 조회 
+    // 특정 게시글 모든 정보 조회  (date_format(uploadDate,'%Y-%m-%d %h:%i:%s') AS uploadDate) 
     searchInfo: async (postIdx) => {
-        const query = `SELECT postIdx,productImg,productName,quantity,isFood,price,description,expDate,date_format(uploadDate,'%Y-%m-%d %h:%i:%s') AS uploadDate,isSold,coverPrice,unit,userIdx FROM ${table_post} WHERE postIdx=${postIdx}`;
+        const query = `SELECT postIdx,productImg,productName,quantity,isFood,price,description,expDate,uploadDate,isSold,coverPrice,unit,userIdx FROM ${table_post} WHERE postIdx=${postIdx}`;
         try {
             const result = await pool.queryParam(query);
             console.log(result);

@@ -163,7 +163,8 @@ const record = {
     modifyItem : async(req,res)=>{
         const itemInfo = req.body.itemInfo;
         const date = req.body.date;
-        //console.log(date);
+        const userIdx = req.idx;
+        //console.log(date); 
         var isRecorded = await itemModel.searchIsRecorded(date);
         for(var a in itemInfo)
         {
@@ -174,6 +175,7 @@ const record = {
             if(isRecorded == 0)
             {
                 await itemModel.addDate_Item(itemInfo[a].presentCnt,date,itemInfo[a].itemIdx);
+                await itemModel.resetFlag(userIdx);
             }else
             {
                 // 2) 오늘 재고기록이 처음이 아닐 때 (기록수정)

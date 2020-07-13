@@ -282,6 +282,17 @@ const item = {
         } catch (err) {
             throw err;
         }
+    },
+    resetFlag : async (userIdx) => {
+        const query = `UPDATE ${table_category} INNER JOIN ${table_item} ON category.categoryIdx = item.categoryIdx
+        SET flag=0 WHERE category.userIdx = ${userIdx};`;
+   try {
+       const result = await pool.queryParam(query);
+       return result;
+   } catch (err) {
+       console.log('resetFlag ERROR : ', err);
+       throw err;
+   }
     }
 }
 module.exports = item;

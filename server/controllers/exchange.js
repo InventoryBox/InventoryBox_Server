@@ -53,7 +53,11 @@ function getDistance(lat1, lon1, lat2, lon2) {
 
     return dist;
 }
-
+function dateToKORString(DateFunction) {
+    var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
+    var date = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
+    return DateFunction.getFullYear() + '년 ' + month + '월 ' + date + '일';
+}
 const exchange = {
     home: async (req, res) => {
         const userIdx = req.idx;
@@ -118,9 +122,9 @@ const exchange = {
     },
     postView: async (req, res) => {
         const postIdx = req.params.postIdx;
-        var uploadDate = getTimeStamp();
+        //var uploadDate = getTimeStamp();
         var userInfo;
-        console.log(uploadDate);
+        //console.log(uploadDate);
         if (!postIdx) {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
@@ -130,6 +134,9 @@ const exchange = {
         {
              userInfo = await userModel.userInfo(itemInfo[0].userIdx);
         }
+            const uploadDate = dateToKORString(itemInfo[0].uploadDate);
+            itemInfo[0].uploadDate = uploadDate;
+        //console.log(itemInfo[0].uploadDate);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_VIEW_SUCCESS,
             {
                 itemInfo: itemInfo,
@@ -148,7 +155,6 @@ const exchange = {
             })); 
     },
     postSave: async (req, res) => {
-
         const productImg = req.file.location;
         const {
             productName,
@@ -171,7 +177,7 @@ const exchange = {
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SAVE_SUCCESS,
             {
                 insertIdx: insertIdx
-            })); 
+            }));
     },
     modifyIsSold: async (req, res) => {
         const postIdx = req.body.postIdx;
@@ -207,7 +213,11 @@ const exchange = {
         const userIdx = req.idx;
         for (var a in result) {
             const likes = await postModel.searchLikes(userIdx, result[a].postIdx);
+            //console.log(result[a].uploadDate);
+            const uploadDate = dateToKORString(result[a].uploadDate);
+            result[a].uploadDate = uploadDate;
             result[a].likes = likes;
+            
         }
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SEARCH_SUCCESS,
             {
