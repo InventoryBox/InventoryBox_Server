@@ -5,13 +5,13 @@ const table_user = 'user';
 
 const user = {
     userInfo: async (userIdx) => {
-        const query = `SELECT repName, coName, location, phoneNumber FROM ${table_user}
+        const query = `SELECT repName,coName,location,phoneNumber FROM ${table_user}
                         WHERE userIdx=${userIdx}`;
         try {
             const result = await pool.queryParam(query);
             return result;
         } catch (err) {
-            console.log('postInfo ERROR : ', err);
+            console.log('userInfo ERROR : ', err);
             throw err;
         }
     },
@@ -28,7 +28,7 @@ const user = {
         const fields = 'email,password,salt,nickname,repName,coName,phoneNumber'
         const values = [email,password,salt,nickname,repName,coName,phoneNumber]
 
-        const query = `INSERT INTO ${table}(${fields}) VALUES(?,?,?,?,?,?,?)`
+        const query = `INSERT INTO ${table}(${fields}) VALUES(?,?,?,?,?,?,?)`;
         try{
             const result = await pool.queryParamArr(query,values);
             const insertIdx = result.insertId;
@@ -153,6 +153,7 @@ const user = {
     }
 }
 
+module.exports=user;
 
 /*
 보류
@@ -173,5 +174,3 @@ getPersonal:async()=>{
     },
 */
 
-
-module.exports=user;

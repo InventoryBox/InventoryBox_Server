@@ -15,7 +15,7 @@ const authUtil = require('../middlewares/auth').checkToken
 router.post('/signup',userController.signup)
 
 // 로그인 2
-router.post('/signin',userController.signin)
+router.post('/user/signin',userController.signin)
 
 // 이메일 인증 3
 router.post('/email',userController.email)

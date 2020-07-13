@@ -27,6 +27,4 @@ router.get('/five-days/:itemIdx',authUtil,itemController.fiveDays)
 // router.get('/',authUtil,itemController.getAllItem)
 
 
-
-
 module.exports=router;

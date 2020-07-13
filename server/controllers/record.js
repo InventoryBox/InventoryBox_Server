@@ -9,9 +9,17 @@ const jwt = require('../modules/jwt');
 const record = {
     home : async (req,res)=>{
         // token에서 userIdx 파싱
-        var userIdx = 1;
+        const userIdx = req.idx;
         const date = req.params.date;
         var categoryInfo = await categoryModel.searchInfoAll(userIdx);
+        var addButton;
+        var DateFunction = new Date();
+        var month = (DateFunction.getMonth()+1) <10 ? '0'+(DateFunction.getMonth()+1) : (DateFunction.getMonth()+1);
+        var day = DateFunction.getDate() < 10 ? '0'+DateFunction.getDate() : DateFunction.getDate();
+        var date_is = DateFunction.getFullYear()+'-'+month+'-'+day;
+        //console.log(date_is);
+        var isRecorded = await itemModel.searchIsRecorded(date_is);
+
         // params 값 확인
         if( !date )
         {
@@ -21,7 +29,7 @@ const record = {
            // 재고기록 탭 눌렀을 때
            // 가장 최근 저장된 DB날짜 필요
            const date_send = await itemModel.searchLastDate();
-           console.log(date_send);
+           // console.log(date_send);
            // 전체 카테고리(0) 값 조회
            const result = await itemModel.searchInfo_Date(date_send);
            //console.log(result);
@@ -32,16 +40,21 @@ const record = {
            }
            var itemInfo = result;
            // isRecorded 정보 조회
-           var DateFunction = new Date();
-           var date_is = DateFunction.getFullYear()+'-'+(DateFunction.getMonth()+1)+'-'+DateFunction.getDate();
-           var isRecorded = await itemModel.searchIsRecorded(date_is);
+           if(date_is == date_send)
+           {
+               addButton = 1;
+           }else{
+               addButton = 0;
+           }
+
            res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_HOME_SUCCESS
               ,{
                   itemInfo : itemInfo,
                   categoryInfo : categoryInfo,
                   isRecorded : isRecorded,
                   date : date_send,
-                  picker : 0
+                  picker : 0,
+                  addButton : addButton
               }));
         }else{
             // 데이터 피커 눌렀을 때
@@ -56,18 +69,26 @@ const record = {
             // isRecorded 정보 조회
             var isRecorded = await itemModel.searchIsRecorded(date);
             // pircker = 1
+            // addButton 계산
+            if(date == date_is)
+            {
+                addButton = 1;
+            }else{
+                addButton = 0;
+            }
             res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_HOME_SUCCESS
             ,{
                 itemInfo : itemInfo,
                 categoryInfo : categoryInfo,
                 isRecorded : isRecorded,
-                picker : 1
+                picker : 1,
+                addButton : addButton
             }));
         }
     },
     itemAdd_View : async (req,res)=>{
         // token 에서 userIdx 파싱
-        var userIdx = 1;
+        const userIdx = req.idx;
         const iconInfo = await categoryModel.searchIcon();
         const categoryInfo = await categoryModel.searchInfoAll(userIdx);
         res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_ITEMADD_VIEW_SUCCESS
@@ -120,7 +141,7 @@ const record = {
         var date = DateFunction.getFullYear()+'-'+month+'-'+day; */
         date="2020-07-18";
         // userIdx token에서 파싱
-        var userIdx = 1;
+        const userIdx = req.idx;
         // 카테고리 정보 조회
         var categoryInfo = await categoryModel.searchInfoAll(userIdx);
         const result = await itemModel.searchInfo_today(userIdx);
@@ -192,7 +213,7 @@ const record = {
     modifyView : async (req,res) => {
         const date = req.params.date;
         // token에서 userIdx 파싱
-        var userIdx = 1;
+        const userIdx = req.idx;
         //console.log(date);
         var categoryInfo = await categoryModel.searchInfoAll(userIdx);
         const result = await itemModel.searchModifyView(date);
@@ -208,6 +229,15 @@ const record = {
             categoryInfo : categoryInfo
         }
         ));
+    },
+    searchCategory_All : async(req,res) => {
+        const userIdx = req.idx;
+        //var userIdx = 1;
+        const result = await categoryModel.searchInfoAll(userIdx);
+        res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_SEARCH_CATEGORY_SUCCESS,
+            {
+                categoryInfo : result
+            }))
     }
 }
 

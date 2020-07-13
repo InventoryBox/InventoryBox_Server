@@ -208,7 +208,6 @@ exports.profileSignup=async(req,res)=>{
 }
 
 exports.insertSalt=async(req,res)=>{
-
     const {
         password,
         userIdx

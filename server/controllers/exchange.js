@@ -118,13 +118,17 @@ const exchange = {
     postView: async (req, res) => {
         const postIdx = req.params.postIdx;
         var uploadDate = getTimeStamp();
+        var userInfo;
         console.log(uploadDate);
         if (!postIdx) {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
         const itemInfo = await postModel.searchInfo(postIdx);
-        const userInfo = await userModel.userInfo(itemInfo[0].userIdx);
+        if(itemInfo.length != 0 )
+        {
+             userInfo = await userModel.userInfo(itemInfo[0].userIdx);
+        }
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_VIEW_SUCCESS,
             {
                 itemInfo: itemInfo,
@@ -134,12 +138,13 @@ const exchange = {
     searchUserInfo: async (req, res) => {
         // 토큰에서 현재 userIdx 파싱
         // userIdx = [~~~];
-        var userIdx = 1;
+        const userIdx = req.idx;
         const userInfo = await userModel.userInfo(userIdx);
+        console.log(userInfo);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_USER_INFO_SUCCESS,
             {
                 userInfo: userInfo
-            }));
+            })); 
     },
     postSave: async (req, res) => {
         const {
@@ -159,7 +164,7 @@ const exchange = {
         }
         var uploadDate = getTimeStamp();
         // token에서 userIdx 파싱
-        var userIdx = 1;
+        const userIdx = req.idx;
         const insertIdx = await postModel.postSave(productImg, productName, quantity, isFood, price, description, expDate, uploadDate, 0, coverPrice, unit, userIdx);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SAVE_SUCCESS,
             {
@@ -177,7 +182,7 @@ const exchange = {
         const postIdx = req.body.postIdx;
         // userIdx = [~~~]
         // 해당 user가 post를 like 하는지 여부 조회
-        var userIdx = 1;
+        const userIdx = req.idx;
         const likes = await postModel.searchLikes(userIdx, postIdx);
         if (likes == 1) {
             // like table에서 row 삭제
@@ -197,7 +202,7 @@ const exchange = {
         }
         const result = await postModel.searchPartInfo_search(productName);
         // token에서 userIdx 파싱
-        var userIdx = 1;
+        const userIdx = req.idx;
         for (var a in result) {
             const likes = await postModel.searchLikes(userIdx, result[a].postIdx);
             result[a].likes = likes;
@@ -221,7 +226,7 @@ const exchange = {
     },
     searchUserLikes: async (req, res) => {
         // token 에서 userIdx 파싱
-        var userIdx = 1;
+        const userIdx = req.idx;
         const result = await postModel.searchUserLikes(userIdx);
         var postInfo = [];
         for (var a in result) {

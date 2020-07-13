@@ -28,8 +28,7 @@ const post = {
             throw err;
         }
     },
-
-    searchLike: async (userIdx, postIdx) => {
+    searchLikes: async (userIdx, postIdx) => {
         const query = `SELECT * FROM ${table_likes} WHERE userIdx = ${userIdx} and postIdx = ${postIdx}`;
         try {
             const result = await pool.queryParam(query);
