@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const exchangeController= require('../controllers/exchangeController');
+const exchangeController= require('../controllers/exchange');
+const userController = require('../controllers/user');
 
 // 재고교환 홈화면 조회
-router.get('/home/:category', exchangeController.home);
+router.get('/:filter', exchangeController.home);
 // 특정 게시글 조회 - 완료
 router.get('/post/:postIdx', exchangeController.postView);
 
-// 주소 변환 - 미정?
-// router.get('/location/:longiti/:lati', exchangeController.itemAdd_Save);
+// 사용자 주소 수정
+router.get('/loc-modify', userController.updateLoc);
 
 // 사용자 찜 목록 - 완료
 router.get('/favorite', exchangeController.searchUserLikes);

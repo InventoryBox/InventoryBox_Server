@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const recordController= require('../controllers/recordController');
+const recordController= require('../controllers/record');
 // 홈 & 기록수정 화면 조회
 router.get('/home/:date', recordController.home);
 // 카테고리 정보 조회
@@ -11,7 +11,10 @@ router.get('/item-add', recordController.itemAdd_View);
 // 재료추가 저장! 
 router.post('/item-add', recordController.itemAdd_Save);
 // 카테고리 추가
-router.post('/category-add', recordController.addCategory)
+router.post('/category-add', recordController.addCategory);
+
+// 카테고리 삭제 구현
+
 // 재료 삭제
 router.delete('/item-delete', recordController.deleteItem);
 // 오늘 재고 기록하기 화면 조회
