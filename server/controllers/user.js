@@ -175,7 +175,23 @@ exports.getPersonal= async(req,res)=>{
 }
 
 exports.profileSignup=async(req,res)=>{
-    User.updateImg()
+
+    const userIdx = req.idx
+
+    const profileImg = req.file.location;
+
+    // if (profileImg === undefined || !idx) {
+    //     return res.status(CODE.OK).send(util.fail(CODE.BAD_REQUEST, MSG.NULL_VALUE));
+    // }
+    // const type = req.file.mimetype.split('/')[1];  
+
+    // if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') { 
+    //     return res.status(CODE.OK).send(util.fail(CODE.OK, MSG.UNSUPPORTED_TYPE));
+    // }
+    const result = await User.updateImg(userIdx, profileImg);
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_USER_SUCCESS,{result:result}))
+
 }
 
 exports.insertSalt=async(req,res)=>{

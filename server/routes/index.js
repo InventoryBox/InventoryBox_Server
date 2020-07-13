@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.use('/auth',require('./auth'))
-router.use('/item',require('./item/item'))
+router.use('/item',require('./item'))
 
 
 module.exports = router;

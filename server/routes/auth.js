@@ -33,7 +33,7 @@ router.get('/user/nickname-picture',authUtil,userController.getNicknamePicture)
 router.get('/user/personal',authUtil,userController.getPersonal)
 
 // 회원가입 때 유저 사진 넣기 ( 구현 X ) 8
-router.post('/profile',upload.single('profile'),userController.profileSignup)
+router.put('/profile',authUtil,upload.single('profile'),userController.profileSignup)
 
 
 // test case에 password salt 넣기
