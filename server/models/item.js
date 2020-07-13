@@ -241,6 +241,7 @@ const item = {
         const query = `
         SELECT 
         item.itemIdx,
+        item.flag,
         item.name AS itemName,
         item.unit,
         item.alarmCnt,
@@ -279,6 +280,17 @@ const item = {
         try {
             const result = await pool.queryParam(query);
             return (!result.length) ? -1 : result;
+        } catch (err) {
+            throw err;
+        }
+    },
+    pushFlag:async(userIdx,itemIdx)=>{
+        const query = `UPDATE ${table_item} SET flag=1 WHERE itemIdx=${itemIdx}`
+        // const query = `UPDATE ${table_item} SET flag=${itemIdx}`
+
+        try {
+            const result = await pool.queryParam(query);
+            return result
         } catch (err) {
             throw err;
         }

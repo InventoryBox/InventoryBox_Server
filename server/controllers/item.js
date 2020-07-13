@@ -4,6 +4,7 @@ let util = require('../modules/util');
 let Item = require('../models/item');
 const crypto = require('crypto');
 const jwt = require('../modules/jwt');
+const item = require('../models/item');
 
 exports.getOrderNumber=async(req,res)=>{
     const userIdx = req.idx;
@@ -70,6 +71,7 @@ exports.getItemInfo=async(req,res)=>{
     const userIdx = req.idx;
 
     let result2;
+    let itemIdxFilter;
 
     if(userIdx === null){
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE));
@@ -105,6 +107,40 @@ exports.getItemInfo=async(req,res)=>{
     //     result[a].stocksInfo =stocksInfo;
     // } 
 
+    
+    
+    // 일단 보류 for문 2번 돌리면 안뜸
+    
+    // function dateToString(DateFunction) {
+    //     var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
+    //     var day = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
+    //     var date = DateFunction.getFullYear() + '-' + month + '-' + day;
+    //     return date;
+    // }
+
+    // function pre5daysFromToday() {
+    //     var prev_dates = new Array();
+    //     for (var i = 0; i < 5; i++)
+    //         prev_dates[i] = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+    //     return prev_dates;
+    // }
+    
+    // var week = pre5daysFromToday();
+
+    // var stocksInfo = new Array(5);
+
+    // for(var j;j<result.length;j++){
+    //     var itemIdx = result[1].itemIdx
+    //     // console.log(itemIdx)
+    //     for (var i = 0; i < 5; i++) {
+    //         var StockResult = await Item.getStocksInfoOfDay(itemIdx, dateToString(week[i]));
+    //         if (StockResult == -1) stocksInfo[i] = StockResult;
+    //         else stocksInfo[i] = StockResult[0].stocksCnt;
+    //                    }
+    //     result[1].stocksInfo=stocksInfo
+    //     console.log(result[1].stocksInfo)
+    // }
+
     return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_ITEM_INFO_SUCCESS,{result:result}))
 }
 
@@ -139,5 +175,24 @@ exports.fiveDays=async(req,res)=>{
                 }
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_FIVE_DAYS_SUCCESS,{stocksInfo:stocksInfo}))
+
+}
+
+exports.pushFlag=async(req,res)=>{
+
+    const userIdx = req.idx;
+    const itemIdx = req.params.itemIdx;
+
+    if(!userIdx || !itemIdx){
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE));
+    }
+
+    const result = await item.pushFlag(userIdx,itemIdx)
+
+    if(result === null){
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
+    }
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.PUSH_FLAG_SUCCESS,{result:result.protocol41}))
 
 }

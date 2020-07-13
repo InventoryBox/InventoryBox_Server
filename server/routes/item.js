@@ -20,6 +20,9 @@ router.get('/order',authUtil,itemController.getItemInfo)
 // item index에 따라 5일간 발주량 제공
 router.get('/five-days/:itemIdx',authUtil,itemController.fiveDays)
 
+// flag 넣기
+router.post('/flag/:itemIdx',authUtil,itemController.pushFlag)
+
 // router.get('/name/:name',authUtil,itemController.getItemIdx)
 
 //
