@@ -9,20 +9,22 @@ const smtpTransport = require('../config/email').smtpTransport
 const number = require('../config/email').number
 
 exports.updateLoc = async (req, res) => {
-        const userIdx = req.idx;
-        const {
-            address,
-            latitude,
-            longitude
-        } = req.body;
-        const result = await userModel.updateLoc(userIdx, address, latitude, longitude);
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ADD_LOC_SUCCESS, {
-            insertId: result
-        }));
+    //const userIdx = req.idx;
+    const userIdx = 1;
+    const {
+        address,
+        latitude,
+        longitude
+    } = req.body;
+    const result = await userModel.updateLoc(userIdx, address, latitude, longitude);
+    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ADD_LOC_SUCCESS, {
+        insertId: result
+    }));
 }
 
-exports.signup= async(req,res)=>{
-    const{
+
+exports.signup = async (req, res) => {
+    const {
         email,
         password,
         nickname,
@@ -31,163 +33,184 @@ exports.signup= async(req,res)=>{
         phoneNumber
     } = req.body;
 
-    if(!email || !password || !nickname || !repName || !coName ||!phoneNumber){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE))
+    if (!email || !password || !nickname || !repName || !coName || !phoneNumber) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
     }
 
-    if(await User.checkUser(email)){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.DUPLICATED_EMAIL))
+    if (await User.checkUser(email)) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.DUPLICATED_EMAIL))
     }
 
     const salt = crypto.randomBytes(32).toString()
-    const hashedPw = crypto.pbkdf2Sync(password,salt,1,32,'sha512').toString('hex')
+    const hashedPw = crypto.pbkdf2Sync(password, salt, 1, 32, 'sha512').toString('hex')
 
-    const insertIdx = await User.signup(email,hashedPw,salt,nickname,repName,coName,phoneNumber)
-    
-    if(insertIdx==0){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
+    const insertIdx = await User.signup(email, hashedPw, salt, nickname, repName, coName, phoneNumber)
+
+    if (insertIdx == 0) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.CREATED_USER,{insertIdx:insertIdx}))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.CREATED_USER, {
+        insertIdx: insertIdx
+    }))
 
 }
 
-exports.signin= async(req,res)=>{
-    const{
+exports.signin = async (req, res) => {
+    const {
         email,
         password
     } = req.body;
 
-    if(!email || !password){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE))
+    if (!email || !password) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
     }
 
-    if(await User.checkUser(email) === false){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
+    if (await User.checkUser(email) === false) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
-    const result = await User.signin(email,password)
+    const result = await User.signin(email, password)
 
-    if(result === false){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
+    if (result === false) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
     const userData = await User.getUserByEmail(email)
 
     const jwtToken = await jwt.sign(userData[0])
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.LOGIN_SUCCESS,{token:jwtToken.token}))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.LOGIN_SUCCESS, {
+        token: jwtToken.token
+    }))
 
 }
 
-exports.email= async(req,res)=>{
-    const {sendEmail} = req.body;
+exports.email = async (req, res) => {
+    const {
+        sendEmail
+    } = req.body;
 
-  const mailOptions = {
-    from: "재고창고",
-    to: sendEmail,
-    subject: "[재고창고]인증 관련 이메일 입니다",
-    text: "오른쪽 숫자 6자리를 입력해주세요 : " + number
-  };
-  
- const result = await smtpTransport.sendMail(mailOptions, (error, responses) =>{
-      if(error){
-          res.json({msg:'err'});
-      }else{
-          res.json({"6자리 숫자":number});
-      }
-      smtpTransport.close();
-  });
+    const mailOptions = {
+        from: "재고창고",
+        to: sendEmail,
+        subject: "[재고창고]인증 관련 이메일 입니다",
+        text: "오른쪽 숫자 6자리를 입력해주세요 : " + number
+    };
+
+    const result = await smtpTransport.sendMail(mailOptions, (error, responses) => {
+        if (error) {
+            res.json({
+                msg: 'err'
+            });
+        } else {
+            res.json({
+                "6자리 숫자": number
+            });
+        }
+        smtpTransport.close();
+    });
 }
 
-exports.find_id= async(req,res)=>{
-    const{
+exports.find_id = async (req, res) => {
+    const {
         repName,
         coName,
         phoneNumber
     } = req.body;
 
-    if(!repName || !coName || !phoneNumber){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE))
+    if (!repName || !coName || !phoneNumber) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
     }
 
-    const findEmail = await User.findEmail(repName,coName,phoneNumber)
+    const findEmail = await User.findEmail(repName, coName, phoneNumber)
 
-    if(findEmail===null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
+    if (findEmail === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.FIND_EMAIL_SUCCESS,{email:findEmail}))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.FIND_EMAIL_SUCCESS, {
+        email: findEmail
+    }))
 }
 
-exports.getUser= async(req,res)=>{
+exports.getUser = async (req, res) => {
     const userIdx = req.idx
 
-    if(userIdx === null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE))
+    if (userIdx === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
     }
 
     const getUserData = await User.getUserByIdxCustom(userIdx)
 
-    if(getUserData === null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
+    if (getUserData === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_USER_SUCCESS,{email:getUserData}))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.GET_USER_SUCCESS, {
+        email: getUserData
+    }))
 
 }
 
-exports.getNicknamePicture= async(req,res)=>{
+exports.getNicknamePicture = async (req, res) => {
     const userIdx = req.idx
 
-    if(userIdx === null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE))
+    if (userIdx === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
     }
 
     const getUserData = await User.getUserByIdx(userIdx)
 
-    if(getUserData === null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
+    if (getUserData === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.FIND_EMAIL_SUCCESS,{nickname:getUserData[0].nickname,img:getUserData[0].img}))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.FIND_EMAIL_SUCCESS, {
+        nickname: getUserData[0].nickname,
+        img: getUserData[0].img
+    }))
 }
 
 
-exports.deleteUser= async(req,res)=>{
+exports.deleteUser = async (req, res) => {
     const userIdx = req.idx
 
-    if(userIdx === null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE))
+    if (userIdx === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
     }
 
     const result = await User.deleteUser(userIdx)
     console.log(result)
 
-    if(result.protocol41 === false){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
+    if (result.protocol41 === false) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.DELETE_SUCCESS,{result:result.protocol41}))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.DELETE_SUCCESS, {
+        result: result.protocol41
+    }))
 }
 
-exports.getPersonal= async(req,res)=>{
+exports.getPersonal = async (req, res) => {
     const userIdx = req.idx
 
-    if(userIdx === null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE))
+    if (userIdx === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
     }
 
     const result = await User.getPersonal(userIdx)
 
-    if(result === null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
+    if (result === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
-    
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_USER_SUCCESS,{result:result}))
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.GET_USER_SUCCESS, {
+        result: result
+    }))
 }
 
-exports.profileSignup=async(req,res)=>{
+exports.profileSignup = async (req, res) => {
 
     const userIdx = req.idx
 
@@ -203,22 +226,25 @@ exports.profileSignup=async(req,res)=>{
     // }
     const result = await User.updateImg(userIdx, profileImg);
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_USER_SUCCESS,{result:result}))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.GET_USER_SUCCESS, {
+        result: result
+    }))
 
 }
-
 exports.insertSalt=async(req,res)=>{
     const {
         password,
         userIdx
-    }=req.body;
-    
+    } = req.body;
+
     const salt = crypto.randomBytes(32).toString()
-    const hashedPw = crypto.pbkdf2Sync(password,salt,1,32,'sha512').toString('hex')
+    const hashedPw = crypto.pbkdf2Sync(password, salt, 1, 32, 'sha512').toString('hex')
 
-    const result = await User.insertSalt(hashedPw,salt,userIdx)
+    const result = await User.insertSalt(hashedPw, salt, userIdx)
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.SALT_PASSWORD_SUCCESS,{result:result}))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.SALT_PASSWORD_SUCCESS, {
+        result: result
+    }))
 }
 
 /*
@@ -244,4 +270,3 @@ exports.updateProfile= async(req,res)=>{
 }
 
 */
-

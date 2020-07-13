@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
+
 const exchangeController= require('../controllers/exchange');
 const authUtil = require('../middlewares/auth').checkToken
 const upload = require('../modules/multer')
+const userController = require('../controllers/user');
+
 
 // 재고교환 홈화면 조회
 router.get('/:filter',authUtil, exchangeController.home); 
@@ -10,7 +13,7 @@ router.get('/:filter',authUtil, exchangeController.home);
 router.get('/post/:postIdx', authUtil, exchangeController.postView);
 
 // 사용자 주소 수정
-//router.get('/loc-modify', userController.updateLoc);
+router.post('/modifyLoc', userController.updateLoc);
 
 // 사용자 찜 목록 - 완료
 router.get('/favorite/list', authUtil, exchangeController.searchUserLikes);

@@ -6,7 +6,28 @@ const table_user = 'user';
 const post = {
 
     getPostsInfoByDist: async () => {
-        const query = `SELECT postIdx,postImg, latitude, longitude,isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user}`;
+        const query = `SELECT postIdx, productImg, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user};`;
+        try {
+            const result = await pool.queryParam(query);
+            console.log("getPostsInfoByDist", result);
+            return (!result.length) ? -1 : result;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    getPostsInfoByDate: async () => {
+        const query = `SELECT postIdx, productImg, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by uploadDate DESC`;
+        try {
+            const result = await pool.queryParam(query);
+            return (!result.length) ? -1 : result;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    getPostsInfoByPrice: async () => {
+        const query = `SELECT postIdx, productImg, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by price ASC`;
         try {
             const result = await pool.queryParam(query);
             return (!result.length) ? -1 : result;
@@ -16,9 +37,10 @@ const post = {
     },
     searchLikes: async (userIdx, postIdx) => {
         const query = `SELECT * FROM ${table_likes} WHERE userIdx = ${userIdx} and postIdx = ${postIdx}`;
+
         try {
             const result = await pool.queryParam(query);
-            return result.length ? 1 : 0;
+            return (!result.length) ? 1 : 0;
         } catch (err) {
             console.log('searchLikes ERROR : ', err);
             throw err;
@@ -41,7 +63,8 @@ const post = {
         const fields = 'productImg,productName,quantity,isFood,price,description,expDate,uploadDate,isSold,coverPrice,unit,userIdx';
         const questions = '?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?';
         const values = [productImg, productName, quantity, isFood, price, description, expDate,
-            uploadDate, isSold, coverPrice, unit, userIdx];
+            uploadDate, isSold, coverPrice, unit, userIdx
+        ];
         const query = `INSERT INTO ${table_post}(${fields}) VALUES(${questions});`
         try {
             const result = await pool.queryParamArr(query, values);

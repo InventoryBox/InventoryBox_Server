@@ -22,6 +22,12 @@ function getTimeStamp() {
     return s;
 }
 
+function dateToKORString(DateFunction) {
+    var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
+    var date = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
+    return DateFunction.getFullYear() + '년 ' + month + '월 ' + date + '일';
+}
+
 function leadingZeros(n, digits) {
     var zero = '';
     n = n.toString();
@@ -59,16 +65,26 @@ function dateToKORString(DateFunction) {
     return DateFunction.getFullYear() + '년 ' + month + '월 ' + date + '일';
 }
 const exchange = {
+    // exchange/:filter
     home: async (req, res) => {
-        const userIdx = req.idx;
+        // const userIdx = req.idx;
+        const userIdx = 1;
         const filter = req.params.filter;
 
         const userLoc = await userModel.getUserLoc(userIdx);
+        console.log("home", userIdx, filter, userLoc);
         var postList;
 
         // 최신순
         if (filter == 0) {
-            postList = await postModel.getPostsInfoDist();
+            postList = await postModel.getPostsInfoByDate();
+            if (postList == -1)
+                return res.status(statusCode.BAD_REQUEST)
+                    .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
+        }
+        // 거리순
+        else if (filter == 1) {
+            postList = await postModel.getPostsInfoByDist();
             if (postList == -1)
                 return res.status(statusCode.BAD_REQUEST)
                     .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
@@ -76,17 +92,7 @@ const exchange = {
                 return res.status(statusCode.BAD_REQUEST)
                     .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_LOC_INFO));
 
-            console.log("DIST before postList", postList, "userLoc", userLoc);
             postList.sort((a, b) => (getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) > getDistance(b.latitude, b.longitude, userLoc[0].latitude, userLoc[0].longitude)) ? 1 : -1)
-            console.log("DIST after postList", postList, "userLoc", userLoc);
-        }
-        // 업로드순
-        else if (filter == 1) {
-            postList = await postModel.getPostsInfoByDate();
-            if (postList == -1)
-                return res.status(statusCode.BAD_REQUEST)
-                    .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
-            console.log("DATE postList", postList);
         }
         // 가격순
         else if (filter == 2) {
@@ -94,30 +100,28 @@ const exchange = {
             if (postList == -1)
                 return res.status(statusCode.BAD_REQUEST)
                     .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
-            console.log("PRICE postList", postList);
-
         }
 
         // 2km외인 거 빼고 전달
-        var postInfo = new Array[postList.length];
+        var postInfo = new Array();
         for (var i = 0; i < postList.length; i++) {
-            var dist = Math.round(getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) / 100) * 100;
-            if (dist > 2000)
+            var dist = getDistance(postList[i].latitude, postList[i].longitude, userLoc[0].latitude, userLoc[0].longitude);
+            if (dist <= 2000)
                 postInfo.push({
-                    isFood: postInfo[i].isFood,
-                    postIdx: postInfo[i].postIdx,
-                    postImg: postInfo[i].postImg,
-                    liked: await postModel.searchLike(user, postInfo[i].postIdx),
-                    price: postInfo[i].price,
+                    isFood: postList[i].isFood,
+                    postIdx: postList[i].postIdx,
+                    productImg: postList[i].productImg,
+                    liked: await postModel.searchLike(userIdx, postList[i].postIdx),
+                    price: postList[i].price,
                     distDiff: dist,
-                    productName: postInfo[i].productName,
-                    expDate: postInfo[i].expDate,
-                    uploadDate: postInfo[i].uploadDate
+                    productName: postList[i].productName,
+                    expDate: postList[i].expDate,
+                    uploadDate: dateToKORString(postList[i].uploadDate)
                 })
         }
 
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.POSTS_HOME_SUCCESS, {
-            postInfo: postList
+            postInfo: postInfo
         }));
     },
     postView: async (req, res) => {
@@ -148,11 +152,11 @@ const exchange = {
         // userIdx = [~~~];
         const userIdx = req.idx;
         const userInfo = await userModel.userInfo(userIdx);
-        console.log(userInfo);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_USER_INFO_SUCCESS,
             {
                 userInfo: userInfo
             })); 
+
     },
     postSave: async (req, res) => {
         const productImg = req.file.location;
@@ -174,10 +178,9 @@ const exchange = {
         // token에서 userIdx 파싱
         const userIdx = req.idx;
         const insertIdx = await postModel.postSave(productImg, productName, quantity, isFood, price, description, expDate, uploadDate, 0, coverPrice, unit, userIdx);
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SAVE_SUCCESS,
-            {
-                insertIdx: insertIdx
-            }));
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SAVE_SUCCESS, {
+            insertIdx: insertIdx
+        }));
     },
     modifyIsSold: async (req, res) => {
         const postIdx = req.body.postIdx;
@@ -219,21 +222,19 @@ const exchange = {
             result[a].likes = likes;
             
         }
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SEARCH_SUCCESS,
-            {
-                postInfo: result
-            }));
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SEARCH_SUCCESS, {
+            postInfo: result
+        }));
         return;
     },
     modifyPost_View: async (req, res) => {
         const postIdx = await req.params.postIdx;
         const itemInfo = await postModel.searchInfo(postIdx);
         const userInfo = await userModel.userInfo(itemInfo[0].userIdx);
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_MODIFY_POST_SUCCESS,
-            {
-                itemInfo: itemInfo,
-                userInfo: userInfo
-            }));
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_MODIFY_POST_SUCCESS, {
+            itemInfo: itemInfo,
+            userInfo: userInfo
+        }));
         return;
     },
     searchUserLikes: async (req, res) => {
@@ -246,10 +247,9 @@ const exchange = {
             tmp[0].likes = 1;
             postInfo.push(tmp[0]);
         }
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_SEARCH_USER_LIKE_POST_SUCCESS,
-            {
-                postInfo: postInfo
-            }));
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_SEARCH_USER_LIKE_POST_SUCCESS, {
+            postInfo: postInfo
+        }));
         return;
     },
     modifyPost: async (req, res) => {
