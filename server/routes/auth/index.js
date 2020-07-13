@@ -35,7 +35,10 @@ router.get('/user/personal',authUtil,userController.getPersonal)
 // 회원가입 때 유저 사진 넣기 ( 구현 X ) 8
 router.post('/profile',upload.single('profile'),userController.profileSignup)
 
+
+// test case에 password salt 넣기
 router.post('/insertSalt',userController.insertSalt)
+
 
 // 카카오
 router.get("/kakao", passport.authenticate("kakao-login"));

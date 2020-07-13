@@ -55,7 +55,7 @@ const user = {
     },
     
     getUserByIdxCustom:async(idx)=>{
-        const query = `SELECT email,nickname,repName,coName,img,location,phoneNumber FROM ${table} WHERE userIdx="${idx}"`;
+        const query = `SELECT email,nickname,repName,coName,phoneNumber FROM ${table} WHERE userIdx="${idx}"`;
         try{
             const result = await pool.queryParam(query);
             return result;

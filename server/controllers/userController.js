@@ -63,7 +63,7 @@ exports.signin= async(req,res)=>{
 
     const jwtToken = await jwt.sign(userData[0])
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.LOGIN_SUCCESS,{token:jwtToken}))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.LOGIN_SUCCESS,{token:jwtToken.token}))
 
 }
 

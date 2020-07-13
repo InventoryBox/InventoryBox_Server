@@ -5,7 +5,7 @@ const itemController = require('../../controllers/itemController')
 
 const authUtil = require('../../middlewares/auth').checkToken
 
-// 카테고리에 따른 재고 반환
+// 카테고리에 따른 재고 반환 ( x )
 router.get('/order/memo/:categoryIdx',authUtil,itemController.getOrderNumber)
 
 // 카테고리 전체 정보 반환
