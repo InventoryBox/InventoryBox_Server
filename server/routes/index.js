@@ -12,5 +12,7 @@ router.use('/auth', require('./auth'));
 router.use('/dashboard', require('./dashboard'));
 router.use('/exchange', require('./exchange'));
 router.use('/record', require('./record'));
+router.use('/item',require('./item'));
 
 module.exports = router;
+

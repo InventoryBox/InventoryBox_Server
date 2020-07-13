@@ -18,7 +18,9 @@ module.exports = {
     CREATED_USER: '회원 가입 성공',
     DELETE_USER: '회원 탈퇴 성공',
     ALREADY_ID: '이미 사용중인 아이디입니다.',
-    POST_SUCCESS: '게시글 조회 성공',
+
+    POST_SUCCESS : '게시글 조회 성공',
+    SALT_PASSWORD_SUCCESS:'비밀번호 및 SALT값 넣기 성공',
 
     // 로그인
     LOGIN_SUCCESS: '로그인 성공',
@@ -32,10 +34,17 @@ module.exports = {
     INVALID_TOKEN: '유효하지 않은 토큰값입니다.',
     AUTH_SUCCESS: '인증에 성공했습니다.',
     ISSUE_SUCCESS: '새로운 토큰이 생성되었습니다.',
+    FIND_EMAIL_SUCCESS: '가입된 이메일을 성공적으로 찾았습니다',
+    NICKNAME_AND_PICTURE_SUCCESS: '닉네임과 사진 가져오기 성공',
+    DELETE_SUCCESS: '유저 삭제 성공',
+    GET_USER_SUCCESS:'유저 조회 성공',
 
     // 프로필 조회
     READ_PROFILE_SUCCESS: '프로필 조회 성공',
-
+    DUPLICATED_EMAIL:'이메일이 중복됐습니다',
+    GET_ITEM_INFO_SUCCESS:'아이템 정보 가져오기 성공',
+    UPDATE_MEMO_COUNT_SUCCESS:'재고 메모 업데이트 성공',
+    GET_FIVE_DAYS_SUCCESS:'5일간 정보 가져오기 성공',
     DB_ERROR: 'DB 오류',
 
     //재고기록
