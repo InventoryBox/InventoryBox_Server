@@ -2,8 +2,8 @@ const pool = require('../modules/pool');
 const table_category = 'category';
 const table_icon = 'icon';
 const category = {
-   searchInfoAll : async () => {
-       const query = `SELECT idx, name FROM ${table_category}`;
+   searchInfoAll : async (userIdx) => {
+       const query = `SELECT categoryIdx, name FROM ${table_category} WHERE userIdx=${userIdx}`;
        try {
         const result = await pool.queryParamArr(query);
         return result;
@@ -23,7 +23,7 @@ const category = {
         }
     },
     addCategory : async (name, userIdx) => {
-        const query = `INSERT INTO ${table_category}(name, user_idx) VALUES ("${name}",${userIdx});`
+        const query = `INSERT INTO ${table_category}(name, userIdx) VALUES ("${name}",${userIdx});`
         try {
             const result = await pool.queryParam(query);
             const insertId = result.insertId;

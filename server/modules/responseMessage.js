@@ -36,6 +36,15 @@ module.exports = {
     RECORD_DELETE_ITEM_SUCCESS : "재료 삭제 성공",
     RECORD_ADD_CATEGORY_SUCCESS : "카테고리 추가 성공",
     RECORD_MODIFY_VIEW_SUCCESS : "기록수정 화면 조회 성공",
-    RECORD_MODIFY_VIEW_SUCCESS : "기록수정 화면 조회 성공"
+    RECORD_MODIFY_VIEW_SUCCESS : "기록수정 화면 조회 성공",
+
+    //재고교환
+    EXCHANGE_POST_VIEW_SUCCESS : "게시글 조회 성공",
+    EXCHANGE_USER_INFO_SUCCESS : "사용자 정보 조회 성공",
+    EXCHANGE_POST_SAVE_SUCCESS : "게시글 등록 성공",
+    EXCHANGE_MODIFY_ISSOLD_SUCCESS : "판매여부 변경 완료",
+    EXCHANGE_MODIFY_LIKE_SUCCESS : "좋아요 여부 변경 완료",
+    EXCHANGE_POST_SEARCH_SUCCESS : "게시글 검색 완료",
+    EXCHANGE_SEARCH_USER_LIKE_POST_SUCCESS : "사용자 찜목록 조회 완료"
 
 };

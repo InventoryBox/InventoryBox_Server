@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const recordController= require('../../controllers/recordController');
+const recordController= require('../controllers/recordController');
 // 홈 & 기록수정 화면 조회
 router.get('/home/:date', recordController.home);
 // 카테고리 정보 조회

@@ -8,8 +8,10 @@ const jwt = require('../modules/jwt');
 
 const record = {
     home : async (req,res)=>{
+        // token에서 userIdx 파싱
+        var userIdx = 1;
         const date = req.params.date;
-        var categoryInfo = await categoryModel.searchInfoAll();
+        var categoryInfo = await categoryModel.searchInfoAll(userIdx);
         // params 값 확인
         if( !date )
         {
@@ -25,7 +27,7 @@ const record = {
            //console.log(result);
            for(var a in result)
            {
-            const iconImg = await itemModel.searchIcon_ItemIdx(result[a].idx);
+            const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
             result[a].img = iconImg.img;   
            }
            var itemInfo = result;
@@ -47,7 +49,7 @@ const record = {
             const result = await itemModel.searchInfo_Date(date);
             for(var a in result)
             {
-            const iconImg = await itemModel.searchIcon_ItemIdx(result[a].idx);
+            const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
             result[a].img = iconImg.img;   
             } 
             var itemInfo = result;
@@ -64,8 +66,10 @@ const record = {
         }
     },
     itemAdd_View : async (req,res)=>{
+        // token 에서 userIdx 파싱
+        var userIdx = 1;
         const iconInfo = await categoryModel.searchIcon();
-        const categoryInfo = await categoryModel.searchInfoAll();
+        const categoryInfo = await categoryModel.searchInfoAll(userIdx);
         res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_ITEMADD_VIEW_SUCCESS
         ,{
             iconInfo : iconInfo,
@@ -88,13 +92,14 @@ const record = {
         }
         // item table에 반영
         const result = await itemModel.addItem(name, unit, alarmCnt, memoCnt, iconIdx, categoryIdx);
-        // date table에 반영
-        var DateFunction = new Date();
+        // date table에 반영 X 
+       /* var DateFunction = new Date();
         var month = (DateFunction.getMonth()+1) <10 ? '0'+(DateFunction.getMonth()+1) : (DateFunction.getMonth()+1);
         var day = DateFunction.getDate() < 10 ? '0'+DateFunction.getDate() : DateFunction.getDate();
-        var date = DateFunction.getFullYear()+'-'+month+'-'+day;
+        var date = DateFunction.getFullYear()+'-'+month+'-'+day; */
+        var date="2020-07-18";
 
-        await itemModel.addDate_Item(0,date,result);
+        await itemModel.addDate_Item(-1,date,result);
         res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_ITEMADD_DB_SUCCESS,
             {
                 insertId : result
@@ -109,19 +114,21 @@ const record = {
             }));
     },*/
     todayRecord_View : async(req,res)=>{
-        var DateFunction = new Date();
+        /*var DateFunction = new Date();
         var month = (DateFunction.getMonth()+1) <10 ? '0'+(DateFunction.getMonth()+1) : (DateFunction.getMonth()+1);
         var day = DateFunction.getDate() < 10 ? '0'+DateFunction.getDate() : DateFunction.getDate();
-        var date = DateFunction.getFullYear()+'-'+month+'-'+day;
+        var date = DateFunction.getFullYear()+'-'+month+'-'+day; */
+        date="2020-07-18";
+        // userIdx token에서 파싱
+        var userIdx = 1;
         // 카테고리 정보 조회
-        var categoryInfo = await categoryModel.searchInfoAll();
-        // 가장 최근 저장된 날짜를 구해서 item목록 정보 조회
-        const date_send = await itemModel.searchLastDate();
-        //console.log(date_send);
-        const result = await itemModel.searchInfo_date_today(date_send);
+        var categoryInfo = await categoryModel.searchInfoAll(userIdx);
+        const result = await itemModel.searchInfo_today(userIdx);
+        //console.log(result);
+        
         for(var a in result)
         {
-         const iconImg = await itemModel.searchIcon_ItemIdx(result[a].idx);
+         const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
          result[a].img = iconImg.img;   
         }
         var itemInfo = result;
@@ -130,7 +137,7 @@ const record = {
                 itemInfo : itemInfo,
                 categoryInfo : categoryInfo,
                 date : date
-            }));
+            })); 
     },
     modifyItem : async(req,res)=>{
         const itemInfo = req.body.itemInfo;
@@ -160,7 +167,7 @@ const record = {
         var month = (DateFunction.getMonth()+1) <10 ? '0'+(DateFunction.getMonth()+1) : (DateFunction.getMonth()+1);
         var day = DateFunction.getDate() < 10 ? '0'+DateFunction.getDate() : DateFunction.getDate();
         var date = DateFunction.getFullYear()+'-'+month+'-'+day; */
-        var date = "2020-07-11";
+        var date = "2020-07-18";
         for(var a in itemIdxList)
         {
             // item table에 반영
@@ -184,12 +191,14 @@ const record = {
     },
     modifyView : async (req,res) => {
         const date = req.params.date;
+        // token에서 userIdx 파싱
+        var userIdx = 1;
         //console.log(date);
-        var categoryInfo = await categoryModel.searchInfoAll();
+        var categoryInfo = await categoryModel.searchInfoAll(userIdx);
         const result = await itemModel.searchModifyView(date);
         for(var a in result)
         {
-         const iconImg = await itemModel.searchIcon_ItemIdx(result[a].idx);
+         const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
          result[a].img = iconImg.img;   
         }
         var itemInfo = result;
