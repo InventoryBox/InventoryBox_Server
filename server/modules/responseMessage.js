@@ -70,7 +70,8 @@ module.exports = {
     EXCHANGE_MODIFY_LIKE_SUCCESS : "좋아요 여부 변경 완료",
     EXCHANGE_POST_SEARCH_SUCCESS : "게시글 검색 완료",
     EXCHANGE_SEARCH_USER_LIKE_POST_SUCCESS : "사용자 찜목록 조회 완료",
-    RECORD_NULL_VALUES: '파라미터 값이 없습니다.'
+    RECORD_NULL_VALUES: '파라미터 값이 없습니다.',
+    EXCHANGE_POST_MODIFY_SUCCESS : "게시글 수정 완료"
 
 
 };

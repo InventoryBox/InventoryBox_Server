@@ -8,21 +8,17 @@ const item = require('../models/item');
 
 exports.getOrderNumber=async(req,res)=>{
     const userIdx = req.idx;
-
     const categoryIdx = req.params.categoryIdx;
 
     if(userIdx === null){
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE));
     }
-
-    const result = await Item.getMemoOrder(userIdx,categoryIdx)
+    const result = await Item.getMemoOrder(userIdx,categoryIdx);
 
     if(result === null){
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
     }
-
     return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_USER_SUCCESS,{result:result}))
-
 }
 exports.getCategoryInfo=async(req,res)=>{
     const userIdx = req.idx;

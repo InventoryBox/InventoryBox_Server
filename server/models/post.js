@@ -5,22 +5,29 @@ const table_user = 'user';
 
 const post = {
 
-    // 부분적인 정보 필요 (home 화면)
-    searchPartInfo_All: async () => {
-        const query = `SELECT postIdx,productImg,productName,price,expDate,isSold,uploadDate
-         FROM ${table_post}`;
+    getPostsInfoByDist: async () => {
+        const query = `SELECT postIdx, productImg, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user};`;
         try {
             const result = await pool.queryParam(query);
-            return result;
+            console.log("getPostsInfoByDist", result);
+            return (!result.length) ? -1 : result;
         } catch (err) {
-            console.log('searchPartInfo_All ERROR : ', err);
             throw err;
         }
     },
 
+    getPostsInfoByDate: async () => {
+        const query = `SELECT postIdx, productImg, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by uploadDate DESC`;
+        try {
+            const result = await pool.queryParam(query);
+            return (!result.length) ? -1 : result;
+        } catch (err) {
+            throw err;
+        }
+    },
 
-    getPostsInfoByDist: async () => {
-        const query = `SELECT postIdx,postImg, latitude, longitude,isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user}`;
+    getPostsInfoByPrice: async () => {
+        const query = `SELECT postIdx, productImg, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by price ASC`;
         try {
             const result = await pool.queryParam(query);
             return (!result.length) ? -1 : result;
@@ -30,17 +37,18 @@ const post = {
     },
     searchLikes: async (userIdx, postIdx) => {
         const query = `SELECT * FROM ${table_likes} WHERE userIdx = ${userIdx} and postIdx = ${postIdx}`;
+
         try {
             const result = await pool.queryParam(query);
-            return result.length ? 1 : 0;
+            return (!result.length) ? 1 : 0;
         } catch (err) {
             console.log('searchLikes ERROR : ', err);
             throw err;
         }
     },
-    // 특정 게시글 모든 정보 조회 
+    // 특정 게시글 모든 정보 조회  (date_format(uploadDate,'%Y-%m-%d %h:%i:%s') AS uploadDate) 
     searchInfo: async (postIdx) => {
-        const query = `SELECT postIdx,productImg,productName,quantity,isFood,price,description,expDate,date_format(uploadDate,'%Y-%m-%d %h:%i:%s') AS date,isSold,coverPrice,unit,userIdx FROM ${table_post} WHERE postIdx=${postIdx}`;
+        const query = `SELECT postIdx,productImg,productName,quantity,isFood,price,description,expDate,uploadDate,isSold,coverPrice,unit,userIdx FROM ${table_post} WHERE postIdx=${postIdx}`;
         try {
             const result = await pool.queryParam(query);
             console.log(result);
@@ -55,7 +63,8 @@ const post = {
         const fields = 'productImg,productName,quantity,isFood,price,description,expDate,uploadDate,isSold,coverPrice,unit,userIdx';
         const questions = '?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?';
         const values = [productImg, productName, quantity, isFood, price, description, expDate,
-            uploadDate, isSold, coverPrice, unit, userIdx];
+            uploadDate, isSold, coverPrice, unit, userIdx
+        ];
         const query = `INSERT INTO ${table_post}(${fields}) VALUES(${questions});`
         try {
             const result = await pool.queryParamArr(query, values);
@@ -166,6 +175,15 @@ const post = {
         try {
             const result = await pool.queryParam(query);
             return (!result.length) ? -1 : result;
+        } catch (err) {
+            throw err;
+        }
+    },
+    searchPost : async (postIdx) => {
+        const query = `SELECT productImg FROM ${table_post} WHERE postIdx=${postIdx}`;
+        try {
+            const result = await pool.queryParam(query);
+            return result[0].productImg;
         } catch (err) {
             throw err;
         }

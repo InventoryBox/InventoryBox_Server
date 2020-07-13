@@ -7,6 +7,40 @@ const table_user = 'user';
 const table_category = 'category';
 
 const item = {
+    // itemIdx에 해당하는 alarmCnt 찾기
+    getItemAlarmCnt: async (itemIdx) => {
+        const query = `SELECT alarmCnt FROM ${table_item} where itemIdx = ${itemIdx};`;
+        try {
+            const result = await pool.queryParam(query);
+            console.log(result);
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    },
+    // item에서 해당 date의 stocksCnt 찾기
+    getStocksInfoOfDay: async (itemIdx, date) => {
+        console.log(itemIdx, date);
+        const query = `SELECT stocksCnt from ${table_date} natural join ${table_item} WHERE date = "${date}" and itemIdx = ${itemIdx};`;
+        try {
+            const result = await pool.queryParam(query);
+            return (!result.length) ? -1 : result;
+        } catch (err) {
+            throw err;
+        }
+    },
+    // 해당 itemIdx의 alarmCnt, memoCnt 수정하기
+    modifyItemCnt: async (itemIdx, alarmCnt, memoCnt) => {
+        const query = `UPDATE ${table_item} SET alarmCnt = ${alarmCnt}, memoCnt = ${memoCnt} WHERE itemIdx = ${itemIdx}`;
+        try {
+            const result = await pool.queryParam(query);
+            console.log("modifyItemCnt", result);
+            return;
+        } catch (err) {
+            throw err;
+        }
+    },
+
     // date에 해당하는 item들의 정보 출력
     searchInfo_Date: async (date) => {
         const query = `SELECT item.itemIdx,item.name,item.alarmCnt,item.unit,date.stocksCnt,item.categoryIdx
@@ -19,6 +53,7 @@ const item = {
             throw err;
         }
     },
+
     // 해당 date에 기록한 재료(item)의 정보 조회
     searchInfo_today: async (userIdx) => {
         const query = `SELECT item.itemIdx,item.name,item.presentCnt,category.categoryIdx FROM ${table_category} INNER JOIN ${table_item} ON category.categoryIdx = item.categoryIdx
@@ -31,17 +66,6 @@ const item = {
             throw err;
         }
     },
-    // 재고량추이) 오늘 아이템 정보 조회
-    searchItemInfoToday: async (userIdx) => {
-        const query = `SELECT i.itemIdx, i.name, i.categoryIdx FROM ${table_item} i natural join  ${table_category} c where c.userIdx = ${userIdx} and i.presentCnt > -2`;
-        try {
-            const result = await pool.queryParamArr(query);
-            return result;
-        } catch (err) {
-            console.log('searchItemInfoToday ERROR : ', err);
-            throw err;
-        }
-    },
     // itemIdx에 해당하는 icon img 찾기
     searchIcon_ItemIdx: async (itemIdx) => {
         const query = `SELECT icon.img FROM ${table_icon}, ${table_item}
@@ -51,18 +75,6 @@ const item = {
             return result;
         } catch (err) {
             console.log('searchIcon_ItemIdx ERROR : ', err);
-            throw err;
-        }
-    },
-    // itemIdx에 해당하는 icon img 찾기
-    searchIconByItemIdx: async (userIdx, itemIdx) => {
-        const query = `SELECT icon.img FROM ${table_icon} ic, ${table_item} i, ${table_category} c WHERE ic.iconIdx = i.iconIdx and i.categoryIdx = c.categoryIdx
-        and c.userIdx=${userIdx} and i.itemIdx = ${itemIdx}`;
-        try {
-            const result = await pool.queryParamArr(query);
-            return result[0];
-        } catch (err) {
-            console.log('searchIconByItemIdx ERROR : ', err);
             throw err;
         }
     },
@@ -184,60 +196,29 @@ const item = {
             console.log('searchModifyView ERROR : ', err);
         }
     },
-    // itemIdx에 해당하는 alarmCnt 찾기
-    getItemAlarmCnt: async (userIdx, itemIdx) => {
-        const query = `SELECT i.alarmCnt FROM ${table_item} i natural join ${table_category} c where c.userIdx = ${userIdx} and i.itemIdx = ${itemIdx} `;
-        try {
-            const result = await pool.queryParam(query);
-            return result;
-        } catch (err) {
-            throw err;
-        }
-    },
-    // item에서 해당 date의 stocksCnt 찾기
-    getStocksInfoOfDay: async (userIdx, itemIdx, date) => {
-        const query = `SELECT stocksCnt from ${table_date} d, ${table_item} i, ${table_category} c WHERE  i.categoryIdx = c.categoryIdx and i.itemIdx = d.itemIdx
-        and d.date = "${date}" and d.itemIdx = ${itemIdx} and c.userIdx = ${userIdx}`;
-        try {
-            const result = await pool.queryParam(query);
-            return (!result.length) ? -1 : result;
-        } catch (err) {
-            throw err;
-        }
-    },
-    // 해당 itemIdx의 alarmCnt, memoCnt 수정하기
-    modifyItemCnt: async (userIdx, itemIdx, alarmCnt, memoCnt) => {
-        const query = `UPDATE ${table_item} natural join SET alarmCnt = ${alarmCnt}, memoCnt = ${memoCnt} WHERE itemIdx = ${itemIdx} and userIdx = ${userIdx}`;
-        try {
-            const result = await pool.queryParam(query);
-            console.log(result);
-            return;
-        } catch (err) {
-            throw err;
-        }
-    },
-    getMemoOrder:async(userIdx,categoryIdx)=>{
+
+    getMemoOrder: async (userIdx, categoryIdx) => {
         const query = `SELECT * FROM ${table_item} JOIN ${table_category} ON item.categoryIdx=category.categoryIdx`
-        try{
+        try {
             const result = await pool.queryParam(query);
             // categoryIdx가 String 값으로 인식돼서, === 로 type 검사를 하면 안된다.
-            const resultFilter = result.filter(item=>item.userIdx===userIdx).filter(item=>item.categoryIdx==categoryIdx).filter(item=>item.memoCnt<=item.presentCnt)
+            const resultFilter = result.filter(item => item.userIdx === userIdx).filter(item => item.categoryIdx == categoryIdx).filter(item => item.memoCnt <= item.presentCnt)
             return resultFilter;
-        }catch(err){
+        } catch (err) {
             throw err;
         }
     },
-    getCategoryInfo:async()=>{
+    getCategoryInfo: async () => {
         const query = `SELECT categoryIdx,name FROM ${table_category}`
-        try{
+        try {
             const result = await pool.queryParam(query);
             return result
-        }catch(err){
+        } catch (err) {
             throw err;
         }
 
     },
-    getItemInfo:async(userIdx)=>{
+    getItemInfo: async (userIdx) => {
         const query = `
         SELECT 
         item.itemIdx,
@@ -257,21 +238,21 @@ const item = {
         ORDER BY itemIdx
         ;
         `
-        try{
+        try {
             const result = await pool.queryParam(query);
             // const resultFilter = result.filter(item=>item.userIdx==userIdx) userIdx=1 이므로 그냥 무시
-            const resultFilter = result.filter(item=>item.memoCnt>=item.presentCnt)
+            const resultFilter = result.filter(item => item.memoCnt >= item.presentCnt)
             return resultFilter
-        }catch(err){
+        } catch (err) {
             throw err;
         }
     },
-    updateOrderMemo:async(itemIdx,memoCnt)=>{
+    updateOrderMemo: async (itemIdx, memoCnt) => {
         const query = `UPDATE ${table_item} SET memoCnt=${memoCnt} WHERE itemIdx=${itemIdx}`
-        try{
-           const result = await pool.queryParam(query);
-           return result
-        }catch(err){
+        try {
+            const result = await pool.queryParam(query);
+            return result
+        } catch (err) {
             throw err;
         }
     },
@@ -294,6 +275,17 @@ const item = {
         } catch (err) {
             throw err;
         }
+    },
+    resetFlag : async (userIdx) => {
+        const query = `UPDATE ${table_category} INNER JOIN ${table_item} ON category.categoryIdx = item.categoryIdx
+        SET flag=0 WHERE category.userIdx = ${userIdx};`;
+   try {
+       const result = await pool.queryParam(query);
+       return result;
+   } catch (err) {
+       console.log('resetFlag ERROR : ', err);
+       throw err;
+   }
     }
 }
 module.exports = item;
