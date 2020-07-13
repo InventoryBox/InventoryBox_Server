@@ -135,11 +135,11 @@ const record = {
             }));
     },*/
     todayRecord_View : async(req,res)=>{
-        /*var DateFunction = new Date();
+        var DateFunction = new Date();
         var month = (DateFunction.getMonth()+1) <10 ? '0'+(DateFunction.getMonth()+1) : (DateFunction.getMonth()+1);
         var day = DateFunction.getDate() < 10 ? '0'+DateFunction.getDate() : DateFunction.getDate();
-        var date = DateFunction.getFullYear()+'-'+month+'-'+day; */
-        date="2020-07-18";
+        var date = DateFunction.getFullYear()+'-'+month+'-'+day; 
+        // date="2020-07-18";
         // userIdx token에서 파싱
         const userIdx = req.idx;
         // 카테고리 정보 조회
@@ -184,11 +184,11 @@ const record = {
     },
     deleteItem : async(req,res)=>{
         const itemIdxList = req.body.itemIdxList;
-        /*var DateFunction = new Date();
+        var DateFunction = new Date();
         var month = (DateFunction.getMonth()+1) <10 ? '0'+(DateFunction.getMonth()+1) : (DateFunction.getMonth()+1);
         var day = DateFunction.getDate() < 10 ? '0'+DateFunction.getDate() : DateFunction.getDate();
-        var date = DateFunction.getFullYear()+'-'+month+'-'+day; */
-        var date = "2020-07-18";
+        var date = DateFunction.getFullYear()+'-'+month+'-'+day; 
+        // var date = "2020-07-18";
         for(var a in itemIdxList)
         {
             // item table에 반영

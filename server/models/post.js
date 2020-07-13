@@ -5,20 +5,6 @@ const table_user = 'user';
 
 const post = {
 
-    // 부분적인 정보 필요 (home 화면)
-    searchPartInfo_All: async () => {
-        const query = `SELECT postIdx,productImg,productName,price,expDate,isSold,uploadDate
-         FROM ${table_post}`;
-        try {
-            const result = await pool.queryParam(query);
-            return result;
-        } catch (err) {
-            console.log('searchPartInfo_All ERROR : ', err);
-            throw err;
-        }
-    },
-
-
     getPostsInfoByDist: async () => {
         const query = `SELECT postIdx,postImg, latitude, longitude,isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user}`;
         try {
@@ -40,7 +26,7 @@ const post = {
     },
     // 특정 게시글 모든 정보 조회 
     searchInfo: async (postIdx) => {
-        const query = `SELECT postIdx,productImg,productName,quantity,isFood,price,description,expDate,date_format(uploadDate,'%Y-%m-%d %h:%i:%s') AS date,isSold,coverPrice,unit,userIdx FROM ${table_post} WHERE postIdx=${postIdx}`;
+        const query = `SELECT postIdx,productImg,productName,quantity,isFood,price,description,expDate,date_format(uploadDate,'%Y-%m-%d %h:%i:%s') AS uploadDate,isSold,coverPrice,unit,userIdx FROM ${table_post} WHERE postIdx=${postIdx}`;
         try {
             const result = await pool.queryParam(query);
             console.log(result);
@@ -166,6 +152,15 @@ const post = {
         try {
             const result = await pool.queryParam(query);
             return (!result.length) ? -1 : result;
+        } catch (err) {
+            throw err;
+        }
+    },
+    searchPost : async (postIdx) => {
+        const query = `SELECT productImg FROM ${table_post} WHERE postIdx=${postIdx}`;
+        try {
+            const result = await pool.queryParam(query);
+            return result[0].productImg;
         } catch (err) {
             throw err;
         }

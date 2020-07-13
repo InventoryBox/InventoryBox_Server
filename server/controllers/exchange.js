@@ -5,6 +5,7 @@ const encrypt = require('../modules/encryption');
 const jwt = require('../modules/jwt');
 const postModel = require('../models/post');
 const userModel = require('../models/user');
+const s3Storage = require('multer-s3');
 
 function getTimeStamp() {
     var d = new Date();
@@ -147,11 +148,12 @@ const exchange = {
             })); 
     },
     postSave: async (req, res) => {
+
+        const productImg = req.file.location;
         const {
             productName,
             isFood,
             price,
-            productImg,
             quantity,
             expDate, // 공산품이면 expDate null 값임
             description,
@@ -169,7 +171,7 @@ const exchange = {
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SAVE_SUCCESS,
             {
                 insertIdx: insertIdx
-            }));
+            })); 
     },
     modifyIsSold: async (req, res) => {
         const postIdx = req.body.postIdx;
@@ -241,18 +243,23 @@ const exchange = {
         return;
     },
     modifyPost: async (req, res) => {
+        const productImg = req.file.location;
         const {
             postIdx,
             productName,
             isFood,
             price,
-            productImg,
             quantity,
             expDate, // 공산품이면 expDate null 값임
             description,
             coverPrice,
             unit
         } = req.body;
+        // postIdx에 해당하는 현재 이미지 값과 새로받은 이미지가 다르면 기존거 삭제!
+        /*var productImg_before = await postModel.SearchPost(PostIdx);
+        if(productImg != productImg_before){
+
+        }*/
         if (!productName || !isFood || !price || !productImg || !quantity || !description || !coverPrice || !unit) {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));

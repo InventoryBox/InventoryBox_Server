@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const exchangeController= require('../controllers/exchange');
 const authUtil = require('../middlewares/auth').checkToken
+const upload = require('../modules/multer')
 
 // 재고교환 홈화면 조회
 router.get('/:filter',authUtil, exchangeController.home); 
@@ -21,7 +22,7 @@ router.get('/favorite/list', authUtil, exchangeController.searchUserLikes);
 router.get('/post/modify/:postIdx', authUtil, exchangeController.modifyPost_View);
 
 // 게시글 수정 저장 - 완료
-router.post('/post/modify', authUtil, exchangeController.modifyPost);
+router.post('/post/modify', authUtil, upload.single('productImg'), exchangeController.modifyPost);
 
 // 게시글 등록(기본정보 불러오기) - 완료
 router.get('/user/info', authUtil, exchangeController.searchUserInfo);
@@ -30,7 +31,7 @@ router.get('/user/info', authUtil, exchangeController.searchUserInfo);
 router.get('/search/:productName', authUtil, exchangeController.searchPost);
 
 // 게시글 등록 - 완료
-router.post('/post', authUtil, exchangeController.postSave);
+router.post('/post', authUtil, upload.single('productImg'), exchangeController.postSave);
 
 // 게시글 거래 상태 변경 -완료
 router.put('/post/modifyStatus', authUtil, exchangeController.modifyIsSold);
