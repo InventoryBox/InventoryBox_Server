@@ -6,8 +6,8 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.use('/auth',require('../routes/auth'))
-router.use('/item',require('../routes/item/'))
+router.use('/auth',require('./auth'))
+router.use('/item',require('./item/item'))
 
 
 module.exports = router;

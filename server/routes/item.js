@@ -1,9 +1,9 @@
 var express = require('express')
 var router = express.Router();
 
-const itemController = require('../../controllers/itemController')
+const itemController = require('../controllers/item')
 
-const authUtil = require('../../middlewares/auth').checkToken
+const authUtil = require('../middlewares/auth').checkToken
 
 // 카테고리에 따른 재고 반환 ( x )
 router.get('/order/memo/:categoryIdx',authUtil,itemController.getOrderNumber)

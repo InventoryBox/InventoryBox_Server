@@ -1,15 +1,15 @@
 var express = require('express')
 var router = express.Router();
-var passport = require('../../config/kakao').passport;
+var passport = require('../config/kakao').passport;
 
 //임시
-let responseMsg = require('../../modules/responseMessage');
-let statusCode = require('../../modules/statusCode');
-let util = require('../../modules/util');
-const upload = require('../../modules/multer')
-const userController = require('../../controllers/userController')
+let responseMsg = require('../modules/responseMessage');
+let statusCode = require('../modules/statusCode');
+let util = require('../modules/util');
+const upload = require('../modules/multer')
+const userController = require('../controllers/user')
 
-const authUtil = require('../../middlewares/auth').checkToken
+const authUtil = require('../middlewares/auth').checkToken
 
 // 회원가입 1
 router.post('/signup',userController.signup)
