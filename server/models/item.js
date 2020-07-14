@@ -7,9 +7,9 @@ const table_user = 'user';
 const table_category = 'category';
 
 const item = {
-    // itemIdx에 해당하는 alarmCnt 찾기
-    getItemAlarmCnt: async (itemIdx) => {
-        const query = `SELECT alarmCnt FROM ${table_item} where itemIdx = ${itemIdx};`;
+    // itemIdx에 해당하는 alarmCnt, memoCnt 찾기
+    getItemCnt: async (itemIdx) => {
+        const query = `SELECT alarmCnt, memoCnt, unit FROM ${table_item} where itemIdx = ${itemIdx};`;
         try {
             const result = await pool.queryParam(query);
             console.log(result);
