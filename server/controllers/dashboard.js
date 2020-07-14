@@ -11,21 +11,20 @@ const item = require('../models/item');
 const dashboard = {
     //이번주 그래프_홈 /dashboard
     home: async (req, res) => {
-        //const userIdx = 1;
         const userIdx = req.idx;
         const categoryInfo = await categoryModel.searchInfoAll(userIdx);
         const itemList = await itemModel.getItemsInfoToday(userIdx);
-        var itemInfo = new Array();
         if ((itemList == -1) || !userIdx || (categoryInfo == -1))
             res.status(statusCode.BAD_REQUEST)
             .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
 
+        //get dates of this weeks
         const thisWeek = getDatesOfThisWeek(new Date());
         var thisWeekDates = new Array();
-
         for (i = 0; i < 7; i++)
             thisWeekDates.push(thisWeek[i].getDate().toLocaleString());
 
+        //get stocksInfo and img
         for (var a in itemList) {
             var stocksInfo = new Array(7);
             const itemIdx = itemList[a].itemIdx;
@@ -41,7 +40,7 @@ const dashboard = {
             itemList[a].stocks = stocksInfo;
         }
 
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_HOME_SUCCESS, {
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.GRAPH_HOME_SUCCESS, {
             thisWeekDates: thisWeekDates,
             categoryInfo: categoryInfo,
             itemInfo: itemList
@@ -84,32 +83,34 @@ const dashboard = {
             }));
     },
 
-    // 비교 그래프 /dashboard/:item/double/:week
+    // 비교 그래프 /dashboard/:item/double/query
     getWeeksInfo: async (req, res) => {
-        const userIdx = req.idx;
+        //get itemIdx
         const itemIdx = req.params.item;
+        if (!itemIdx)
+            res.status(statusCode.BAD_REQUEST)
+            .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        //get weekInfo
         var weekStr = new Array(2);
         var weeks = new Array(2);
-
         for (var j = 0; j < 2; j++) {
             weekStr[j] = req.query.week[j];
             weeks[j] = weekStr[j].split(",");
+            if (!weeks[j])
+                res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
-
+        //get stocksInfo
         var stocksInfo = new Array(2);
         for (var i = 0; i < 2; i++) {
-
             var dates = getDatesOfTGivenWeek(parseInt(weeks[i][0]), parseInt(weeks[i][1]) - 1, parseInt(weeks[i][2]));
             stocksInfo[i] = new Array(7);
-
             for (var j = 0; j < 7; j++) {
                 const result = await itemModel.getStocksInfoOfDay(itemIdx, dates[j]);
                 if (result == -1) stocksInfo[i][j] = result;
                 else stocksInfo[i][j] = result[0].stocksCnt;
             }
-            continue;
         }
-
         // if the date is in the future or doesn't have the data, we cannot compare those
         for (i = 0; i < 2; i++) {
             var isRecorded = 0;
@@ -117,15 +118,14 @@ const dashboard = {
                 if (stocksInfo[i][j] !== -1) isRecorded = 1;
             if (!isRecorded)
                 return res.status(statusCode.BAD_REQUEST)
-                    .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_DATA));
+                    .send(util.fail(statusCode.BAD_REQUEST, resMessage.GRAPH_NO_DATA));
         }
-
         // if they are same week, we cannot compare those
         if (arrayEquals(stocksInfo[0], stocksInfo[1]))
             return res.status(statusCode.BAD_REQUEST)
-                .send(util.fail(statusCode.BAD_REQUEST, resMessage.SAME_DATE));
-
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.GRAPH_DOUBLE_SUCCESS, {
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.GRAPH_SAME_DATE));
+        // when success
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.GRAPH_DOUBLE_SUCCESS, {
             week1: stocksInfo[0],
             week2: stocksInfo[1]
         }));
@@ -204,7 +204,6 @@ function getWeeksStartAndEndInMonth(month, year) {
             date += 6;
         }
     }
-    // console.log(weeks.length);
     return weeks;
 }
 
