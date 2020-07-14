@@ -38,7 +38,6 @@ function leadingZeros(n, digits) {
     }
     return zero + n;
 }
-
 function getDistance(lat1, lon1, lat2, lon2) {
     if ((lat1 == lat2) && (lon1 == lon2))
         return 0;
@@ -295,6 +294,5 @@ const exchange = {
         return;
     }
 }
-
 
 module.exports = exchange;
