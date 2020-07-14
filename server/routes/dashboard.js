@@ -11,6 +11,6 @@ dashboard.get('/:item/single', authUtil, dashboardController.getAMonthInfo);
 // 비교 그래프
 dashboard.get('/:item/double', authUtil, dashboardController.getWeeksInfo);
 // 발주정보 수정
-dashboard.post('/:item/cnt-modify', authUtil, dashboardController.updateCnt);
+dashboard.post('/:item/modifyCnt', authUtil, dashboardController.updateCnt);
 
 module.exports = dashboard;

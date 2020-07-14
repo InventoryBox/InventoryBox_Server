@@ -2,9 +2,10 @@ module.exports = {
     // 재고량 추이
     NO_DATA: "해당 날짜에 입력된 데이터가 존재하지 않습니다.",
     SAME_DATE: "첫번째와 동일한 날짜를 선택하실 수 없습니다.",
+    GRAPH_HOME_SUCCESS: "전체 아이템에 대한 한달 그래프 정보 전달 성공",
     GRAPH_DOUBLE_SUCCESS: "한 아이템에 대한 두 주의 그래프 정보 전달 성공",
     GRAPH_SINGLE_SUCCESS: "한 아이템에 대한 한 달 그래프 정보 전달 성공",
-    ITEM_UPDATE_SUCCESS: "아이템 기본 설정 변경 성공",
+    GRAPH_UPDATE_SUCCESS: "아이템 기본 설정 변경 성공",
     NULL_VALUE: '필요한 값이 없습니다',
 
     // 위치 관련 정보
@@ -40,14 +41,14 @@ module.exports = {
     FIND_EMAIL_SUCCESS: '가입된 이메일을 성공적으로 찾았습니다',
     NICKNAME_AND_PICTURE_SUCCESS: '닉네임과 사진 가져오기 성공',
     DELETE_SUCCESS: '유저 삭제 성공',
-    GET_USER_SUCCESS:'유저 조회 성공',
+    GET_USER_SUCCESS: '유저 조회 성공',
 
     // 프로필 조회
     READ_PROFILE_SUCCESS: '프로필 조회 성공',
-    DUPLICATED_EMAIL:'이메일이 중복됐습니다',
-    GET_ITEM_INFO_SUCCESS:'아이템 정보 가져오기 성공',
-    UPDATE_MEMO_COUNT_SUCCESS:'재고 메모 업데이트 성공',
-    GET_FIVE_DAYS_SUCCESS:'5일간 정보 가져오기 성공',
+    DUPLICATED_EMAIL: '이메일이 중복됐습니다',
+    GET_ITEM_INFO_SUCCESS: '아이템 정보 가져오기 성공',
+    UPDATE_MEMO_COUNT_SUCCESS: '재고 메모 업데이트 성공',
+    GET_FIVE_DAYS_SUCCESS: '5일간 정보 가져오기 성공',
     DB_ERROR: 'DB 오류',
 
     //재고기록
@@ -72,6 +73,5 @@ module.exports = {
     EXCHANGE_SEARCH_USER_LIKE_POST_SUCCESS : "사용자 찜목록 조회 완료",
     RECORD_NULL_VALUES: '파라미터 값이 없습니다.',
     EXCHANGE_POST_MODIFY_SUCCESS : "게시글 수정 완료"
-
 
 };

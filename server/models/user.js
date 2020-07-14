@@ -28,7 +28,7 @@ const user = {
     },
     updateLoc: async (userIdx, address, latitude, longitude) => {
         console.log(userIdx)
-        const query = `UPDATE ${table_user} SET address = "${address}", latitude = ${latitude}, longitude = ${longitude} where userIdx = ${userIdx}`;
+        const query = `UPDATE ${table_user} SET location = "${address}", latitude = ${latitude}, longitude = ${longitude} where userIdx = ${userIdx}`;
         try {
             const result = await pool.queryParam(query);
             console.log("updateLoc", result);
