@@ -66,7 +66,6 @@ function dateToKORString(DateFunction) {
     return DateFunction.getFullYear() + '년 ' + month + '월 ' + date + '일';
 }
 const exchange = {
-    // exchange/:filter
     home: async (req, res) => {
         const userIdx = req.idx;
         const filter = req.params.filter;
@@ -105,7 +104,54 @@ const exchange = {
             }
         }
 
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.POSTS_HOME_SUCCESS, {
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_HOME_SUCCESS, {
+            postInfo: postList
+        }));
+    },
+    searchPost: async (req, res) => {
+        const userIdx = req.idx;
+        const keyword = req.params.keyword;
+        const filter = req.params.filter;
+        if (!keyword) {
+            res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
+
+        var filterStr;
+        switch (parseInt(filter)) {
+            case 0:
+                filterStr = "uploadDate DESC";
+                break;
+            case 1:
+                filterStr = "postIdx";
+                break;
+            case 2:
+                filterStr = "price ASC";
+                break;
+        }
+
+        const userLoc = await userModel.getUserLoc(userIdx);
+        if (userLoc == -1)
+            return res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_LOC_INFO));
+
+        var postList = await postModel.searchPartInfo_search(keyword, filterStr);
+        if (postList == -1)
+            return res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
+
+        if (filter == 1) postList.sort((a, b) => (getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) > getDistance(b.latitude, b.longitude, userLoc[0].latitude, userLoc[0].longitude)) ? 1 : -1)
+        for (var i = 0; i < postList.length; i++) {
+            var dist = getDistance(postList[i].latitude, postList[i].longitude, userLoc[0].latitude, userLoc[0].longitude);
+            if (dist <= 2000) {
+                const likes = await postModel.searchLikes(userIdx, postList[i].postIdx);
+                postList[i].distDiff = dist;
+                postList[i].uploadDate = dateToKORString(postList[i].uploadDate);
+                postList[i].likes = likes;
+            }
+        }
+
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SEARCH_SUCCESS, {
             postInfo: postList
         }));
     },
@@ -198,54 +244,6 @@ const exchange = {
         }
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_MODIFY_LIKE_SUCCESS));
         return;
-    },
-    searchPost: async (req, res) => {
-        const userIdx = 1;
-        const keyword = req.params.keyword;
-        const filter = req.params.filter;
-        if (!keyword) {
-            res.status(statusCode.BAD_REQUEST)
-                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
-        }
-
-        var filterStr;
-        switch (parseInt(filter)) {
-            case 0:
-                filterStr = "uploadDate DESC";
-                break;
-            case 1:
-                filterStr = "postIdx";
-                break;
-            case 2:
-                filterStr = "price ASC";
-                break;
-        }
-
-        const userLoc = await userModel.getUserLoc(userIdx);
-        if (userLoc == -1)
-            return res.status(statusCode.BAD_REQUEST)
-                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_LOC_INFO));
-
-        var postList = await postModel.searchPartInfo_search(keyword, filterStr);
-        if (postList == -1)
-            return res.status(statusCode.BAD_REQUEST)
-                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
-
-        if (filter == 1) postList.sort((a, b) => (getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) > getDistance(b.latitude, b.longitude, userLoc[0].latitude, userLoc[0].longitude)) ? 1 : -1)
-        for (var i = 0; i < postList.length; i++) {
-            var dist = getDistance(postList[i].latitude, postList[i].longitude, userLoc[0].latitude, userLoc[0].longitude);
-            console.log(postList[i], dist);
-            if (dist <= 2000) {
-                const likes = await postModel.searchLikes(userIdx, postList[i].postIdx);
-                postList[i].distDiff = dist;
-                postList[i].uploadDate = dateToKORString(postList[i].uploadDate);
-                postList[i].likes = likes;
-            }
-        }
-
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SEARCH_SUCCESS, {
-            postInfo: postList
-        }));
     },
     modifyPost_View: async (req, res) => {
         const postIdx = await req.params.postIdx;
