@@ -5,7 +5,7 @@ const dashboardController = require('../controllers/dashboard');
 const authUtil = require('../middlewares/auth').checkToken
 
 //이번주 그래프_홈
-dashboard.get('/', authUtil, dashboardController.getAllItems);
+dashboard.get('/', dashboardController.home);
 // 선택적 그래프
 dashboard.get('/:item/single', authUtil, dashboardController.getAMonthInfo);
 // 비교 그래프
