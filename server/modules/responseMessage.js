@@ -21,6 +21,9 @@ module.exports = {
 
     POST_SUCCESS : '게시글 조회 성공',
     SALT_PASSWORD_SUCCESS:'비밀번호 및 SALT값 넣기 성공',
+    
+    //아이템
+    PUSH_FLAG_SUCCESS:'flag 넣기 성공',
 
     // 로그인
     LOGIN_SUCCESS: '로그인 성공',

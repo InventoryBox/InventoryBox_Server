@@ -4,77 +4,86 @@ let util = require('../modules/util');
 let Item = require('../models/item');
 const crypto = require('crypto');
 const jwt = require('../modules/jwt');
+const item = require('../models/item');
 
-exports.getOrderNumber=async(req,res)=>{
+exports.getOrderNumber = async (req, res) => {
     const userIdx = req.idx;
     const categoryIdx = req.params.categoryIdx;
 
-    if(userIdx === null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE));
+    if (userIdx === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE));
     }
-    const result = await Item.getMemoOrder(userIdx,categoryIdx);
+    const result = await Item.getMemoOrder(userIdx, categoryIdx);
 
-    if(result === null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
+    if (result === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_USER_SUCCESS,{result:result}))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.GET_USER_SUCCESS, {
+        result: result
+    }))
 }
-exports.getCategoryInfo=async(req,res)=>{
+exports.getCategoryInfo = async (req, res) => {
     const userIdx = req.idx;
 
-    if(userIdx === null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE));
+    if (userIdx === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE));
     }
 
     const result = await Item.getCategoryInfo()
 
-    if(result === null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
+    if (result === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_USER_SUCCESS,{result:result}))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.GET_USER_SUCCESS, {
+        result: result
+    }))
 
 }
 
-exports.updateOrderMemo=async(req,res)=>{
+exports.updateOrderMemo = async (req, res) => {
     const userIdx = req.idx;
 
-    const{
-        itemIdx,memoCnt
+    const {
+        itemIdx,
+        memoCnt
     } = req.body
 
-    if(userIdx === null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE));
+    if (userIdx === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE));
     }
-    
-    if(!itemIdx || !memoCnt ){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE))
+
+    if (!itemIdx || !memoCnt) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
     }
-    
-    const result = await Item.updateOrderMemo(itemIdx,memoCnt)
+
+    const result = await Item.updateOrderMemo(itemIdx, memoCnt)
     console.log(result)
 
-    if(result === null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
+    if (result === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.UPDATE_MEMO_COUNT_SUCCESS,{result:result.protocol41}))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.UPDATE_MEMO_COUNT_SUCCESS, {
+        result: result.protocol41
+    }))
 
 }
 
-exports.getItemInfo=async(req,res)=>{
+exports.getItemInfo = async (req, res) => {
     const userIdx = req.idx;
 
     let result2;
+    let itemIdxFilter;
 
-    if(userIdx === null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,responseMsg.NULL_VALUE));
+    if (userIdx === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE));
     }
 
     const result = await Item.getItemInfo(userIdx)
 
-    if(result === null){
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR,responseMsg.DB_ERROR))
+    if (result === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
     // for(var a in result)
@@ -91,9 +100,9 @@ exports.getItemInfo=async(req,res)=>{
 
     // console.log(typeof(result[0].date))
 
-   
 
- 
+
+
     // console.log(stocksInfo)
 
     // for(var a in result)
@@ -101,14 +110,9 @@ exports.getItemInfo=async(req,res)=>{
     //     result[a].stocksInfo =stocksInfo;
     // } 
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_ITEM_INFO_SUCCESS,{result:result}))
-}
 
-exports.fiveDays=async(req,res)=>{
-    
-    const userIdx = req.idx;
-    const itemIdx = req.params.itemIdx;
-    
+
+    // 일단 보류 for문 2번 돌리면 안뜸
 
     function dateToString(DateFunction) {
         var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
@@ -123,17 +127,94 @@ exports.fiveDays=async(req,res)=>{
             prev_dates[i] = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
         return prev_dates;
     }
-    
+
+    var week = pre5daysFromToday();
+
+    // var itemInfo = new Array();
+    // for (var j=0; j < result.length; j++) {
+    //     var itemIdx = result[j].itemIdx;
+    //     var stocksInfo = new Array(5);
+    //     for (var i = 0; i < 5; i++) {
+    //         var StockResult = await Item.getStocksInfoOfDay(itemIdx, dateToString(week[i]));
+    //         if (StockResult == -1) stocksInfo[i] = StockResult;
+    //         else stocksInfo[i] = StockResult[0].stocksCnt;
+    //     }
+    //     console.log(result[j], stocksInfo);
+    //     itemInfo.push({
+    //         "itemInfo": result[j],
+    //         "stocksInfo": stocksInfo
+    //     });
+    // }
+
+    for (var j = 0; j < result.length; j++) {
+        var itemIdx = result[j].itemIdx;
+        var stocksInfo = new Array(5);
+        for (var i = 0; i < 5; i++) {
+            var StockResult = await Item.getStocksInfoOfDay(itemIdx, dateToString(week[i]));
+            if (StockResult == -1) stocksInfo[i] = StockResult;
+            else stocksInfo[i] = StockResult[0].stocksCnt;
+        }
+        result[j].stocksInfo = stocksInfo
+    }
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.GET_ITEM_INFO_SUCCESS, {
+        result: result
+    }))
+}
+
+exports.fiveDays = async (req, res) => {
+
+    const userIdx = req.idx;
+    const itemIdx = req.params.itemIdx;
+
+
+    function dateToString(DateFunction) {
+        var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
+        var day = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
+        var date = DateFunction.getFullYear() + '-' + month + '-' + day;
+        return date;
+    }
+
+    function pre5daysFromToday() {
+        var prev_dates = new Array();
+        for (var i = 0; i < 5; i++)
+            prev_dates[i] = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+        return prev_dates;
+    }
+
     var week = pre5daysFromToday();
 
     var stocksInfo = new Array(5);
 
     for (var i = 0; i < 5; i++) {
-                    const result = await Item.getStocksInfoOfDay(itemIdx, dateToString(week[i]));
-                    if (result == -1) stocksInfo[i] = result;
-                    else stocksInfo[i] = result[0].stocksCnt;
-                }
+        const result = await Item.getStocksInfoOfDay(itemIdx, dateToString(week[i]));
+        if (result == -1) stocksInfo[i] = result;
+        else stocksInfo[i] = result[0].stocksCnt;
+    }
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK,responseMsg.GET_FIVE_DAYS_SUCCESS,{stocksInfo:stocksInfo}))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.GET_FIVE_DAYS_SUCCESS, {
+        stocksInfo: stocksInfo
+    }))
+
+}
+
+exports.pushFlag = async (req, res) => {
+
+    const userIdx = req.idx;
+    const itemIdx = req.params.itemIdx;
+
+    if (!userIdx || !itemIdx) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE));
+    }
+
+    const result = await item.pushFlag(userIdx, itemIdx)
+
+    if (result === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
+    }
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.PUSH_FLAG_SUCCESS, {
+        result: result.protocol41
+    }))
 
 }
