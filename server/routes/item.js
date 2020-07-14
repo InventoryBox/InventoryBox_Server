@@ -21,7 +21,7 @@ router.get('/order',authUtil,itemController.getItemInfo)
 router.get('/five-days/:itemIdx',authUtil,itemController.fiveDays)
 
 // flag 넣기
-router.post('/flag/:itemIdx',authUtil,itemController.pushFlag)
+router.put('/flag/:itemIdx',authUtil,itemController.pushFlag)
 
 // router.get('/name/:name',authUtil,itemController.getItemIdx)
 
