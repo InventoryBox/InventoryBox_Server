@@ -151,7 +151,7 @@ const dashboard = {
         await itemModel.modifyItemCnt(itemIdx, alarmCnt, memoCnt);
 
         return res.status(statusCode.OK)
-            .send(util.success(statusCode.OK, resMessage.ITEM_UPDATE_SUCCESS));
+            .send(util.success(statusCode.OK, resMessage.GRAPH_UPDATE_SUCCESS));
     }
 }
 
