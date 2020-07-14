@@ -11,8 +11,7 @@ const item = require('../models/item');
 const dashboard = {
     //이번주 그래프_홈 /dashboard
     getAllItems: async (req, res) => {
-        //  const userIdx = req.idx;
-        const userIdx = 1;
+        const userIdx = req.idx;
         const categoryInfo = await categoryModel.searchInfoAll(userIdx);
         const itemList = await itemModel.searchInfo_today(userIdx);
         var itemInfo = new Array();
@@ -55,8 +54,6 @@ const dashboard = {
 
     // 선택적 그래프 /dashboard/:item/single?year=2020&month=6
     getAMonthInfo: async (req, res) => {
-        // const userIdx = req.idx;
-        const userIdx = 1;
         const itemIdx = req.params.item;
         const month = req.query.month;
         const year = req.query.year;
@@ -92,8 +89,6 @@ const dashboard = {
 
     // 비교 그래프 /dashboard/:item/double/:week
     getWeeksInfo: async (req, res) => {
-        // const userIdx = req.idx;
-        const userIdx = 1;
         const itemIdx = req.params.item;
         var weekStr = new Array(2);
         var weeks = new Array(2);
@@ -141,8 +136,7 @@ const dashboard = {
 
     // 발주정보 수정 /dashboard/:item/cnt-modify
     updateCnt: async (req, res) => {
-        // const userIdx = req.idx;
-        const userIdx = 1;
+        const userIdx = req.idx;
         const itemIdx = req.params.item;
         const {
             alarmCnt,

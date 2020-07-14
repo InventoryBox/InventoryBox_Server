@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const exchangeController = require('../controllers/exchange');
-const userController = require('../controllers/user');
 
 // 재고교환 홈화면 조회
 router.get('/:filter', exchangeController.home);
@@ -9,7 +8,7 @@ router.get('/:filter', exchangeController.home);
 router.get('/post/:postIdx', exchangeController.postView);
 
 // 사용자 주소 수정
-router.post('/modifyLoc', userController.updateLoc);
+router.post('/modifyLoc', exchangeController.updateLoc);
 
 // 사용자 찜 목록 - 완료
 router.get('/favorite', exchangeController.searchUserLikes);

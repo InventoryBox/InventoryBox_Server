@@ -62,8 +62,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
 const exchange = {
     // exchange/:filter
     home: async (req, res) => {
-        // const userIdx = req.idx;
-        const userIdx = 1;
+        const userIdx = req.idx;
         const filter = req.params.filter;
 
         const userLoc = await userModel.getUserLoc(userIdx);
@@ -101,7 +100,7 @@ const exchange = {
         var postInfo = new Array();
         for (var i = 0; i < postList.length; i++) {
             var dist = getDistance(postList[i].latitude, postList[i].longitude, userLoc[0].latitude, userLoc[0].longitude);
-            if (dist <= 2000)
+            if (dist <= 2000) {
                 postInfo.push({
                     isFood: postList[i].isFood,
                     postIdx: postList[i].postIdx,
@@ -113,10 +112,22 @@ const exchange = {
                     expDate: postList[i].expDate,
                     uploadDate: dateToKORString(postList[i].uploadDate)
                 })
+            }
         }
-
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.POSTS_HOME_SUCCESS, {
             postInfo: postInfo
+        }));
+    },
+    updateLoc: async (req, res) => {
+        const userIdx = req.idx;
+        const {
+            address,
+            latitude,
+            longitude
+        } = req.body;
+        const result = await userModel.updateLoc(userIdx, address, latitude, longitude);
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ADD_LOC_SUCCESS, {
+            insertId: result
         }));
     },
     postView: async (req, res) => {
