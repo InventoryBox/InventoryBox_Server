@@ -231,11 +231,13 @@ const exchange = {
         const postIdx = await req.params.postIdx;
         const itemInfo = await postModel.searchInfo(postIdx);
         const userInfo = await userModel.userInfo(itemInfo[0].userIdx);
+        const uploadDate = dateToKORString(itemInfo[0].uploadDate);
+        itemInfo[0].uploadDate = uploadDate;
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_MODIFY_POST_SUCCESS, {
             itemInfo: itemInfo,
             userInfo: userInfo
         }));
-        return;
+      return;
     },
     searchUserLikes: async (req, res) => {
         // token 에서 userIdx 파싱
@@ -244,6 +246,8 @@ const exchange = {
         var postInfo = [];
         for (var a in result) {
             const tmp = await postModel.searchInfo_Part(result[a].postIdx);
+            const uploadDate = dateToKORString(tmp[0].uploadDate);
+            tmp[0].uploadDate = uploadDate;
             tmp[0].likes = 1;
             postInfo.push(tmp[0]);
         }

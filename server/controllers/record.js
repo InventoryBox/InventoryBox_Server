@@ -36,7 +36,8 @@ const record = {
            for(var a in result)
            {
             const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
-            result[a].img = iconImg.img;   
+            result[a].img = iconImg[0].img;
+            console.log(result[a].itemIdx);   
            }
            var itemInfo = result;
            // isRecorded 정보 조회
@@ -63,7 +64,8 @@ const record = {
             for(var a in result)
             {
             const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
-            result[a].img = iconImg.img;   
+            result[a].img = iconImg[0].img;  
+            //console.log(result[a].itemIdx);     
             } 
             var itemInfo = result;
             // isRecorded 정보 조회
@@ -114,11 +116,11 @@ const record = {
         // item table에 반영
         const result = await itemModel.addItem(name, unit, alarmCnt, memoCnt, iconIdx, categoryIdx);
         // date table에 반영 X 
-       /* var DateFunction = new Date();
+        var DateFunction = new Date();
         var month = (DateFunction.getMonth()+1) <10 ? '0'+(DateFunction.getMonth()+1) : (DateFunction.getMonth()+1);
         var day = DateFunction.getDate() < 10 ? '0'+DateFunction.getDate() : DateFunction.getDate();
-        var date = DateFunction.getFullYear()+'-'+month+'-'+day; */
-        var date="2020-07-18";
+        var date = DateFunction.getFullYear()+'-'+month+'-'+day; 
+        // var date="2020-07-18";
 
         await itemModel.addDate_Item(-1,date,result);
         res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_ITEMADD_DB_SUCCESS,
@@ -190,7 +192,7 @@ const record = {
         var month = (DateFunction.getMonth()+1) <10 ? '0'+(DateFunction.getMonth()+1) : (DateFunction.getMonth()+1);
         var day = DateFunction.getDate() < 10 ? '0'+DateFunction.getDate() : DateFunction.getDate();
         var date = DateFunction.getFullYear()+'-'+month+'-'+day; 
-        // var date = "2020-07-18";
+         //var date = "2020-07-18";
         for(var a in itemIdxList)
         {
             // item table에 반영
@@ -222,7 +224,7 @@ const record = {
         for(var a in result)
         {
          const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
-         result[a].img = iconImg.img;   
+         result[a].img = iconImg[0].img;  
         }
         var itemInfo = result;
         res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_MODIFY_VIEW_SUCCESS,

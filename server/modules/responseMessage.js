@@ -48,7 +48,7 @@ module.exports = {
     DB_ERROR: 'DB 오류',
 
     //재고기록
-    RECORD_HOME_SUCCESS : '재고기록 홈화면 및 수정 성공',
+    RECORD_HOME_SUCCESS : '재고기록 홈화면 조회 성공',
     RECORD_ITEMADD_VIEW_SUCCESS : "재료추가 화면 조회 성공",
     RECORD_ITEMADD_DB_SUCCESS : "재료추가 저장 성공",
     RECORD_SEARCH_CATEGORY_SUCCESS : "카테고리 정보 조회 성공",

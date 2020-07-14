@@ -40,7 +40,7 @@ const post = {
 
         try {
             const result = await pool.queryParam(query);
-            return (!result.length) ? 1 : 0;
+            return result.length ? 1 : 0;
         } catch (err) {
             console.log('searchLikes ERROR : ', err);
             throw err;

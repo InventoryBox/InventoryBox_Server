@@ -71,7 +71,7 @@ const item = {
         const query = `SELECT icon.img FROM ${table_icon}, ${table_item}
                         WHERE ${table_icon}.iconIdx = ${table_item}.iconIdx and ${table_item}.itemIdx=${itemIdx}`;
         try {
-            const result = await pool.queryParamArr(query);
+            const result = await pool.queryParam(query);
             return result;
         } catch (err) {
             console.log('searchIcon_ItemIdx ERROR : ', err);
