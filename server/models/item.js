@@ -56,7 +56,7 @@ const item = {
 
     // 해당 date에 기록한 재료(item)의 정보 조회
     searchInfo_today: async (userIdx) => {
-        const query = `SELECT item.itemIdx,item.name,item.presentCnt,category.categoryIdx FROM ${table_category} INNER JOIN ${table_item} ON category.categoryIdx = item.categoryIdx
+        const query = `SELECT item.itemIdx,item.name,category.categoryIdx FROM ${table_category} INNER JOIN ${table_item} ON category.categoryIdx = item.categoryIdx
              WHERE category.userIdx = ${userIdx} and item.presentCnt> -2;`;
         try {
             const result = await pool.queryParam(query);
