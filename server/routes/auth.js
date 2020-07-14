@@ -1,7 +1,6 @@
 var express = require('express')
 var router = express.Router();
 var passport = require('../config/kakao').passport;
-
 //임시
 let responseMsg = require('../modules/responseMessage');
 let statusCode = require('../modules/statusCode');

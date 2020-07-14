@@ -166,7 +166,7 @@ exports.deleteUser = async (req, res) => {
     }
 
     const result = await User.deleteUser(userIdx)
-    console.log(result)
+    //console.log(result)
 
     if (result.protocol41 === false) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))

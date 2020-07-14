@@ -37,7 +37,7 @@ const record = {
            {
             const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
             result[a].img = iconImg[0].img;
-            console.log(result[a].itemIdx);   
+            //console.log(result[a].itemIdx);   
            }
            var itemInfo = result;
            // isRecorded 정보 조회

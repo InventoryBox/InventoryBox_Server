@@ -11,7 +11,8 @@ const item = require('../models/item');
 const dashboard = {
     //이번주 그래프_홈 /dashboard
     home: async (req, res) => {
-        const userIdx = 1;
+        //const userIdx = 1;
+        const userIdx = req.idx;
         const categoryInfo = await categoryModel.searchInfoAll(userIdx);
         const itemList = await itemModel.getItemsInfoToday(userIdx);
         var itemInfo = new Array();
@@ -203,7 +204,7 @@ function getWeeksStartAndEndInMonth(month, year) {
             date += 6;
         }
     }
-    console.log(weeks.length);
+    // console.log(weeks.length);
     return weeks;
 }
 

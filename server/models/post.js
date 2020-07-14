@@ -166,6 +166,15 @@ const post = {
         } catch (err) {
             throw err;
         }
+    },
+    checkPost : async (postIdx) => {
+        const query = `SELECT * FROM ${table_post} WHERE postIdx=${postIdx}`;
+        try {
+            const result = await pool.queryParam(query);
+            return result.length ? 1 : 0;
+        } catch (err) {
+            throw err;
+        }
     }
 }
 
