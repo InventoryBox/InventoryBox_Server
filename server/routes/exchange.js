@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const exchangeController= require('../controllers/exchange');
+const exchangeController = require('../controllers/exchange');
 const authUtil = require('../middlewares/auth').checkToken
 const upload = require('../modules/multer')
 const userController = require('../controllers/user');
 
 
 // 재고교환 홈화면 조회
-router.get('/:filter',authUtil, exchangeController.home); 
+router.get('/:filter', authUtil, exchangeController.home);
 // 특정 게시글 조회 - 완료
 router.get('/post/:postIdx', authUtil, exchangeController.postView);
 
@@ -29,8 +29,8 @@ router.post('/post/modify', authUtil, upload.single('productImg'), exchangeContr
 // 게시글 등록(기본정보 불러오기) - 완료
 router.get('/user/info', authUtil, exchangeController.searchUserInfo);
 
-// 게시글 검색 - 진행중(거리 계산 후 추가 예정)
-router.get('/search/:productName', authUtil, exchangeController.searchPost);
+// 게시글 검색
+router.get('/search/:keyword/:filter', exchangeController.searchPost);
 
 // 게시글 등록 - 완료
 router.post('/post', authUtil, upload.single('productImg'), exchangeController.postSave);
@@ -39,7 +39,7 @@ router.post('/post', authUtil, upload.single('productImg'), exchangeController.p
 router.put('/post/modifyStatus', authUtil, exchangeController.modifyIsSold);
 
 // 게시글 좋아요 설정 변경 - 완료
-router.put('/post/like-status', authUtil, exchangeController.modifyLikes);   
+router.put('/post/like-status', authUtil, exchangeController.modifyLikes);
 
 // 게시글 삭제
 

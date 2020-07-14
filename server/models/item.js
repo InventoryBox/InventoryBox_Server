@@ -66,6 +66,18 @@ const item = {
             throw err;
         }
     },
+    // 해당 date에 기록한 재료(item)의 정보 조회
+    getItemsInfoToday: async (userIdx) => {
+        const query = `SELECT item.itemIdx,item.name,category.categoryIdx, item.alarmCnt FROM ${table_category} INNER JOIN ${table_item} ON category.categoryIdx = item.categoryIdx
+             WHERE category.userIdx = ${userIdx} and item.presentCnt> -2;`;
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log(' getItemsInfoToday ERROR : ', err);
+            throw err;
+        }
+    },
     // itemIdx에 해당하는 icon img 찾기
     searchIcon_ItemIdx: async (itemIdx) => {
         const query = `SELECT icon.img FROM ${table_icon}, ${table_item}
@@ -265,7 +277,7 @@ const item = {
             throw err;
         }
     },
-    pushFlag:async(userIdx,itemIdx)=>{
+    pushFlag: async (userIdx, itemIdx) => {
         const query = `UPDATE ${table_item} SET flag=1 WHERE itemIdx=${itemIdx}`
         // const query = `UPDATE ${table_item} SET flag=${itemIdx}`
 
@@ -276,16 +288,16 @@ const item = {
             throw err;
         }
     },
-    resetFlag : async (userIdx) => {
+    resetFlag: async (userIdx) => {
         const query = `UPDATE ${table_category} INNER JOIN ${table_item} ON category.categoryIdx = item.categoryIdx
         SET flag=0 WHERE category.userIdx = ${userIdx};`;
-   try {
-       const result = await pool.queryParam(query);
-       return result;
-   } catch (err) {
-       console.log('resetFlag ERROR : ', err);
-       throw err;
-   }
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('resetFlag ERROR : ', err);
+            throw err;
+        }
     }
 }
 module.exports = item;

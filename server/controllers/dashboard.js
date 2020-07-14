@@ -10,10 +10,10 @@ const item = require('../models/item');
 
 const dashboard = {
     //이번주 그래프_홈 /dashboard
-    getAllItems: async (req, res) => {
-        const userIdx = req.idx;
+    home: async (req, res) => {
+        const userIdx = 1;
         const categoryInfo = await categoryModel.searchInfoAll(userIdx);
-        const itemList = await itemModel.searchInfo_today(userIdx);
+        const itemList = await itemModel.getItemsInfoToday(userIdx);
         var itemInfo = new Array();
         if ((itemList == -1) || !userIdx || (categoryInfo == -1))
             res.status(statusCode.BAD_REQUEST)
@@ -36,19 +36,14 @@ const dashboard = {
                 else stocksInfo[i] = stockList[0].stocksCnt;
             }
 
-            itemInfo.push({
-                itemIdx: itemList[a].itemIdx,
-                name: itemList[a].name,
-                categoryIdx: itemList[a].categoryIdx,
-                iconImg: icon[0].img,
-                stocks: stocksInfo
-            })
+            itemList[a].iconImg = icon[0].img;
+            itemList[a].stocks = stocksInfo;
         }
 
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_HOME_SUCCESS, {
             thisWeekDates: thisWeekDates,
             categoryInfo: categoryInfo,
-            itemInfo: itemInfo
+            itemInfo: itemList
         }));
     },
 

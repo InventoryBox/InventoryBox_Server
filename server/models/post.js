@@ -5,19 +5,8 @@ const table_user = 'user';
 
 const post = {
 
-    getPostsInfoByDist: async () => {
-        const query = `SELECT postIdx, productImg, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user};`;
-        try {
-            const result = await pool.queryParam(query);
-            console.log("getPostsInfoByDist", result);
-            return (!result.length) ? -1 : result;
-        } catch (err) {
-            throw err;
-        }
-    },
-
-    getPostsInfoByDate: async () => {
-        const query = `SELECT postIdx, productImg, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by uploadDate DESC`;
+    getAllPostsInfo: async (filterStr) => {
+        const query = `SELECT postIdx, productImg, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by ${filterStr}`;
         try {
             const result = await pool.queryParam(query);
             return (!result.length) ? -1 : result;
@@ -26,18 +15,8 @@ const post = {
         }
     },
 
-    getPostsInfoByPrice: async () => {
-        const query = `SELECT postIdx, productImg, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by price ASC`;
-        try {
-            const result = await pool.queryParam(query);
-            return (!result.length) ? -1 : result;
-        } catch (err) {
-            throw err;
-        }
-    },
     searchLikes: async (userIdx, postIdx) => {
         const query = `SELECT * FROM ${table_likes} WHERE userIdx = ${userIdx} and postIdx = ${postIdx}`;
-
         try {
             const result = await pool.queryParam(query);
             return result.length ? 1 : 0;
@@ -114,12 +93,12 @@ const post = {
             throw err;
         }
     },
-    searchPartInfo_search: async (productName) => {
-        const query = `SELECT postIdx,productImg,productName,price,expDate,isSold,uploadDate
-         FROM ${table_post} WHERE productName like "%${productName}%"`;
+    searchPartInfo_search: async (keyword, filter) => {
+        const query = `SELECT latitude, longitude, postIdx,productImg,productName,price,expDate,isSold,uploadDate
+        from ${table_post} natural join ${table_user} WHERE productName like "%${keyword}%" order by ${filter}`;
         try {
             const result = await pool.queryParam(query);
-            return result;
+            return (!result.length) ? -1 : result;
         } catch (err) {
             console.log('searchPartInfo_search ERROR : ', err);
             throw err;
@@ -179,7 +158,7 @@ const post = {
             throw err;
         }
     },
-    searchPost : async (postIdx) => {
+    searchPost: async (postIdx) => {
         const query = `SELECT productImg FROM ${table_post} WHERE postIdx=${postIdx}`;
         try {
             const result = await pool.queryParam(query);
