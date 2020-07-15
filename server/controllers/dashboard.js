@@ -245,4 +245,11 @@ function dateToString(DateFunction) {
     return date;
 }
 
+function dateToKORString(DateFunction) {
+    var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
+    var date = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
+    return DateFunction.getFullYear() + '년 ' + month + '월 ' + date + '일';
+}
+
+
 module.exports = dashboard;

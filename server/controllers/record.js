@@ -5,6 +5,11 @@ const statusCode = require('../modules/statusCode');
 const resMessage = require('../modules/responseMessage');
 const encrypt = require('../modules/encryption');
 const jwt = require('../modules/jwt');
+const database = require('../config/database');
+
+function replaceAll(str, searchStr, replaceStr) {
+    return str.split(searchStr).join(replaceStr);
+  }
 
 const record = {
     home : async (req,res)=>{
@@ -20,6 +25,8 @@ const record = {
         //console.log(date_is);
         var isRecorded = await itemModel.searchIsRecorded(date_is);
 
+        var week = new Array('일','월','화','수','목','금','토');
+        var yoil = week[DateFunction.getDay()];
         // params 값 확인
         if( !date )
         {
@@ -28,7 +35,7 @@ const record = {
         }else if(date == 0){
            // 재고기록 탭 눌렀을 때
            // 가장 최근 저장된 DB날짜 필요
-           const date_send = await itemModel.searchLastDate();
+           var date_send = await itemModel.searchLastDate();
            // console.log(date_send);
            // 전체 카테고리(0) 값 조회
            const result = await itemModel.searchInfo_Date(date_send);
@@ -47,13 +54,15 @@ const record = {
            }else{
                addButton = 0;
            }
-
+           console.log(date_send);
+           date_send=replaceAll(date_send,"-",".");
+           console.log(date_send);
            res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_HOME_SUCCESS
               ,{
                   itemInfo : itemInfo,
                   categoryInfo : categoryInfo,
                   isRecorded : isRecorded,
-                  date : date_send,
+                  date : date_send+" "+yoil+"요일",
                   picker : 0,
                   addButton : addButton
               }));
@@ -140,7 +149,9 @@ const record = {
         var DateFunction = new Date();
         var month = (DateFunction.getMonth()+1) <10 ? '0'+(DateFunction.getMonth()+1) : (DateFunction.getMonth()+1);
         var day = DateFunction.getDate() < 10 ? '0'+DateFunction.getDate() : DateFunction.getDate();
-        var date = DateFunction.getFullYear()+'-'+month+'-'+day; 
+        var date = DateFunction.getFullYear()+'.'+month+'.'+day; 
+        var week = new Array('일','월','화','수','목','금','토');
+        var yoil = week[DateFunction.getDay()];
         // date="2020-07-18";
         // userIdx token에서 파싱
         const userIdx = req.idx;
@@ -159,7 +170,7 @@ const record = {
             {
                 itemInfo : itemInfo,
                 categoryInfo : categoryInfo,
-                date : date
+                date : date+" "+yoil+"요일"
             })); 
     },
     modifyItem : async(req,res)=>{
