@@ -16,7 +16,8 @@ module.exports = {
     OUT_OF_VALUE: '파라미터 값이 잘못되었습니다',
 
     // 회원가입
-    AUTH_EMAIL_SUCESS:'이메일 보내기 성공',
+    AUTH_EMAIL_SUCCESS:'이메일 보내기 성공',
+    AUTH_EMAIL_FAIL:'이메일 보내기 실패',
     CREATED_USER: '회원 가입 성공',
     DELETE_USER: '회원 탈퇴 성공',
     ALREADY_ID: '이미 사용중인 아이디입니다.',

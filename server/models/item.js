@@ -278,12 +278,24 @@ const item = {
         }
     },
     pushFlag: async (userIdx, itemIdx) => {
-        const query = `UPDATE ${table_item} SET flag=1 WHERE itemIdx=${itemIdx}`
+        var query = `SELECT itemIdx,flag FROM ${table_item} WHERE itemIdx=${itemIdx}`
         // const query = `UPDATE ${table_item} SET flag=${itemIdx}`
 
         try {
-            const result = await pool.queryParam(query);
-            return result
+            const getFlagData = await pool.queryParam(query);
+            if(getFlagData[0].flag==1){
+                var query = `UPDATE ${table_item} SET flag=0 WHERE itemIdx=${itemIdx}`
+                const result1 = await pool.queryParam(query)
+                var query = `SELECT itemIdx,flag FROM ${table_item} WHERE itemIdx=${itemIdx}`
+                const returnData1 = await pool.queryParam(query)
+                return returnData1
+            }else{
+                var query = `UPDATE ${table_item} SET flag=1 WHERE itemIdx=${itemIdx}`
+                const result1 = await pool.queryParam(query)
+                var query = `SELECT itemIdx,flag FROM ${table_item} WHERE itemIdx=${itemIdx}`
+                const returnData1 = await pool.queryParam(query)
+                return returnData1
+            }
         } catch (err) {
             throw err;
         }

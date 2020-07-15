@@ -214,7 +214,7 @@ exports.pushFlag = async (req, res) => {
     }
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.PUSH_FLAG_SUCCESS, {
-        result: result.protocol41
+        result: result
     }))
 
 }
