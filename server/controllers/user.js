@@ -6,22 +6,7 @@ const crypto = require('crypto');
 const jwt = require('../modules/jwt');
 
 const smtpTransport = require('../config/email').smtpTransport
-const number = require('../config/email').number
-
-exports.updateLoc = async (req, res) => {
-    //const userIdx = req.idx;
-    const userIdx = 1;
-    const {
-        address,
-        latitude,
-        longitude
-    } = req.body;
-    const result = await userModel.updateLoc(userIdx, address, latitude, longitude);
-    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ADD_LOC_SUCCESS, {
-        insertId: result
-    }));
-}
-
+const number = require('../config/email').number;
 
 exports.signup = async (req, res) => {
     const {
@@ -181,7 +166,7 @@ exports.deleteUser = async (req, res) => {
     }
 
     const result = await User.deleteUser(userIdx)
-    console.log(result)
+    //console.log(result)
 
     if (result.protocol41 === false) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))

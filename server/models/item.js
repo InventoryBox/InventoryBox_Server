@@ -7,9 +7,9 @@ const table_user = 'user';
 const table_category = 'category';
 
 const item = {
-    // itemIdx에 해당하는 alarmCnt 찾기
-    getItemAlarmCnt: async (itemIdx) => {
-        const query = `SELECT alarmCnt FROM ${table_item} where itemIdx = ${itemIdx};`;
+    // itemIdx에 해당하는 alarmCnt, memoCnt 찾기
+    getItemCnt: async (itemIdx) => {
+        const query = `SELECT alarmCnt, memoCnt, unit FROM ${table_item} where itemIdx = ${itemIdx};`;
         try {
             const result = await pool.queryParam(query);
             console.log(result);
@@ -56,7 +56,7 @@ const item = {
 
     // 해당 date에 기록한 재료(item)의 정보 조회
     searchInfo_today: async (userIdx) => {
-        const query = `SELECT item.itemIdx,item.name,item.presentCnt,category.categoryIdx FROM ${table_category} INNER JOIN ${table_item} ON category.categoryIdx = item.categoryIdx
+        const query = `SELECT item.itemIdx,item.name,category.categoryIdx FROM ${table_category} INNER JOIN ${table_item} ON category.categoryIdx = item.categoryIdx
              WHERE category.userIdx = ${userIdx} and item.presentCnt> -2;`;
         try {
             const result = await pool.queryParam(query);
@@ -66,12 +66,24 @@ const item = {
             throw err;
         }
     },
+    // 해당 date에 기록한 재료(item)의 정보 조회
+    getItemsInfoToday: async (userIdx) => {
+        const query = `SELECT item.itemIdx,item.name,category.categoryIdx, item.alarmCnt FROM ${table_category} INNER JOIN ${table_item} ON category.categoryIdx = item.categoryIdx
+             WHERE category.userIdx = ${userIdx} and item.presentCnt> -2;`;
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log(' getItemsInfoToday ERROR : ', err);
+            throw err;
+        }
+    },
     // itemIdx에 해당하는 icon img 찾기
     searchIcon_ItemIdx: async (itemIdx) => {
         const query = `SELECT icon.img FROM ${table_icon}, ${table_item}
                         WHERE ${table_icon}.iconIdx = ${table_item}.iconIdx and ${table_item}.itemIdx=${itemIdx}`;
         try {
-            const result = await pool.queryParamArr(query);
+            const result = await pool.queryParam(query);
             return result;
         } catch (err) {
             console.log('searchIcon_ItemIdx ERROR : ', err);
@@ -265,7 +277,7 @@ const item = {
             throw err;
         }
     },
-    pushFlag:async(userIdx,itemIdx)=>{
+    pushFlag: async (userIdx, itemIdx) => {
         const query = `UPDATE ${table_item} SET flag=1 WHERE itemIdx=${itemIdx}`
         // const query = `UPDATE ${table_item} SET flag=${itemIdx}`
 
@@ -276,16 +288,16 @@ const item = {
             throw err;
         }
     },
-    resetFlag : async (userIdx) => {
+    resetFlag: async (userIdx) => {
         const query = `UPDATE ${table_category} INNER JOIN ${table_item} ON category.categoryIdx = item.categoryIdx
         SET flag=0 WHERE category.userIdx = ${userIdx};`;
-   try {
-       const result = await pool.queryParam(query);
-       return result;
-   } catch (err) {
-       console.log('resetFlag ERROR : ', err);
-       throw err;
-   }
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('resetFlag ERROR : ', err);
+            throw err;
+        }
     }
 }
 module.exports = item;

@@ -38,7 +38,6 @@ function leadingZeros(n, digits) {
     }
     return zero + n;
 }
-
 function getDistance(lat1, lon1, lat2, lon2) {
     if ((lat1 == lat2) && (lon1 == lon2))
         return 0;
@@ -59,6 +58,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
 
     return dist;
 }
+
 function dateToKORString(DateFunction) {
     var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
     var date = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
@@ -67,61 +67,57 @@ function dateToKORString(DateFunction) {
 const exchange = {
     // exchange/:filter
     home: async (req, res) => {
-        // const userIdx = req.idx;
-        const userIdx = 1;
+        const userIdx = req.idx;
         const filter = req.params.filter;
 
+        var filterStr;
+        switch (parseInt(filter)) {
+            case 0:
+                filterStr = "uploadDate DESC";
+                break;
+            case 1:
+                filterStr = "postIdx";
+                break;
+            case 2:
+                filterStr = "price ASC";
+                break;
+        }
         const userLoc = await userModel.getUserLoc(userIdx);
-        console.log("home", userIdx, filter, userLoc);
-        var postList;
+        if (userLoc == -1)
+            return res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_LOC_INFO));
 
-        // 최신순
-        if (filter == 0) {
-            postList = await postModel.getPostsInfoByDate();
-            if (postList == -1)
-                return res.status(statusCode.BAD_REQUEST)
-                    .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
-        }
-        // 거리순
-        else if (filter == 1) {
-            postList = await postModel.getPostsInfoByDist();
-            if (postList == -1)
-                return res.status(statusCode.BAD_REQUEST)
-                    .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
-            if (userLoc == -1)
-                return res.status(statusCode.BAD_REQUEST)
-                    .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_LOC_INFO));
+        var postList = await postModel.getAllPostsInfo(filterStr);
+        if (postList == -1)
+            return res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
 
-            postList.sort((a, b) => (getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) > getDistance(b.latitude, b.longitude, userLoc[0].latitude, userLoc[0].longitude)) ? 1 : -1)
-        }
-        // 가격순
-        else if (filter == 2) {
-            postList = await postModel.getPostsInfoByPrice();
-            if (postList == -1)
-                return res.status(statusCode.BAD_REQUEST)
-                    .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
-        }
-
-        // 2km외인 거 빼고 전달
-        var postInfo = new Array();
+        if (filter == 1) postList.sort((a, b) => (getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) > getDistance(b.latitude, b.longitude, userLoc[0].latitude, userLoc[0].longitude)) ? 1 : -1)
         for (var i = 0; i < postList.length; i++) {
             var dist = getDistance(postList[i].latitude, postList[i].longitude, userLoc[0].latitude, userLoc[0].longitude);
-            if (dist <= 2000)
-                postInfo.push({
-                    isFood: postList[i].isFood,
-                    postIdx: postList[i].postIdx,
-                    productImg: postList[i].productImg,
-                    liked: await postModel.searchLike(userIdx, postList[i].postIdx),
-                    price: postList[i].price,
-                    distDiff: dist,
-                    productName: postList[i].productName,
-                    expDate: postList[i].expDate,
-                    uploadDate: dateToKORString(postList[i].uploadDate)
-                })
+            // console.log(postList[i], dist);
+            if (dist <= 2000) {
+                const likes = await postModel.searchLikes(userIdx, postList[i].postIdx);
+                postList[i].distDiff = dist;
+                postList[i].uploadDate = dateToKORString(postList[i].uploadDate);
+                postList[i].likes = likes;
+            }
         }
 
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.POSTS_HOME_SUCCESS, {
-            postInfo: postInfo
+            postInfo: postList
+        }));
+    },
+    updateLoc: async (req, res) => {
+        const userIdx = req.idx;
+        const {
+            address,
+            latitude,
+            longitude
+        } = req.body;
+        const result = await userModel.updateLoc(userIdx, address, latitude, longitude);
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ADD_LOC_SUCCESS, {
+            insertId: result
         }));
     },
     postView: async (req, res) => {
@@ -133,29 +129,29 @@ const exchange = {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
-        const itemInfo = await postModel.searchInfo(postIdx);
-        if(itemInfo.length != 0 )
-        {
-             userInfo = await userModel.userInfo(itemInfo[0].userIdx);
+        if(! await postModel.checkPost(postIdx)){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.OK,resMessage.EXCHANGE_POST_NULL));
         }
-            const uploadDate = dateToKORString(itemInfo[0].uploadDate);
-            itemInfo[0].uploadDate = uploadDate;
+        const itemInfo = await postModel.searchInfo(postIdx);
+        if (itemInfo.length != 0) {
+            userInfo = await userModel.userInfo(itemInfo[0].userIdx);
+        }
+        const uploadDate = dateToKORString(itemInfo[0].uploadDate);
+        itemInfo[0].uploadDate = uploadDate;
         //console.log(itemInfo[0].uploadDate);
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_VIEW_SUCCESS,
-            {
-                itemInfo: itemInfo,
-                userInfo: userInfo
-            }));
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_VIEW_SUCCESS, {
+            itemInfo: itemInfo,
+            userInfo: userInfo
+        }));
     },
     searchUserInfo: async (req, res) => {
         // 토큰에서 현재 userIdx 파싱
         // userIdx = [~~~];
         const userIdx = req.idx;
         const userInfo = await userModel.userInfo(userIdx);
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_USER_INFO_SUCCESS,
-            {
-                userInfo: userInfo
-            })); 
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_USER_INFO_SUCCESS, {
+            userInfo: userInfo
+        }));
 
     },
     postSave: async (req, res) => {
@@ -182,7 +178,7 @@ const exchange = {
             insertIdx: insertIdx
         }));
     },
-    modifyIsSold: async (req, res) => {
+    modifyIsSold: async (req, res) => { 
         const postIdx = req.body.postIdx;
         const isSold = await postModel.getIsSold(postIdx);
         const result = await postModel.modifyIsSold(postIdx, isSold);
@@ -206,31 +202,58 @@ const exchange = {
         return;
     },
     searchPost: async (req, res) => {
-        const productName = req.params.productName;
-        if (!productName) {
+        const userIdx = 1;
+        const keyword = req.params.keyword;
+        const filter = req.params.filter;
+        if (!keyword) {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
-        const result = await postModel.searchPartInfo_search(productName);
-        // token에서 userIdx 파싱
-        const userIdx = req.idx;
-        for (var a in result) {
-            const likes = await postModel.searchLikes(userIdx, result[a].postIdx);
-            //console.log(result[a].uploadDate);
-            const uploadDate = dateToKORString(result[a].uploadDate);
-            result[a].uploadDate = uploadDate;
-            result[a].likes = likes;
-            
+        var filterStr;
+        switch (parseInt(filter)) {
+            case 0:
+                filterStr = "uploadDate DESC";
+                break;
+            case 1:
+                filterStr = "postIdx";
+                break;
+            case 2:
+                filterStr = "price ASC";
+                break;
         }
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SEARCH_SUCCESS, {
-            postInfo: result
+
+        const userLoc = await userModel.getUserLoc(userIdx);
+        if (userLoc == -1)
+            return res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_LOC_INFO));
+
+        var postList = await postModel.searchPartInfo_search(keyword, filterStr);
+        if (postList == -1)
+            return res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
+
+        if (filter == 1) postList.sort((a, b) => (getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) > getDistance(b.latitude, b.longitude, userLoc[0].latitude, userLoc[0].longitude)) ? 1 : -1)
+        for (var i = 0; i < postList.length; i++) {
+            var dist = getDistance(postList[i].latitude, postList[i].longitude, userLoc[0].latitude, userLoc[0].longitude);
+            // console.log(postList[i], dist);
+            if (dist <= 2000) {
+                const likes = await postModel.searchLikes(userIdx, postList[i].postIdx);
+                postList[i].distDiff = dist;
+                postList[i].uploadDate = dateToKORString(postList[i].uploadDate);
+                postList[i].likes = likes;
+            }
+        }
+
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SEARCH_SUCCESS, {
+            postInfo: postList
         }));
-        return;
     },
     modifyPost_View: async (req, res) => {
         const postIdx = await req.params.postIdx;
         const itemInfo = await postModel.searchInfo(postIdx);
         const userInfo = await userModel.userInfo(itemInfo[0].userIdx);
+        const uploadDate = dateToKORString(itemInfo[0].uploadDate);
+        itemInfo[0].uploadDate = uploadDate;
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_MODIFY_POST_SUCCESS, {
             itemInfo: itemInfo,
             userInfo: userInfo
@@ -244,6 +267,8 @@ const exchange = {
         var postInfo = [];
         for (var a in result) {
             const tmp = await postModel.searchInfo_Part(result[a].postIdx);
+            const uploadDate = dateToKORString(tmp[0].uploadDate);
+            tmp[0].uploadDate = uploadDate;
             tmp[0].likes = 1;
             postInfo.push(tmp[0]);
         }
@@ -268,7 +293,6 @@ const exchange = {
         // postIdx에 해당하는 현재 이미지 값과 새로받은 이미지가 다르면 기존거 삭제!
         /*var productImg_before = await postModel.SearchPost(PostIdx);
         if(productImg != productImg_before){
-
         }*/
         if (!productName || !isFood || !price || !productImg || !quantity || !description || !coverPrice || !unit) {
             res.status(statusCode.BAD_REQUEST)
@@ -280,6 +304,5 @@ const exchange = {
         return;
     }
 }
-
 
 module.exports = exchange;

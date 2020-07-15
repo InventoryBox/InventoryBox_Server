@@ -58,7 +58,7 @@ exports.updateOrderMemo = async (req, res) => {
     }
 
     const result = await Item.updateOrderMemo(itemIdx, memoCnt)
-    console.log(result)
+    //console.log(result)
 
     if (result === null) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))

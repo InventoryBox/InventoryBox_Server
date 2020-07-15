@@ -10,22 +10,21 @@ const item = require('../models/item');
 
 const dashboard = {
     //이번주 그래프_홈 /dashboard
-    getAllItems: async (req, res) => {
+    home: async (req, res) => {
         const userIdx = req.idx;
-        //const userIdx = 1;
         const categoryInfo = await categoryModel.searchInfoAll(userIdx);
-        const itemList = await itemModel.searchInfo_today(userIdx);
-        var itemInfo = new Array();
+        const itemList = await itemModel.getItemsInfoToday(userIdx);
         if ((itemList == -1) || !userIdx || (categoryInfo == -1))
             res.status(statusCode.BAD_REQUEST)
             .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
 
+        //get dates of this weeks
         const thisWeek = getDatesOfThisWeek(new Date());
         var thisWeekDates = new Array();
-
         for (i = 0; i < 7; i++)
             thisWeekDates.push(thisWeek[i].getDate().toLocaleString());
 
+        //get stocksInfo and img
         for (var a in itemList) {
             var stocksInfo = new Array(7);
             const itemIdx = itemList[a].itemIdx;
@@ -37,26 +36,20 @@ const dashboard = {
                 else stocksInfo[i] = stockList[0].stocksCnt;
             }
 
-            itemInfo.push({
-                itemIdx: itemList[a].itemIdx,
-                name: itemList[a].name,
-                categoryIdx: itemList[a].categoryIdx,
-                iconImg: icon[0].img,
-                stocks: stocksInfo
-            })
+            itemList[a].iconImg = icon[0].img;
+            itemList[a].stocks = stocksInfo;
         }
 
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_HOME_SUCCESS, {
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.GRAPH_HOME_SUCCESS, {
             thisWeekDates: thisWeekDates,
             categoryInfo: categoryInfo,
-            itemInfo: itemInfo
+            itemInfo: itemList
         }));
     },
 
     // 선택적 그래프 /dashboard/:item/single?year=2020&month=6
     getAMonthInfo: async (req, res) => {
         const userIdx = req.idx;
-        //const userIdx = 1;
         const itemIdx = req.params.item;
         const month = req.query.month;
         const year = req.query.year;
@@ -64,9 +57,9 @@ const dashboard = {
             res.status(statusCode.BAD_REQUEST)
             .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
 
-        const alarmInfo = await itemModel.getItemAlarmCnt(itemIdx);
+        const CntInfo = await itemModel.getItemCnt(itemIdx);
         const weeks = getWeeksStartAndEndInMonth(month - 1, year);
-
+        console.log(weeks);
         var graphInfo = new Array();
         for (var i = 0; i < weeks.length; i++) {
             var dates = getDatesOfTGivenWeek(year, month - 1, i + 1);
@@ -77,46 +70,49 @@ const dashboard = {
                 else stocksInfo[j] = result[0].stocksCnt;
             }
             graphInfo.push({
-                "weekInfo": weeks[i],
+                "startDay": dateToKORString_short(weeks[i].start),
+                "endDay": dateToKORString_short(weeks[i].end),
                 "stocks": stocksInfo
             });
         }
 
         return res.status(statusCode.OK)
             .send(util.success(statusCode.OK, resMessage.GRAPH_SINGLE_SUCCESS, {
-                alarmCnt: alarmInfo[0].alarmCnt,
+                alarmCnt: CntInfo[0].alarmCnt,
+                memoCnt: CntInfo[0].memoCnt,
                 weeksCnt: weeks.length,
                 graphInfo: graphInfo
             }));
     },
 
-    // 비교 그래프 /dashboard/:item/double/:week
+    // 비교 그래프 /dashboard/:item/double/query
     getWeeksInfo: async (req, res) => {
-        const userIdx = req.idx;
-        //const userIdx = 1;
+        //get itemIdx
         const itemIdx = req.params.item;
+        if (!itemIdx)
+            res.status(statusCode.BAD_REQUEST)
+            .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        //get weekInfo
         var weekStr = new Array(2);
         var weeks = new Array(2);
-
         for (var j = 0; j < 2; j++) {
             weekStr[j] = req.query.week[j];
             weeks[j] = weekStr[j].split(",");
+            if (!weeks[j])
+                res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
-
+        //get stocksInfo
         var stocksInfo = new Array(2);
         for (var i = 0; i < 2; i++) {
-
             var dates = getDatesOfTGivenWeek(parseInt(weeks[i][0]), parseInt(weeks[i][1]) - 1, parseInt(weeks[i][2]));
             stocksInfo[i] = new Array(7);
-
             for (var j = 0; j < 7; j++) {
                 const result = await itemModel.getStocksInfoOfDay(itemIdx, dates[j]);
                 if (result == -1) stocksInfo[i][j] = result;
                 else stocksInfo[i][j] = result[0].stocksCnt;
             }
-            continue;
         }
-
         // if the date is in the future or doesn't have the data, we cannot compare those
         for (i = 0; i < 2; i++) {
             var isRecorded = 0;
@@ -124,15 +120,14 @@ const dashboard = {
                 if (stocksInfo[i][j] !== -1) isRecorded = 1;
             if (!isRecorded)
                 return res.status(statusCode.BAD_REQUEST)
-                    .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_DATA));
+                    .send(util.fail(statusCode.BAD_REQUEST, resMessage.GRAPH_NO_DATA));
         }
-
         // if they are same week, we cannot compare those
         if (arrayEquals(stocksInfo[0], stocksInfo[1]))
             return res.status(statusCode.BAD_REQUEST)
-                .send(util.fail(statusCode.BAD_REQUEST, resMessage.SAME_DATE));
-
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.GRAPH_DOUBLE_SUCCESS, {
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.GRAPH_SAME_DATE));
+        // when success
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.GRAPH_DOUBLE_SUCCESS, {
             week1: stocksInfo[0],
             week2: stocksInfo[1]
         }));
@@ -142,7 +137,6 @@ const dashboard = {
     // 발주정보 수정 /dashboard/:item/cnt-modify
     updateCnt: async (req, res) => {
         const userIdx = req.idx;
-        //const userIdx = 1;
         const itemIdx = req.params.item;
         const {
             alarmCnt,
@@ -157,8 +151,12 @@ const dashboard = {
         await itemModel.modifyItemCnt(itemIdx, alarmCnt, memoCnt);
 
         return res.status(statusCode.OK)
-            .send(util.success(statusCode.OK, resMessage.ITEM_UPDATE_SUCCESS));
+            .send(util.success(statusCode.OK, resMessage.GRAPH_UPDATE_SUCCESS));
     }
+}
+
+function dateToKORString_short(DateFunction) {
+    return (DateFunction.getMonth() + 1) + '월 ' + DateFunction.getDate() + '일';
 }
 
 function getDatesOfThisWeek(current) {
@@ -212,7 +210,6 @@ function getWeeksStartAndEndInMonth(month, year) {
             date += 6;
         }
     }
-    console.log(weeks.length);
     return weeks;
 }
 
@@ -253,5 +250,12 @@ function dateToString(DateFunction) {
     var date = DateFunction.getFullYear() + '-' + month + '-' + day;
     return date;
 }
+
+function dateToKORString(DateFunction) {
+    var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
+    var date = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
+    return DateFunction.getFullYear() + '년 ' + month + '월 ' + date + '일';
+}
+
 
 module.exports = dashboard;
