@@ -41,18 +41,6 @@
 * 기록수정 및 오늘재고기록 저장 기능 구현
 * 카테고리 및 재료 변동 저장 기능 구현
 
-#### :surfing_woman: 백선혜 
-
-* DB 설계 및 구축
-* 더미데이터 관리
-* 카테고리별 재고량 그래프 기능 구현
-* 한 아이템 주별 선택 그래프 구현
-* 한 아이템 주별 비교 그래프 구현
-* 한 아이템 발주정보 수정 기능 구현
-* 재고교환 홈화면 거리순, 가격순, 최신순 기능 구현
-* 재고교환 검색 거리순, 가격순, 최신순 기능 구현
-* 재고교환 사용자 사업장 주소 수정 기능 구현
-
 #### :surfing_man: 임형준
 
 * DB 설계 및 구축
@@ -64,6 +52,18 @@
 * 홈화면 기능 구현
 * 재고 정보 관련 기능 구현
 * 소셜 로그인 기능 구현 ( 보류 )
+
+#### :surfing_woman: 백선혜 
+
+* DB 설계 및 구축
+* 더미데이터 관리
+* 카테고리별 재고량 그래프 기능 구현
+* 한 아이템 주별 선택 그래프 구현
+* 한 아이템 주별 비교 그래프 구현
+* 한 아이템 발주정보 수정 기능 구현
+* 재고교환 홈화면 거리순, 가격순, 최신순 기능 구현
+* 재고교환 검색 거리순, 가격순, 최신순 기능 구현
+* 재고교환 사용자 사업장 주소 수정 기능 구현
 
 <br>
 
@@ -81,7 +81,6 @@
 
 사용 패키지(모듈)은 다음과 같습니다.
 
-* **geocoder** : 주소를 위도, 경도의 값으로 변경가능한 구글맵 API
 * **crypto** : 패스워드 암호화 및 인증 
 * **express** : 웹, 서버 개발 프레임워크
 * **express-formidable** : form-data 파싱 도구
@@ -91,34 +90,22 @@
 * **rand-token** : 랜덤 토큰 생성 도구
 
 ``` json
-"dependencies": {
-    "aws-sdk": "^2.596.0",
-    "chai": "^4.2.0",
-    "cheerio-httpcli": "^0.7.4",
+ "dependencies": {
+    "aws-sdk": "^2.713.0",
     "cookie-parser": "~1.4.4",
-    "crypto": "^1.0.1",
     "debug": "~2.6.9",
-    "ejs": "~2.6.1",
-    "expect": "^24.9.0",
     "express": "~4.16.1",
-    "express-formidable": "^1.2.0",
     "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
     "jsonwebtoken": "^8.5.1",
-    "moment": "^2.24.0",
     "morgan": "~1.9.1",
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
-    "multiparty": "^4.2.1",
-    "nodemon": "^2.0.2",
-    "path": "^0.12.7",
-    "rand-token": "^0.4.0",
-    "request": "^2.88.0",
-    "should": "^13.2.3",
-    "supertest": "^4.0.2",
-    "uuid": "^3.3.3"
-  },
-  "devDependencies": {
-    "mocha": "^6.2.2"
+    "nodemailer": "^6.4.10",
+    "passport": "^0.4.1",
+    "passport-kakao": "^1.0.0",
+    "promise-mysql": "^4.1.3",
+    "rand-token": "^1.0.1"
   }
 ```
 
@@ -162,5 +149,6 @@
 ## :computer: 개발자
 
 * [김정욱](https://github.com/neity16)
-* [백선혜](https://github.com/100sun)
 * [임형준](https://github.com/camel-man-ims)
+* [백선혜](https://github.com/100sun)
+
