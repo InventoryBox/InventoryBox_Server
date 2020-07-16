@@ -65,7 +65,7 @@ function dateTodotString(DateFunction) {
     return DateFunction.getFullYear() + '.' + month + '.' + date;
 }
 const exchange = {
-    // exchange/:filter
+    // exchange/:filter 
     home: async (req, res) => {
         const userIdx = req.idx;
         const filter = req.params.filter;
@@ -150,7 +150,7 @@ const exchange = {
         const userIdx = req.idx;
         const userInfo = await userModel.userInfo(userIdx);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_USER_INFO_SUCCESS, {
-            userInfo: userInfo
+            userInfo: userInfo[0]
         }));
 
     },

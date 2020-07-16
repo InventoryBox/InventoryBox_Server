@@ -167,7 +167,6 @@ exports.fiveDays = async (req, res) => {
     const userIdx = req.idx;
     const itemIdx = req.params.itemIdx;
 
-
     function dateToString(DateFunction) {
         var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
         var day = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
@@ -194,7 +193,7 @@ exports.fiveDays = async (req, res) => {
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.GET_FIVE_DAYS_SUCCESS, {
         stocksInfo: stocksInfo
-    }))
+    }));
 
 }
 
