@@ -59,10 +59,10 @@ function getDistance(lat1, lon1, lat2, lon2) {
     return dist;
 }
 
-function dateToKORString(DateFunction) {
+function dateTodotString(DateFunction) {
     var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
     var date = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
-    return DateFunction.getFullYear() + '년 ' + month + '월 ' + date + '일';
+    return DateFunction.getFullYear() + '. ' + month + '. ' + date;
 }
 const exchange = {
     // exchange/:filter
@@ -136,7 +136,7 @@ const exchange = {
         if (itemInfo.length != 0) {
             userInfo = await userModel.userInfo(itemInfo[0].userIdx);
         }
-        const uploadDate = dateToKORString(itemInfo[0].uploadDate);
+        const uploadDate = dateTodotString(itemInfo[0].uploadDate);
         itemInfo[0].uploadDate = uploadDate;
         //console.log(itemInfo[0].uploadDate);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_VIEW_SUCCESS, {
