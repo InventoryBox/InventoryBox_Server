@@ -121,7 +121,7 @@
 
 ## :orange_book: DB ERD
 
-![ERD](https://raw.githubusercontent.com/InventoryBox/InventoryBox_Server/kjw/img/2020-07-14%20ERD.png)
+![ERD](https://github.com/InventoryBox/InventoryBox_Server/blob/master/img/ERD.JPG)
 
 <br>
 
