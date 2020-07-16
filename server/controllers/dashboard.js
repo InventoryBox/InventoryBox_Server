@@ -57,9 +57,9 @@ const dashboard = {
             res.status(statusCode.BAD_REQUEST)
             .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
 
-        const alarmInfo = await itemModel.getItemAlarmCnt(itemIdx);
+        const CntInfo = await itemModel.getItemCnt(itemIdx);
         const weeks = getWeeksStartAndEndInMonth(month - 1, year);
-
+        console.log(weeks);
         var graphInfo = new Array();
         for (var i = 0; i < weeks.length; i++) {
             var dates = getDatesOfTGivenWeek(year, month - 1, i + 1);
@@ -70,14 +70,16 @@ const dashboard = {
                 else stocksInfo[j] = result[0].stocksCnt;
             }
             graphInfo.push({
-                "weekInfo": weeks[i],
+                "startDay": dateToKORString_short(weeks[i].start),
+                "endDay": dateToKORString_short(weeks[i].end),
                 "stocks": stocksInfo
             });
         }
 
         return res.status(statusCode.OK)
             .send(util.success(statusCode.OK, resMessage.GRAPH_SINGLE_SUCCESS, {
-                alarmCnt: alarmInfo[0].alarmCnt,
+                alarmCnt: CntInfo[0].alarmCnt,
+                memoCnt: CntInfo[0].memoCnt,
                 weeksCnt: weeks.length,
                 graphInfo: graphInfo
             }));
@@ -151,6 +153,10 @@ const dashboard = {
         return res.status(statusCode.OK)
             .send(util.success(statusCode.OK, resMessage.GRAPH_UPDATE_SUCCESS));
     }
+}
+
+function dateToKORString_short(DateFunction) {
+    return (DateFunction.getMonth() + 1) + '월 ' + DateFunction.getDate() + '일';
 }
 
 function getDatesOfThisWeek(current) {
