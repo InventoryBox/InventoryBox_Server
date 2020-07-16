@@ -16,7 +16,6 @@ router.post('/item-add', authUtil, recordController.itemAdd_Save);
 router.post('/category-add', authUtil, recordController.addCategory);
 
 // 카테고리 삭제 구현
-
 // 재료 삭제
 router.delete('/item-delete', authUtil, recordController.deleteItem);
 // 오늘 재고 기록하기 화면 조회
