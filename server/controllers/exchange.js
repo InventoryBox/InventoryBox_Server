@@ -96,7 +96,7 @@ const exchange = {
         if (filter == 1) postList.sort((a, b) => (getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) > getDistance(b.latitude, b.longitude, userLoc[0].latitude, userLoc[0].longitude)) ? 1 : -1)
         for (var i = 0; i < postList.length; i++) {
             var dist = getDistance(postList[i].latitude, postList[i].longitude, userLoc[0].latitude, userLoc[0].longitude);
-            console.log(postList[i], dist);
+            console.log(dist);
             if (dist <= 2000) {
                 const likes = await postModel.searchLikes(userIdx, postList[i].postIdx);
                 postList[i].distDiff = dist;
@@ -105,9 +105,11 @@ const exchange = {
                 postList_re.push(postList[i]);
             }
         }
-
+        //addressInfo 구하기
+        var addressInfo = await userModel.getUserByIdx(userIdx);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.POSTS_HOME_SUCCESS, {
-            postInfo: postList_re
+            postInfo: postList_re,
+            addressInfo : addressInfo[0].location
         }));
     },
     updateLoc: async (req, res) => {
