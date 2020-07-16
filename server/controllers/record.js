@@ -126,9 +126,7 @@ const record = {
         // var date="2020-07-18";
 
         await itemModel.addDate_Item(-1, date, result);
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_ITEMADD_DB_SUCCESS, {
-            insertId: result
-        }));
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_ITEMADD_DB_SUCCESS}));
     },
     /*searchCategory : async(req,res)=>{
         const categoryInfo = await categoryModel.searchInfoAll();
