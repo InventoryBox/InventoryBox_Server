@@ -150,7 +150,7 @@ const exchange = {
         const userIdx = req.idx;
         const userInfo = await userModel.userInfo(userIdx);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_USER_INFO_SUCCESS, {
-            userInfo: userInfo
+            userInfo: userInfo[0]
         }));
 
     },

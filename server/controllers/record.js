@@ -215,10 +215,8 @@ const record = {
         res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_DELETE_ITEM_SUCCESS));
     },
     addCategory : async(req,res)=>{
-        const {
-            name,
-            userIdx
-        } = req.body;
+        const name = req.body;
+        const userIdx = req.idx;
         const result = await categoryModel.addCategory(name,userIdx);
         res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_ADD_CATEGORY_SUCCESS,
             {
