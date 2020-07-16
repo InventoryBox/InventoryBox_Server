@@ -38,6 +38,18 @@ const item = {
             throw err;
         }
     },
+         // date에 해당하는 item들의 정보 출력
+    searchInfo_Date: async (date) => {
+        const query = `SELECT item.itemIdx,item.name,item.alarmCnt,item.unit,date.stocksCnt,item.categoryIdx
+                        FROM ${table_item}, ${table_date} WHERE ${table_item}.itemIdx = ${table_date}.itemIdx and date like '${date}%'`;
+        try {
+            const result = await pool.queryParamArr(query);
+            return result;
+        } catch (err) {
+            console.log('searchInfo_Date ERROR : ', err);
+            throw err;
+        }
+    },
 
     // 해당 date에 기록한 재료(item)의 정보 조회
     searchInfo_today: async (userIdx) => {
