@@ -6,7 +6,7 @@ const table_user = 'user';
 const post = {
 
     getAllPostsInfo: async (filterStr) => {
-        const query = `SELECT postIdx, productImg, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by ${filterStr}`;
+        const query = `SELECT postIdx, productImg, location, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by ${filterStr}`;
         try {
             const result = await pool.queryParam(query);
             return (!result.length) ? -1 : result;
@@ -167,7 +167,7 @@ const post = {
             throw err;
         }
     },
-    checkPost : async (postIdx) => {
+    checkPost: async (postIdx) => {
         const query = `SELECT * FROM ${table_post} WHERE postIdx=${postIdx}`;
         try {
             const result = await pool.queryParam(query);
