@@ -92,20 +92,22 @@ const exchange = {
             return res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
 
+        postList_re = [];
         if (filter == 1) postList.sort((a, b) => (getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) > getDistance(b.latitude, b.longitude, userLoc[0].latitude, userLoc[0].longitude)) ? 1 : -1)
         for (var i = 0; i < postList.length; i++) {
             var dist = getDistance(postList[i].latitude, postList[i].longitude, userLoc[0].latitude, userLoc[0].longitude);
-            // console.log(postList[i], dist);
+            console.log(postList[i], dist);
             if (dist <= 2000) {
                 const likes = await postModel.searchLikes(userIdx, postList[i].postIdx);
                 postList[i].distDiff = dist;
                 postList[i].uploadDate = dateToKORString(postList[i].uploadDate);
                 postList[i].likes = likes;
+                postList_re.push(postList[i]);
             }
         }
 
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.POSTS_HOME_SUCCESS, {
-            postInfo: postList
+            postInfo: postList_re
         }));
     },
     updateLoc: async (req, res) => {
@@ -138,6 +140,12 @@ const exchange = {
         }
         const uploadDate = dateTodotString(itemInfo[0].uploadDate);
         itemInfo[0].uploadDate = uploadDate;
+
+        // 거리 계산
+        const userLoc = await userModel.getUserLoc(req.idx);
+        var user = await userModel.getUserByIdx(itemInfo[0].userIdx);
+        var dist = getDistance(user[0].latitude, user[0].longitude, userLoc[0].latitude, userLoc[0].longitude);
+        itemInfo[0].distDiff = dist;
         //console.log(itemInfo[0].uploadDate);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_VIEW_SUCCESS, {
             itemInfo: itemInfo[0],
