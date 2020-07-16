@@ -82,6 +82,7 @@ const exchange = {
                 filterStr = "price ASC";
                 break;
         }
+        
         const userLoc = await userModel.getUserLoc(userIdx);
         if (userLoc == -1)
             return res.status(statusCode.BAD_REQUEST)
