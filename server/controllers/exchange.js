@@ -62,7 +62,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
 function dateTodotString(DateFunction) {
     var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
     var date = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
-    return DateFunction.getFullYear() + '. ' + month + '.' + date;
+    return DateFunction.getFullYear() + '.' + month + '.' + date;
 }
 const exchange = {
     // exchange/:filter
