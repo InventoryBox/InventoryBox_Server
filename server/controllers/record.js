@@ -6,6 +6,7 @@ const resMessage = require('../modules/responseMessage');
 const encrypt = require('../modules/encryption');
 const jwt = require('../modules/jwt');
 const database = require('../config/database');
+const { searchInfo } = require('../models/item');
 
 function replaceAll(str, searchStr, replaceStr) {
     return str.split(searchStr).join(replaceStr);
@@ -24,10 +25,8 @@ const record = {
         var date_is = DateFunction.getFullYear()+'-'+month+'-'+day;
         //console.log(date_is);
         var isRecorded = await itemModel.searchIsRecorded(date_is);
-
-        var week = new Array('일','월','화','수','목','금','토');
-        var yoil = week[DateFunction.getDay()];
         // params 값 확인
+        var week = new Array('일','월','화','수','목','금','토');
         if( !date )
         {
             res.status(statusCode.BAD_REQUEST)
@@ -48,6 +47,8 @@ const record = {
            }
            var itemInfo = result;
            // isRecorded 정보 조회
+           const lastDay = new Date(date_send);
+           var yoil = week[lastDay.getDay()];
            if(date_is == date_send)
            {
                addButton = 1;

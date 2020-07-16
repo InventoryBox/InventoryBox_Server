@@ -57,9 +57,9 @@ const dashboard = {
             res.status(statusCode.BAD_REQUEST)
             .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
 
-        const CntInfo = await itemModel.getItemCnt(itemIdx);
+        const alarmInfo = await itemModel.getItemAlarmCnt(itemIdx);
         const weeks = getWeeksStartAndEndInMonth(month - 1, year);
-        console.log(weeks);
+
         var graphInfo = new Array();
         for (var i = 0; i < weeks.length; i++) {
             var dates = getDatesOfTGivenWeek(year, month - 1, i + 1);
@@ -70,16 +70,14 @@ const dashboard = {
                 else stocksInfo[j] = result[0].stocksCnt;
             }
             graphInfo.push({
-                "startDay": dateToKORString_short(weeks[i].start),
-                "endDay": dateToKORString_short(weeks[i].end),
+                "weekInfo": weeks[i],
                 "stocks": stocksInfo
             });
         }
 
         return res.status(statusCode.OK)
             .send(util.success(statusCode.OK, resMessage.GRAPH_SINGLE_SUCCESS, {
-                alarmCnt: CntInfo[0].alarmCnt,
-                memoCnt: CntInfo[0].memoCnt,
+                alarmCnt: alarmInfo[0].alarmCnt,
                 weeksCnt: weeks.length,
                 graphInfo: graphInfo
             }));
@@ -153,10 +151,6 @@ const dashboard = {
         return res.status(statusCode.OK)
             .send(util.success(statusCode.OK, resMessage.GRAPH_UPDATE_SUCCESS));
     }
-}
-
-function dateToKORString_short(DateFunction) {
-    return (DateFunction.getMonth() + 1) + '월 ' + DateFunction.getDate() + '일';
 }
 
 function getDatesOfThisWeek(current) {
@@ -250,12 +244,5 @@ function dateToString(DateFunction) {
     var date = DateFunction.getFullYear() + '-' + month + '-' + day;
     return date;
 }
-
-function dateToKORString(DateFunction) {
-    var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
-    var date = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
-    return DateFunction.getFullYear() + '년 ' + month + '월 ' + date + '일';
-}
-
 
 module.exports = dashboard;
