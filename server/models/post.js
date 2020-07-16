@@ -30,7 +30,6 @@ const post = {
         const query = `SELECT postIdx,productImg,productName,quantity,isFood,price,description,expDate,uploadDate,isSold,coverPrice,unit,userIdx FROM ${table_post} WHERE postIdx=${postIdx}`;
         try {
             const result = await pool.queryParam(query);
-            console.log(result);
             return result;
         } catch (err) {
             console.log('searchInfo ERROR : ', err);
