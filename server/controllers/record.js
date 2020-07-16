@@ -164,7 +164,7 @@ const record = {
         for(var a in result)
         {
          const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
-         result[a].img = iconImg.img;   
+         result[a].img = iconImg[0].img;   
         }
         var itemInfo = result;
         res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_TODAY_VIEW_SUCCESS,
