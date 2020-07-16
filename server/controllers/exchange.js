@@ -144,7 +144,7 @@ const exchange = {
             userInfo: userInfo[0]
         }));
     },
-    searchUserInfo: async (req, res) => {
+    searchUserInfo: async (req, res) => { 
         // 토큰에서 현재 userIdx 파싱
         // userIdx = [~~~];
         const userIdx = req.idx;
