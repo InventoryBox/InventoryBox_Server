@@ -12,6 +12,9 @@
 
 * [API 문서](https://github.com/InventoryBox/InventoryBox_Server/wiki)</b>
 
+* [기능명세서 및 API진척도](https://github.com/InventoryBox/InventoryBox_Server/wiki)</b>
+
+
 <br>
 
 ## :bookmark_tabs: 프로젝트 설명
