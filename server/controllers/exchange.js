@@ -140,8 +140,8 @@ const exchange = {
         itemInfo[0].uploadDate = uploadDate;
         //console.log(itemInfo[0].uploadDate);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_VIEW_SUCCESS, {
-            itemInfo: itemInfo,
-            userInfo: userInfo
+            itemInfo: itemInfo[0],
+            userInfo: userInfo[0]
         }));
     },
     searchUserInfo: async (req, res) => {
