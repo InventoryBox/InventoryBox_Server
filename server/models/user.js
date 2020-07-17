@@ -16,22 +16,18 @@ const user = {
         }
     },
     getUserLoc: async (userIdx) => {
-        console.log(userIdx)
         const query = `SELECT latitude, longitude from ${table_user} where userIdx = ${userIdx}`;
         try {
             const result = await pool.queryParam(query);
-            console.log(result);
             return (result.length < 0) ? -1 : result;
         } catch (err) {
             throw err;
         }
     },
     updateLoc: async (userIdx, address, latitude, longitude) => {
-        console.log(userIdx)
         const query = `UPDATE ${table_user} SET location = "${address}", latitude = ${latitude}, longitude = ${longitude} where userIdx = ${userIdx}`;
         try {
             const result = await pool.queryParam(query);
-            console.log("updateLoc", result);
             return;
         } catch (err) {
             throw err;
@@ -42,11 +38,9 @@ const user = {
         const values = [email, password, salt, nickname, repName, coName, phoneNumber]
 
         const query = `INSERT INTO ${table}(${fields}) VALUES(?,?,?,?,?,?,?)`;
-        try{
-            const result = await pool.queryParamArr(query,values);
-
+        try {
+            const result = await pool.queryParamArr(query, values);
             const insertIdx = result.insertId;
-            console.log(insertIdx)
             return insertIdx;
         } catch (err) {
             throw err
@@ -169,7 +163,7 @@ const user = {
     }
 }
 
-module.exports=user;
+module.exports = user;
 
 /*
 보류
