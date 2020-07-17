@@ -26,6 +26,7 @@ module.exports = {
     SALT_PASSWORD_SUCCESS: '비밀번호 및 SALT값 넣기 성공',
 
     //아이템
+    UPDATE_ORDER_MEMO_SUCCESS:'IOS 재고 메모 수정 성공',
     PUSH_FLAG_SUCCESS: 'flag 넣기 성공',
 
     // 로그인

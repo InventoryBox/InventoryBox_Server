@@ -86,21 +86,6 @@ exports.getItemInfo = async (req, res) => {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
-    // for(var a in result)
-    // {
-    //     result[a].img1 = img1;
-    // }  추가
-
-    // for(var a in result)
-    // {
-    //     delete result[a].iconIdx
-    //     delete result[a].categoryIdx
-    //     delete result[a].userIdx
-    // }
-
-    // console.log(typeof(result[0].date))
-
-
 
 
     // console.log(stocksInfo)
@@ -216,4 +201,24 @@ exports.pushFlag = async (req, res) => {
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.PUSH_FLAG_SUCCESS))
 
+}
+
+exports.updateOrderMemoIOS = async(req,res)=>{
+    const userIdx = req.idx;
+    if (userIdx === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE));
+    }
+    const {
+        itemInfo
+    } = req.body
+    for (var a in itemInfo) {
+        if (!itemInfo[a].itemIdx || !itemInfo[a].memoCnt) {
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
+        }
+        const result = await Item.updateOrderMemo(itemInfo[a].itemIdx, itemInfo[a].memoCnt);
+        if (result === null) {
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
+        }
+    }
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.UPDATE_MEMO_COUNT_SUCCESS))
 }

@@ -23,5 +23,8 @@ router.get('/five-days/:itemIdx',authUtil,itemController.fiveDays)
 // flag 넣기
 router.put('/flag/:itemIdx',authUtil,itemController.pushFlag)
 
+// 발주 메모 정보 수정 IOS
+router.put('/order/memo/ios',authUtil,itemController.updateOrderMemoIOS)
+
 
 module.exports=router;

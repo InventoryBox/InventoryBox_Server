@@ -39,7 +39,6 @@ router.post('/insertSalt', userController.insertSalt)
 
 router.delete('/user', authUtil, userController.deleteUser)
 
-
 /*
 // 카카오 ( 보류 )
 router.get("/kakao", passport.authenticate("kakao-login"));
