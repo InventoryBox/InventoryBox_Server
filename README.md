@@ -14,7 +14,7 @@
 
 * [API 문서](https://github.com/InventoryBox/InventoryBox_Server/wiki)</b>
 
-* [기능명세서 및 API진척도](https://github.com/InventoryBox/InventoryBox_Server/wiki)</b>
+* [API진척도 & Postman Runner](https://github.com/InventoryBox/InventoryBox_Server/wiki)</b>
 
 
 <br>
