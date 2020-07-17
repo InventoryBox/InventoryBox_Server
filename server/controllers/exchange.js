@@ -59,7 +59,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
     return dist;
 }
 
-function dateTodotString(DateFunction) {
+function dateToDotString(DateFunction) {
     var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
     var date = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
     return DateFunction.getFullYear() + '.' + month + '.' + date;
@@ -139,7 +139,7 @@ const exchange = {
         if (itemInfo.length != 0) {
             userInfo = await userModel.userInfo(itemInfo[0].userIdx);
         }
-        const uploadDate = dateTodotString(itemInfo[0].uploadDate);
+        const uploadDate = dateToDotString(itemInfo[0].uploadDate);
         itemInfo[0].uploadDate = uploadDate;
 
         // 거리 계산

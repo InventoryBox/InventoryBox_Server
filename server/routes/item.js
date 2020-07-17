@@ -23,11 +23,5 @@ router.get('/five-days/:itemIdx',authUtil,itemController.fiveDays)
 // flag 넣기
 router.put('/flag/:itemIdx',authUtil,itemController.pushFlag)
 
-// router.get('/name/:name',authUtil,itemController.getItemIdx)
-
-//
-
-// router.get('/',authUtil,itemController.getAllItem)
-
 
 module.exports=router;
