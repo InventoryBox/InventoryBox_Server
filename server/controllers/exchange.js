@@ -107,7 +107,7 @@ const exchange = {
         }
         //addressInfo 구하기
         var addressInfo = await userModel.getUserByIdx(userIdx);
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.POSTS_HOME_SUCCESS, {
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_HOME_SUCCESS, {
             postInfo: postList_re,
             addressInfo: addressInfo[0].location
         }));
