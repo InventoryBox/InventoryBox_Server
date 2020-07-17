@@ -1,8 +1,6 @@
 ## API 진척도
 
-* IMG1 ![API_1](https://raw.githubusercontent.com/InventoryBox/InventoryBox_Server/master/img/api_1.png)
-
-* IMG2 ![API_2](https://raw.githubusercontent.com/InventoryBox/InventoryBox_Server/master/img/api_2.png)
+* IMG1 ![API_1](https://raw.githubusercontent.com/InventoryBox/InventoryBox_Server/master/img/api_modify.png)
 
 ## Postman Runner
 
