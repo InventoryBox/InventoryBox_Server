@@ -82,7 +82,6 @@ const exchange = {
                 filterStr = "price ASC";
                 break;
         }
-        
         const userLoc = await userModel.getUserLoc(userIdx);
         if (userLoc == -1)
             return res.status(statusCode.BAD_REQUEST)
@@ -175,7 +174,7 @@ const exchange = {
             description,
             coverPrice,
             unit
-        } = req.body;
+        } = req.body; 
         if (!productName || !isFood || !price || !productImg || !quantity || !description || !coverPrice || !unit) {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
