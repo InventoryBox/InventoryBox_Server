@@ -56,7 +56,7 @@ const record = {
             }
             //console.log(date_send);
             date_send = replaceAll(date_send, "-", ".");
-            console.log(date_send);
+            //            console.log(date_send);
             res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_HOME_SUCCESS, {
                 itemInfo: itemInfo,
                 categoryInfo: categoryInfo,
