@@ -92,6 +92,7 @@ exports.getItemInfo = async (req, res) => {
         var date = DateFunction.getFullYear() + '-' + month + '-' + day;
         return date;
     }
+
     function pre5daysFromDay(lastDay) {
         var prev_dates = new Array();
         for (var i = 0; i < 5; i++)
@@ -171,13 +172,9 @@ exports.pushFlag = async (req, res) => {
     }
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.PUSH_FLAG_SUCCESS))
-<<<<<<< HEAD
-=======
-
 }
->>>>>>> e21a3f82d4bc015c8494d6f1edb9ffa238ff531e
 
-exports.updateOrderMemoIOS = async(req,res)=>{
+exports.updateOrderMemoIOS = async (req, res) => {
     const userIdx = req.idx;
     if (userIdx === null) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE));
