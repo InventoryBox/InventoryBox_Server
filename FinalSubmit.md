@@ -9,3 +9,5 @@
 * Success1 ![Postman Runner1](https://raw.githubusercontent.com/InventoryBox/InventoryBox_Server/master/img/postman_1.JPG)
 
 * Success2 ![Postman Runner2](https://raw.githubusercontent.com/InventoryBox/InventoryBox_Server/master/img/postman_2JPG.JPG)
+
+* Fail! [Postman Runner3](https://raw.githubusercontent.com/InventoryBox/InventoryBox_Server/master/img/api_fail.jpeg)
