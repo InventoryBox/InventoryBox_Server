@@ -51,6 +51,12 @@ const user = {
         try {
             const userData = await pool.queryParam(query);
             const hashedPw = crypto.pbkdf2Sync(password, userData[0].salt, 1, 32, 'sha512').toString('hex')
+<<<<<<< HEAD
+=======
+
+            // console.log(userData[0].password)
+            // console.log(hashedPw)
+>>>>>>> e21a3f82d4bc015c8494d6f1edb9ffa238ff531e
             if (userData[0].password === hashedPw) {
                 return true
             } else {

@@ -54,9 +54,15 @@ const record = {
             } else {
                 addButton = 0;
             }
+<<<<<<< HEAD
             console.log(date_send);
             date_send = replaceAll(date_send, "-", ".");
             console.log(date_send);
+=======
+            //console.log(date_send);
+            date_send = replaceAll(date_send, "-", ".");
+            //            console.log(date_send);
+>>>>>>> e21a3f82d4bc015c8494d6f1edb9ffa238ff531e
             res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_HOME_SUCCESS, {
                 itemInfo: itemInfo,
                 categoryInfo: categoryInfo,
@@ -76,7 +82,7 @@ const record = {
             }
             var itemInfo = result;
             // isRecorded 정보 조회
-            var isRecorded = await itemModel.searchIsRecorded(date);
+            var isRecorded = await itemModel.searchIsRecorded(date_is);
             // pircker = 1
             // addButton 계산
             if (date == date_is) {
@@ -123,6 +129,10 @@ const record = {
         var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
         var day = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
         var date = DateFunction.getFullYear() + '-' + month + '-' + day;
+<<<<<<< HEAD
+=======
+
+>>>>>>> e21a3f82d4bc015c8494d6f1edb9ffa238ff531e
         // var date="2020-07-18";
 
         await itemModel.addDate_Item(-1, date, result);
@@ -198,12 +208,19 @@ const record = {
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_DELETE_ITEM_SUCCESS));
     },
     addCategory: async (req, res) => {
+<<<<<<< HEAD
         const name = req.body;
         const userIdx = req.idx;
         const result = await categoryModel.addCategory(name, userIdx);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_ADD_CATEGORY_SUCCESS, {
             insertId: result
         }));
+=======
+        const name = req.body.name;
+        const userIdx = req.idx;
+        const result = await categoryModel.addCategory(name, userIdx);
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_ADD_CATEGORY_SUCCESS));
+>>>>>>> e21a3f82d4bc015c8494d6f1edb9ffa238ff531e
     },
     modifyView: async (req, res) => {
         const date = req.params.date;

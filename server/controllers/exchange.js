@@ -59,7 +59,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
     return dist;
 }
 
-function dateTodotString(DateFunction) {
+function dateToDotString(DateFunction) {
     var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
     var date = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
     return DateFunction.getFullYear() + '.' + month + '.' + date;
@@ -82,6 +82,7 @@ const exchange = {
                 filterStr = "price ASC";
                 break;
         }
+        
         const userLoc = await userModel.getUserLoc(userIdx);
         if (userLoc == -1)
             return res.status(statusCode.BAD_REQUEST)
@@ -92,20 +93,24 @@ const exchange = {
             return res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
 
+        var postList_re = [];
         if (filter == 1) postList.sort((a, b) => (getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) > getDistance(b.latitude, b.longitude, userLoc[0].latitude, userLoc[0].longitude)) ? 1 : -1)
         for (var i = 0; i < postList.length; i++) {
             var dist = getDistance(postList[i].latitude, postList[i].longitude, userLoc[0].latitude, userLoc[0].longitude);
-            // console.log(postList[i], dist);
+            console.log(dist);
             if (dist <= 2000) {
                 const likes = await postModel.searchLikes(userIdx, postList[i].postIdx);
                 postList[i].distDiff = dist;
                 postList[i].uploadDate = dateToKORString(postList[i].uploadDate);
                 postList[i].likes = likes;
+                postList_re.push(postList[i]);
             }
         }
-
+        //addressInfo 구하기
+        var addressInfo = await userModel.getUserByIdx(userIdx);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.POSTS_HOME_SUCCESS, {
-            postInfo: postList
+            postInfo: postList_re,
+            addressInfo : addressInfo[0].location
         }));
     },
     updateLoc: async (req, res) => {
@@ -116,9 +121,7 @@ const exchange = {
             longitude
         } = req.body;
         const result = await userModel.updateLoc(userIdx, address, latitude, longitude);
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ADD_LOC_SUCCESS, {
-            insertId: result
-        }));
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ADD_LOC_SUCCESS));
     },
     postView: async (req, res) => {
         const postIdx = req.params.postIdx;
@@ -136,8 +139,14 @@ const exchange = {
         if (itemInfo.length != 0) {
             userInfo = await userModel.userInfo(itemInfo[0].userIdx);
         }
-        const uploadDate = dateTodotString(itemInfo[0].uploadDate);
+        const uploadDate = dateToDotString(itemInfo[0].uploadDate);
         itemInfo[0].uploadDate = uploadDate;
+
+        // 거리 계산
+        const userLoc = await userModel.getUserLoc(req.idx);
+        var user = await userModel.getUserByIdx(itemInfo[0].userIdx);
+        var dist = getDistance(user[0].latitude, user[0].longitude, userLoc[0].latitude, userLoc[0].longitude);
+        itemInfo[0].distDiff = dist;
         //console.log(itemInfo[0].uploadDate);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_VIEW_SUCCESS, {
             itemInfo: itemInfo[0],
@@ -155,7 +164,8 @@ const exchange = {
 
     },
     postSave: async (req, res) => {
-        const productImg = req.file.location;
+        //const productImg = req.file.location;
+        const productImg = "http://~";
         const {
             productName,
             isFood,
@@ -174,9 +184,7 @@ const exchange = {
         // token에서 userIdx 파싱
         const userIdx = req.idx;
         const insertIdx = await postModel.postSave(productImg, productName, quantity, isFood, price, description, expDate, uploadDate, 0, coverPrice, unit, userIdx);
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SAVE_SUCCESS, {
-            insertIdx: insertIdx
-        }));
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SAVE_SUCCESS));
     },
     modifyIsSold: async (req, res) => { 
         const postIdx = req.body.postIdx;

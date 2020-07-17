@@ -37,12 +37,14 @@ router.put('/profile', authUtil, upload.single('profile'), userController.profil
 // test case에 password salt 넣기
 router.post('/insertSalt', userController.insertSalt)
 
-// 카카오
+router.delete('/user', authUtil, userController.deleteUser)
+
+/*
+// 카카오 ( 보류 )
 router.get("/kakao", passport.authenticate("kakao-login"));
 
 
-router.get(
-  "/auth/kakao/callback",
+router.get("/auth/kakao/callback",
   passport.authenticate("kakao-login", {
     successRedirect: '/auth/login/success',
     failureRedirect: '/auth/login/fail'
@@ -67,6 +69,6 @@ router.put('/user/email',authUtil,userController.updateEmail)
 router.put('/user/profile',authUtil,userController.updateProfile)
 */
 
-router.delete('/user', authUtil, userController.deleteUser)
+
 
 module.exports = router;

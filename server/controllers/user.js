@@ -179,7 +179,7 @@ exports.deleteUser = async (req, res) => {
     }
 
     const result = await User.deleteUser(userIdx)
-    console.log(result)
+    //    console.log(result)
 
     if (result.protocol41 === false) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
@@ -214,6 +214,7 @@ exports.profileSignup = async (req, res) => {
 
     const profileImg = req.file.location;
 
+    // null check 보류
     // if (profileImg === undefined || !idx) {
     //     return res.status(CODE.OK).send(util.fail(CODE.BAD_REQUEST, MSG.NULL_VALUE));
     // }
@@ -229,7 +230,7 @@ exports.profileSignup = async (req, res) => {
     }))
 
 }
-exports.insertSalt=async(req,res)=>{
+exports.insertSalt = async (req, res) => {
     const {
         password,
         userIdx

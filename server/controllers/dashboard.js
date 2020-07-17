@@ -59,7 +59,6 @@ const dashboard = {
 
         const CntInfo = await itemModel.getItemCnt(itemIdx);
         const weeks = getWeeksStartAndEndInMonth(month - 1, year);
-        console.log(weeks);
         var graphInfo = new Array();
         for (var i = 0; i < weeks.length; i++) {
             var dates = getDatesOfTGivenWeek(year, month - 1, i + 1);
