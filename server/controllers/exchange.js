@@ -166,6 +166,7 @@ const exchange = {
 
     },
     postSave: async (req, res) => {
+        console.log(req.file.location);
         const productImg = req.file.location;
         const {
             productName,
@@ -185,9 +186,7 @@ const exchange = {
         // token에서 userIdx 파싱
         const userIdx = req.idx;
         const insertIdx = await postModel.postSave(productImg, productName, quantity, isFood, price, description, expDate, uploadDate, 0, coverPrice, unit, userIdx);
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SAVE_SUCCESS, {
-            insertIdx: insertIdx
-        }));
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SAVE_SUCCESS));
     },
     modifyIsSold: async (req, res) => { 
         const postIdx = req.body.postIdx;
