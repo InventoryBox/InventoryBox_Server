@@ -38,6 +38,7 @@ function leadingZeros(n, digits) {
     }
     return zero + n;
 }
+
 function getDistance(lat1, lon1, lat2, lon2) {
     if ((lat1 == lat2) && (lon1 == lon2))
         return 0;
@@ -82,7 +83,7 @@ const exchange = {
                 filterStr = "price ASC";
                 break;
         }
-        
+
         const userLoc = await userModel.getUserLoc(userIdx);
         if (userLoc == -1)
             return res.status(statusCode.BAD_REQUEST)
@@ -108,9 +109,9 @@ const exchange = {
         }
         //addressInfo 구하기
         var addressInfo = await userModel.getUserByIdx(userIdx);
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.POSTS_HOME_SUCCESS, {
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_HOME_SUCCESS, {
             postInfo: postList_re,
-            addressInfo : addressInfo[0].location
+            addressInfo: addressInfo[0].location
         }));
     },
     updateLoc: async (req, res) => {
@@ -134,8 +135,8 @@ const exchange = {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
-        if(! await postModel.checkPost(postIdx)){
-            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.OK,resMessage.EXCHANGE_POST_NULL));
+        if (!await postModel.checkPost(postIdx)) {
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.OK, resMessage.EXCHANGE_POST_NULL));
         }
         const itemInfo = await postModel.searchInfo(postIdx);
         if (itemInfo.length != 0) {
@@ -155,7 +156,7 @@ const exchange = {
             userInfo: userInfo[0]
         }));
     },
-    searchUserInfo: async (req, res) => { 
+    searchUserInfo: async (req, res) => {
         // 토큰에서 현재 userIdx 파싱
         // userIdx = [~~~];
         const userIdx = req.idx;
@@ -189,7 +190,7 @@ const exchange = {
             insertIdx: insertIdx
         }));
     },
-    modifyIsSold: async (req, res) => { 
+    modifyIsSold: async (req, res) => {
         const postIdx = req.body.postIdx;
         const isSold = await postModel.getIsSold(postIdx);
         const result = await postModel.modifyIsSold(postIdx, isSold);
