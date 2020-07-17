@@ -206,10 +206,7 @@ const record = {
         const name = req.body.name;
         const userIdx = req.idx;
         const result = await categoryModel.addCategory(name,userIdx);
-        res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_ADD_CATEGORY_SUCCESS,
-            {
-            insertId : result
-            }
+        res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_ADD_CATEGORY_SUCCESS
         ));
     },
     modifyView: async (req, res) => {
