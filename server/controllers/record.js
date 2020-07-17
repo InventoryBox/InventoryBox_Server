@@ -32,51 +32,47 @@ const record = {
         if (!date) {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
-        }else if(date == 0){
-           // 재고기록 탭 눌렀을 때
-           // 가장 최근 저장된 DB날짜 필요
-           var date_send = await itemModel.searchLastDate();
-           // console.log(date_send);
-           // 전체 카테고리(0) 값 조회
-           const result = await itemModel.searchInfo_Date(date_send);
-           //console.log(result);
-           for(var a in result)
-           {
-            const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
-            result[a].img = iconImg[0].img;
-            //console.log(result[a].itemIdx);   
-           }
-           var itemInfo = result;
-           // isRecorded 정보 조회
-           const lastDay = new Date(date_send);
-           var yoil = week[lastDay.getDay()];
-           if(date_is == date_send)
-           {
-               addButton = 1;
-           }else{
-               addButton = 0;
-           }
-           //console.log(date_send);
-           date_send=replaceAll(date_send,"-",".");
-           console.log(date_send);
-           res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_HOME_SUCCESS
-              ,{
-                  itemInfo : itemInfo,
-                  categoryInfo : categoryInfo,
-                  isRecorded : isRecorded,
-                  date : date_send+" "+yoil+"요일",
-                  picker : 0,
-                  addButton : addButton
-              }));
-        }else{
+        } else if (date == 0) {
+            // 재고기록 탭 눌렀을 때
+            // 가장 최근 저장된 DB날짜 필요
+            var date_send = await itemModel.searchLastDate();
+            // console.log(date_send);
+            // 전체 카테고리(0) 값 조회
+            const result = await itemModel.searchInfo_Date(date_send);
+            //console.log(result);
+            for (var a in result) {
+                const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
+                result[a].img = iconImg[0].img;
+                //console.log(result[a].itemIdx);   
+            }
+            var itemInfo = result;
+            // isRecorded 정보 조회
+            const lastDay = new Date(date_send);
+            var yoil = week[lastDay.getDay()];
+            if (date_is == date_send) {
+                addButton = 1;
+            } else {
+                addButton = 0;
+            }
+            //console.log(date_send);
+            date_send = replaceAll(date_send, "-", ".");
+            //            console.log(date_send);
+            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_HOME_SUCCESS, {
+                itemInfo: itemInfo,
+                categoryInfo: categoryInfo,
+                isRecorded: isRecorded,
+                date: date_send + " " + yoil + "요일",
+                picker: 0,
+                addButton: addButton
+            }));
+        } else {
             // 데이터 피커 눌렀을 때
             // 해당되는 date에 해당하는 item 조회
             const result = await itemModel.searchInfo_Date(date);
-            for(var a in result)
-            {
-            const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
-            result[a].img = iconImg[0].img;  
-            //console.log(result[a].itemIdx);     
+            for (var a in result) {
+                const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
+                result[a].img = iconImg[0].img;
+                //console.log(result[a].itemIdx);     
             }
             var itemInfo = result;
             // isRecorded 정보 조회
@@ -202,12 +198,11 @@ const record = {
         }
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_DELETE_ITEM_SUCCESS));
     },
-    addCategory : async(req,res)=>{
+    addCategory: async (req, res) => {
         const name = req.body.name;
         const userIdx = req.idx;
-        const result = await categoryModel.addCategory(name,userIdx);
-        res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.RECORD_ADD_CATEGORY_SUCCESS
-        ));
+        const result = await categoryModel.addCategory(name, userIdx);
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_ADD_CATEGORY_SUCCESS));
     },
     modifyView: async (req, res) => {
         const date = req.params.date;

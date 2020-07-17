@@ -41,8 +41,7 @@ router.post('/insertSalt', userController.insertSalt)
 router.get("/kakao", passport.authenticate("kakao-login"));
 
 
-router.get(
-  "/auth/kakao/callback",
+router.get("/auth/kakao/callback",
   passport.authenticate("kakao-login", {
     successRedirect: '/auth/login/success',
     failureRedirect: '/auth/login/fail'

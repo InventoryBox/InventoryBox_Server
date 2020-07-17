@@ -38,6 +38,7 @@ function leadingZeros(n, digits) {
     }
     return zero + n;
 }
+
 function getDistance(lat1, lon1, lat2, lon2) {
     if ((lat1 == lat2) && (lon1 == lon2))
         return 0;
@@ -68,8 +69,11 @@ const exchange = {
     // exchange/:filter 
     home: async (req, res) => {
         const userIdx = req.idx;
+        if (!userIdx) {
+            res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
         const filter = req.params.filter;
-
         var filterStr;
         switch (parseInt(filter)) {
             case 0:
@@ -81,8 +85,11 @@ const exchange = {
             case 2:
                 filterStr = "price ASC";
                 break;
+            default:
+                filterStr = "uploadDate DESC";
+                break;
         }
-        
+
         const userLoc = await userModel.getUserLoc(userIdx);
         if (userLoc == -1)
             return res.status(statusCode.BAD_REQUEST)
@@ -97,7 +104,6 @@ const exchange = {
         if (filter == 1) postList.sort((a, b) => (getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) > getDistance(b.latitude, b.longitude, userLoc[0].latitude, userLoc[0].longitude)) ? 1 : -1)
         for (var i = 0; i < postList.length; i++) {
             var dist = getDistance(postList[i].latitude, postList[i].longitude, userLoc[0].latitude, userLoc[0].longitude);
-            console.log(dist);
             if (dist <= 2000) {
                 const likes = await postModel.searchLikes(userIdx, postList[i].postIdx);
                 postList[i].distDiff = dist;
@@ -108,9 +114,9 @@ const exchange = {
         }
         //addressInfo 구하기
         var addressInfo = await userModel.getUserByIdx(userIdx);
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.POSTS_HOME_SUCCESS, {
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_HOME_SUCCESS, {
             postInfo: postList_re,
-            addressInfo : addressInfo[0].location
+            addressInfo: addressInfo[0].location
         }));
     },
     updateLoc: async (req, res) => {
@@ -134,8 +140,8 @@ const exchange = {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
-        if(! await postModel.checkPost(postIdx)){
-            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.OK,resMessage.EXCHANGE_POST_NULL));
+        if (!await postModel.checkPost(postIdx)) {
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.OK, resMessage.EXCHANGE_POST_NULL));
         }
         const itemInfo = await postModel.searchInfo(postIdx);
         if (itemInfo.length != 0) {
@@ -155,7 +161,7 @@ const exchange = {
             userInfo: userInfo[0]
         }));
     },
-    searchUserInfo: async (req, res) => { 
+    searchUserInfo: async (req, res) => {
         // 토큰에서 현재 userIdx 파싱
         // userIdx = [~~~];
         const userIdx = req.idx;
@@ -188,7 +194,7 @@ const exchange = {
         const insertIdx = await postModel.postSave(productImg, productName, quantity, isFood, price, description, expDate, uploadDate, 0, coverPrice, unit, userIdx);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SAVE_SUCCESS));
     },
-    modifyIsSold: async (req, res) => { 
+    modifyIsSold: async (req, res) => {
         const postIdx = req.body.postIdx;
         const isSold = await postModel.getIsSold(postIdx);
         const result = await postModel.modifyIsSold(postIdx, isSold);
@@ -229,6 +235,9 @@ const exchange = {
                 break;
             case 2:
                 filterStr = "price ASC";
+                break;
+            default:
+                filterStr = "uploadDate DESC";
                 break;
         }
 
