@@ -7,7 +7,7 @@ const table_user = 'user';
 const table_category = 'category';
 
 const item = {
-     // itemIdx에 해당하는 alarmCnt, memoCnt 찾기
+    // itemIdx에 해당하는 alarmCnt, memoCnt 찾기
     getItemCnt: async (itemIdx) => {
         const query = `SELECT alarmCnt, memoCnt, unit FROM ${table_item} where itemIdx = ${itemIdx};`;
         try {
@@ -32,13 +32,12 @@ const item = {
         const query = `UPDATE ${table_item} SET alarmCnt = ${alarmCnt}, memoCnt = ${memoCnt} WHERE itemIdx = ${itemIdx}`;
         try {
             const result = await pool.queryParam(query);
-            console.log("modifyItemCnt", result);
             return;
         } catch (err) {
             throw err;
         }
     },
-         // date에 해당하는 item들의 정보 출력
+    // date에 해당하는 item들의 정보 출력
     searchInfo_Date: async (date) => {
         const query = `SELECT item.itemIdx,item.name,item.alarmCnt,item.unit,date.stocksCnt,item.categoryIdx
                         FROM ${table_item}, ${table_date} WHERE ${table_item}.itemIdx = ${table_date}.itemIdx and date like '${date}%'`;
@@ -63,7 +62,7 @@ const item = {
             throw err;
         }
     },
-     // 해당 date에 기록한 재료(item)의 정보 조회
+    // 해당 date에 기록한 재료(item)의 정보 조회
     getItemsInfoToday: async (userIdx) => {
         const query = `SELECT item.itemIdx,item.name,category.categoryIdx, item.alarmCnt FROM ${table_category} INNER JOIN ${table_item} ON category.categoryIdx = item.categoryIdx
              WHERE category.userIdx = ${userIdx} and item.presentCnt> -2;`;
@@ -265,25 +264,11 @@ const item = {
             throw err;
         }
     },
-    pushFlag: async (userIdx, itemIdx) => {
-        var query = `SELECT itemIdx,flag FROM ${table_item} WHERE itemIdx=${itemIdx}`
-        // const query = `UPDATE ${table_item} SET flag=${itemIdx}`
-
+    pushFlag: async (itemIdx, flag) => {
+        const query = `UPDATE ${table_item} SET flag=${flag} WHERE itemIdx=${itemIdx}`;
         try {
-            const getFlagData = await pool.queryParam(query);
-            if(getFlagData[0].flag==1){
-                var query = `UPDATE ${table_item} SET flag=0 WHERE itemIdx=${itemIdx}`
-                const result1 = await pool.queryParam(query)
-                var query = `SELECT itemIdx,flag FROM ${table_item} WHERE itemIdx=${itemIdx}`
-                const returnData1 = await pool.queryParam(query)
-                return returnData1
-            }else{
-                var query = `UPDATE ${table_item} SET flag=1 WHERE itemIdx=${itemIdx}`
-                const result1 = await pool.queryParam(query)
-                var query = `SELECT itemIdx,flag FROM ${table_item} WHERE itemIdx=${itemIdx}`
-                const returnData1 = await pool.queryParam(query)
-                return returnData1
-            }
+            const result = await pool.queryParam(query);
+            return result;
         } catch (err) {
             throw err;
         }

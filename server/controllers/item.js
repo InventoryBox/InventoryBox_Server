@@ -199,21 +199,21 @@ exports.fiveDays = async (req, res) => {
 
 exports.pushFlag = async (req, res) => {
 
-    const userIdx = req.idx;
     const itemIdx = req.params.itemIdx;
+    const {
+        flag
+    } = req.body;
 
-    if (!userIdx || !itemIdx) {
+    if (!itemIdx || flag > 1 || flag < 0) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE));
     }
 
-    const result = await item.pushFlag(userIdx, itemIdx)
+    const result = await item.pushFlag(itemIdx, flag);
 
     if (result === null) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.PUSH_FLAG_SUCCESS, {
-        result: result
-    }))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.PUSH_FLAG_SUCCESS))
 
 }

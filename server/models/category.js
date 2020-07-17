@@ -3,7 +3,6 @@ const table_category = 'category';
 const table_icon = 'icon';
 const category = {
     searchInfoAll: async (userIdx) => {
-        console.log("searchInfoAll", userIdx);
         const query = `SELECT categoryIdx, name FROM ${table_category} WHERE userIdx=${userIdx};`;
         try {
             const result = await pool.queryParamArr(query);
