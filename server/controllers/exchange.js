@@ -60,7 +60,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
     return dist;
 }
 
-function dateTodotString(DateFunction) {
+function dateToDotString(DateFunction) {
     var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
     var date = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
     return DateFunction.getFullYear() + '.' + month + '.' + date;
@@ -138,7 +138,7 @@ const exchange = {
         if (itemInfo.length != 0) {
             userInfo = await userModel.userInfo(itemInfo[0].userIdx);
         }
-        const uploadDate = dateTodotString(itemInfo[0].uploadDate);
+        const uploadDate = dateToDotString(itemInfo[0].uploadDate);
         itemInfo[0].uploadDate = uploadDate;
 
         // 거리 계산
@@ -174,7 +174,7 @@ const exchange = {
             description,
             coverPrice,
             unit
-        } = req.body; 
+        } = req.body;
         if (!productName || !isFood || !price || !productImg || !quantity || !description || !coverPrice || !unit) {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
@@ -209,7 +209,7 @@ const exchange = {
         return;
     },
     searchPost: async (req, res) => {
-        const userIdx = 1;
+        const userIdx = req.idx;
         const keyword = req.params.keyword;
         const filter = req.params.filter;
         if (!keyword) {
@@ -250,9 +250,11 @@ const exchange = {
                 postList[i].likes = likes;
             }
         }
-
+        //addressInfo 구하기
+        var addressInfo = await userModel.getUserByIdx(userIdx);
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SEARCH_SUCCESS, {
-            postInfo: postList
+            postInfo: postList,
+            addressInfo: addressInfo[0].location
         }));
     },
     modifyPost_View: async (req, res) => {
