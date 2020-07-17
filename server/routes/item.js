@@ -26,5 +26,6 @@ router.put('/flag/:itemIdx',authUtil,itemController.pushFlag)
 // 발주 메모 정보 수정 IOS
 router.put('/order/memo/ios',authUtil,itemController.updateOrderMemoIOS)
 
+router.get('/dummy',itemController.dummy)
 
 module.exports=router;

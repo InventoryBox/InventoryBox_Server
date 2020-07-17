@@ -193,3 +193,11 @@ exports.updateOrderMemoIOS = async(req,res)=>{
     }
     return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.UPDATE_MEMO_COUNT_SUCCESS))
 }
+
+exports.dummy=async(req,res)=>{
+
+    const result = await item.dummy()
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.DUMMY,{result:result.protocol41}))
+
+}

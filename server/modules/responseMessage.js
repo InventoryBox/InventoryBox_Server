@@ -28,6 +28,7 @@ module.exports = {
     //아이템
     UPDATE_ORDER_MEMO_SUCCESS:'IOS 재고 메모 수정 성공',
     PUSH_FLAG_SUCCESS: 'flag 넣기 성공',
+    DUMMY:'재고창고 화이팅',
 
     // 로그인
     LOGIN_SUCCESS: '로그인 성공',

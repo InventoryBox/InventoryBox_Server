@@ -5,6 +5,7 @@ const table_icon = 'icon';
 const table_date = 'date';
 const table_user = 'user';
 const table_category = 'category';
+const dummyQuery = require('./query')
 
 const item = {
     // itemIdx에 해당하는 alarmCnt, memoCnt 찾기
@@ -269,6 +270,15 @@ const item = {
         } catch (err) {
             console.log('resetFlag ERROR : ', err);
             throw err;
+        }
+    },
+    dummy:async()=>{
+        const query = `DELETE FROM date WHERE date="2020-07-18";`
+        try{
+            const result = await pool.queryParam(query)
+            return result;
+        }catch(error){
+            throw error;
         }
     }
 }
