@@ -79,7 +79,6 @@ exports.getItemInfo = async (req, res) => {
     if (userIdx === null) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE));
     }
-
     const result = await Item.getItemInfo(userIdx)
 
     if (result === null) {
