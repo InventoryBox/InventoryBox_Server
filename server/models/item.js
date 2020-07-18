@@ -231,7 +231,7 @@ const item = {
         const query = 
         `
         SELECT item.itemIdx,item.flag,item.name AS itemName,item.unit,item.alarmCnt,item.memoCnt,item.presentCnt,icon.img,icon.name AS iconName FROM item JOIN icon ON item.iconIdx=icon.iconIdx JOIN category
-        ON item.categoryIdx=category.categoryIdx ORDER BY itemIdx WHERE item.presentCnt >-1 ;
+        ON item.categoryIdx=category.categoryIdx ORDER BY itemIdx;
         `
         try {
             const result = await pool.queryParam(query);
