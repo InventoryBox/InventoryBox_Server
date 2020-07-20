@@ -231,13 +231,9 @@ const item = {
         const query = 
         `
         SELECT item.itemIdx,item.flag,item.name AS itemName,item.unit,item.alarmCnt,item.memoCnt,item.presentCnt,icon.img,icon.name AS iconName FROM item JOIN icon ON item.iconIdx=icon.iconIdx JOIN category
-<<<<<<< HEAD
         ON item.categoryIdx=category.categoryIdx ORDER BY itemIdx WHERE item.presentCnt >-1
         `;
-=======
-        ON item.categoryIdx=category.categoryIdx ORDER BY itemIdx;
-        `
->>>>>>> bf242ad2b618b0b27f5743b5f38f88ce0327b3e5
+
         try {
             const result = await pool.queryParam(query);
             // const resultFilter = result.filter(item=>item.userIdx==userIdx) userIdx=1 이므로 그냥 무시
