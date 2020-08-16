@@ -9,17 +9,15 @@ const smtpTransport = require('../config/email').smtpTransport
 const number = require('../config/email').number
 
 exports.updateLoc = async (req, res) => {
-    //const userIdx = req.idx;
-    const userIdx = 1;
+    const userIdx = req.idx;
+    // const userIdx = 1;
     const {
         address,
         latitude,
         longitude
     } = req.body;
     const result = await userModel.updateLoc(userIdx, address, latitude, longitude);
-    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ADD_LOC_SUCCESS, {
-        insertId: result
-    }));
+    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ADD_LOC_SUCCESS));
 }
 
 
@@ -37,9 +35,9 @@ exports.signup = async (req, res) => {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
     }*/ 
 
-    if (await User.checkUser(email)) {
+/*     if (await User.checkUser(email)) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.DUPLICATED_EMAIL))
-    }
+    } */
 
     const salt = crypto.randomBytes(32).toString()
     const hashedPw = crypto.pbkdf2Sync(password, salt, 1, 32, 'sha512').toString('hex')
@@ -50,10 +48,7 @@ exports.signup = async (req, res) => {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.CREATED_USER, {
-        insertIdx: insertIdx
-    }))
-
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.CREATED_USER))
 }
 
 exports.signin = async (req, res) => {
