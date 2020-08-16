@@ -33,9 +33,9 @@ exports.signup = async (req, res) => {
         phoneNumber
     } = req.body;
 
-    if (!email || !password || !nickname || !repName || !coName || !phoneNumber) {
+    /*if (!email || !password || !nickname || !repName || !coName || !phoneNumber) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
-    }
+    }*/ 
 
     if (await User.checkUser(email)) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.DUPLICATED_EMAIL))
