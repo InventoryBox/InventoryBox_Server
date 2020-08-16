@@ -18,80 +18,54 @@ const record = {
     home: async (req, res) => {
         // token에서 userIdx 파싱
         const userIdx = req.idx;
-        const date = req.params.date;
+        var date = req.params.date;
         var categoryInfo = await categoryModel.searchInfoAll(userIdx);
         var addButton;
+        var picker=1;
+        // 오늘 날짜 구하기
         var DateFunction = new Date();
         var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
         var day = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
         var date_is = DateFunction.getFullYear() + '-' + month + '-' + day;
-        //console.log(date_is);
         var isRecorded = await itemModel.searchIsRecorded(date_is);
         // params 값 확인
         var week = new Array('일', '월', '화', '수', '목', '금', '토');
         if (!date) {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
-        } else if (date == 0) {
+        } else if (date === '0') {
             // 재고기록 탭 눌렀을 때
-            // 가장 최근 저장된 DB날짜 필요
-            var date_send = await itemModel.searchLastDate();
-            // console.log(date_send);
-            // 전체 카테고리(0) 값 조회
-            const result = await itemModel.searchInfo_Date(date_send);
-            //console.log(result);
-            for (var a in result) {
-                const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
-                result[a].img = iconImg[0].img;
-                //console.log(result[a].itemIdx);   
-            }
-            var itemInfo = result;
-            // isRecorded 정보 조회
-            const lastDay = new Date(date_send);
-            var yoil = week[lastDay.getDay()];
-            if (date_is == date_send) {
-                addButton = 1;
-            } else {
-                addButton = 0;
-            }
-            //console.log(date_send);
-            date_send = replaceAll(date_send, "-", ".");
-            //            console.log(date_send);
-            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_HOME_SUCCESS, {
-                itemInfo: itemInfo,
-                categoryInfo: categoryInfo,
-                isRecorded: isRecorded,
-                date: date_send + " " + yoil + "요일",
-                picker: 0,
-                addButton: addButton
-            }));
-        } else {
-            // 데이터 피커 눌렀을 때
-            // 해당되는 date에 해당하는 item 조회
-            const result = await itemModel.searchInfo_Date(date);
-            for (var a in result) {
-                const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
-                result[a].img = iconImg[0].img;
-                //console.log(result[a].itemIdx);     
-            }
-            var itemInfo = result;
-            // isRecorded 정보 조회
-            var isRecorded = await itemModel.searchIsRecorded(date_is);
-            // pircker = 1
-            // addButton 계산
-            if (date == date_is) {
-                addButton = 1;
-            } else {
-                addButton = 0;
-            }
-            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_HOME_SUCCESS, {
-                itemInfo: itemInfo,
-                categoryInfo: categoryInfo,
-                isRecorded: isRecorded,
-                picker: 1,
-                addButton: addButton
-            }));
+            date = date_is;
+            picker = 0;
         }
+        const result = await itemModel.searchInfo_Date(date);
+        for (var a in result) { 
+            const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
+            result[a].img = iconImg[0].img;  
+        } 
+
+        var itemInfo = result;
+        // isRecorded 정보 조회
+        var isRecorded = await itemModel.searchIsRecorded(date_is);
+        // addButton 계산
+        if (date === date_is) {
+            addButton = 1;
+        } else {
+            addButton = 0;
+        }
+        // 요일 구하기
+        const lastDay = new Date(date);
+        var yoil = week[lastDay.getDay()];
+        date = replaceAll(date, "-", ".");
+        
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_HOME_SUCCESS, {
+            itemInfo: itemInfo, 
+            categoryInfo: categoryInfo, 
+            isRecorded: isRecorded, 
+            date: date + " " + yoil + "요일", 
+            picker: picker, 
+            addButton: addButton
+        }));
     },
     itemAdd_View: async (req, res) => {
         // token 에서 userIdx 파싱
