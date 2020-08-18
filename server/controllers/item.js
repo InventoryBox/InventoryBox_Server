@@ -73,9 +73,6 @@ exports.updateOrderMemo = async (req, res) => {
 exports.getItemInfo = async (req, res) => {
     const userIdx = req.idx;
 
-    let result2;
-    let itemIdxFilter;
-
     if (userIdx === null) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE));
     }
@@ -97,7 +94,9 @@ exports.getItemInfo = async (req, res) => {
             prev_dates[i] = new Date(lastDay - i * 24 * 60 * 60 * 1000);
         return prev_dates;
     }
+
     var date_send = await item.searchLastDate();
+
     const lastDay = new Date(date_send);
     var week = pre5daysFromDay(lastDay);
     for (var j = 0; j < result.length; j++) {

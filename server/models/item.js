@@ -230,8 +230,7 @@ const item = {
     getItemInfo: async (userIdx) => {
         const query = 
         `
-        SELECT item.itemIdx,item.flag,item.name AS itemName,item.unit,item.alarmCnt,item.memoCnt,item.presentCnt,icon.img,icon.name AS iconName FROM item JOIN icon ON item.iconIdx=icon.iconIdx JOIN category
-        ON item.categoryIdx=category.categoryIdx ORDER BY itemIdx WHERE item.presentCnt >-1
+        SELECT item.itemIdx,item.flag,item.Name AS itemName,item.unit,item.alarmCnt,item.memoCnt,item.presentCnt,icon.img,icon.name AS iconName FROM item JOIN icon ON item.iconIdx=icon.iconIdx  ORDER BY itemIdx
         `;
 
         try {
