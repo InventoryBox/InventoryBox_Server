@@ -39,9 +39,9 @@ const item = {
         }
     },
     // date에 해당하는 item들의 정보 출력
-    searchInfo_Date: async (date) => {
+    searchInfo_Date: async (date,userIdx) => {
         const query = `SELECT item.itemIdx,item.name,item.alarmCnt,item.unit,date.stocksCnt,item.categoryIdx
-                        FROM ${table_item}, ${table_date} WHERE ${table_item}.itemIdx = ${table_date}.itemIdx and date like '${date}%'`;
+                        FROM ${table_item}, ${table_date} WHERE ${table_item}.itemIdx = ${table_date}.itemIdx and userIdx=${userIdx} and date like '${date}%'`;
         try {
             const result = await pool.queryParamArr(query);
             return result;
@@ -88,8 +88,8 @@ const item = {
         }
     },
     // DB에 저장된 가장 최근 item의 날짜 조회
-    searchLastDate: async () => {
-        const query = `SELECT date FROM ${table_date} ORDER BY date DESC`;
+    searchLastDate: async (userIdx) => {
+        const query = `SELECT date FROM ${table_date} ORDER BY date DESC WHERE userIdx=${userIdx}`;
         try {
             const result = await pool.queryParam(query);
             return result[0].date;
@@ -99,8 +99,8 @@ const item = {
         }
     },
     // 해당 date에 재고기록을 했는지 여부 조회
-    searchIsRecorded: async (date) => {
-        const query = `SELECT * FROM ${table_date} WHERE date="${date}"`;
+    searchIsRecorded: async (date, userIdx) => {
+        const query = `SELECT * FROM ${table_date} WHERE userIdx=${userIdx} and date ="${date}"`;
         try {
             const result = await pool.queryParam(query);
             return result.length ? 1 : 0;
@@ -161,8 +161,8 @@ const item = {
         }
     },
     // date table에 해당 item 추가 반영
-    addDate_Item: async (stocksCnt, date, itemIdx) => {
-        const query = `INSERT INTO ${table_date}(stocksCnt, date, itemIdx) VALUES(${stocksCnt},"${date}",${itemIdx});`
+    addDate_Item: async (stocksCnt, date, itemIdx, userIdx) => {
+        const query = `INSERT INTO ${table_date}(stocksCnt, date, itemIdx, userIdx) VALUES(${stocksCnt},"${date}",${itemIdx},${userIdx});`
         try {
             const result = await pool.queryParam(query);
             const insertId = result.insertId;
@@ -194,7 +194,6 @@ const item = {
             throw err;
         }
     },
-
     searchModifyView: async (date) => {
         const query = `SELECT item.itemIdx,item.name,item.categoryIdx,date.stocksCnt
         FROM ${table_item}, ${table_date} WHERE ${table_item}.itemIdx = ${table_date}.itemIdx and date like '${date}%'`;

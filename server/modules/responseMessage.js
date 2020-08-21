@@ -66,6 +66,8 @@ module.exports = {
     RECORD_ADD_CATEGORY_SUCCESS: "카테고리 추가 성공",
     RECORD_MODIFY_VIEW_SUCCESS: "기록수정 화면 조회 성공",
     RECORD_MODIFY_VIEW_SUCCESS: "기록수정 화면 조회 성공",
+    RECORD_DELETE_CATEGORY_SUCCESS : "카테고리 삭제 성공",
+    RECORD_MOVE_CATEGORY_SUCCESS : "카테고리 이동 성공",
 
     //재고교환
     EXCHANGE_HOME_SUCCESS: "재고교환 홈 성공",

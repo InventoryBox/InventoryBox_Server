@@ -20,7 +20,6 @@ exports.updateLoc = async (req, res) => {
     res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ADD_LOC_SUCCESS));
 }
 
-
 exports.signup = async (req, res) => {
     const {
         email,
