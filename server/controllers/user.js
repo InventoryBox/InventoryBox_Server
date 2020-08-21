@@ -221,8 +221,7 @@ exports.profileSignup = async (req, res) => {
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.GET_USER_SUCCESS, {
         result: result
-    }))
-
+    }));
 }
 exports.insertSalt = async (req, res) => {
     const {
