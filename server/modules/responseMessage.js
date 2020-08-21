@@ -15,12 +15,13 @@ module.exports = {
     POSTS_BY_DISTANCE_SUCCESS: '거리순 게시글 전달 성공',
     OUT_OF_VALUE: '파라미터 값이 잘못되었습니다',
 
-    // 회원가입
+    // 유저 ( Auth )
     AUTH_EMAIL_SUCCESS:'이메일 보내기 성공',
     AUTH_EMAIL_FAIL:'이메일 보내기 실패',
-    CREATED_USER: '회원 가입 성공',
+    AUTH_CREATED_USER: '회원 가입 성공',
     DELETE_USER: '회원 탈퇴 성공',
     ALREADY_ID: '이미 사용중인 아이디입니다.',
+    AUTH_DUPLICATED_EMAIL: '이메일이 중복됐습니다',
 
     POST_SUCCESS: '게시글 조회 성공',
     SALT_PASSWORD_SUCCESS: '비밀번호 및 SALT값 넣기 성공',
@@ -49,7 +50,6 @@ module.exports = {
 
     // 프로필 조회
     READ_PROFILE_SUCCESS: '프로필 조회 성공',
-    DUPLICATED_EMAIL: '이메일이 중복됐습니다',
     GET_ITEM_INFO_SUCCESS: '아이템 정보 가져오기 성공',
     UPDATE_MEMO_COUNT_SUCCESS: '재고 메모 업데이트 성공',
     GET_FIVE_DAYS_SUCCESS: '5일간 정보 가져오기 성공',
