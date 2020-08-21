@@ -217,8 +217,8 @@ const item = {
             throw err;
         }
     },
-    getCategoryInfo: async () => {
-        const query = `SELECT categoryIdx,name FROM ${table_category}`
+    getCategoryInfo: async (userIdx) => {
+        const query = `SELECT categoryIdx,name FROM ${table_category} WHERE userIdx=${userIdx}`
         try {
             const result = await pool.queryParam(query);
             return result
@@ -230,14 +230,13 @@ const item = {
     getItemInfo: async (userIdx) => {
         const query = 
         `
-        SELECT item.itemIdx,item.flag,item.name AS itemName,item.unit,item.alarmCnt,item.memoCnt,item.presentCnt,icon.img,icon.name AS iconName FROM item JOIN icon ON item.iconIdx=icon.iconIdx JOIN category
-        ON item.categoryIdx=category.categoryIdx ORDER BY itemIdx WHERE item.presentCnt >-1
-        `;
+        SELECT category.categoryIdx, category.userIdx, item.itemIdx, category.name AS categoryName,item.flag,item.Name AS itemName,item.unit,item.alarmCnt,item.memoCnt,item.presentCnt,icon.img,icon.name AS iconName FROM item JOIN icon ON item.iconIdx=icon.iconIdx JOIN category ON item.categoryIdx=category.categoryIdx ORDER BY itemIdx
+         `;
 
         try {
             const result = await pool.queryParam(query);
             // const resultFilter = result.filter(item=>item.userIdx==userIdx) userIdx=1 이므로 그냥 무시
-            const resultFilter = result.filter(item => item.memoCnt >= item.presentCnt).filter(item=>item.presentCnt>0)
+            const resultFilter = result.filter(item=>item.userIdx==userIdx).filter(item => item.memoCnt >= item.presentCnt).filter(item=>item.presentCnt>0)
             return resultFilter
         } catch (err) {
             throw err;
