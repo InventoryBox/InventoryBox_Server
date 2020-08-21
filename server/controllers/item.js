@@ -29,7 +29,7 @@ exports.getCategoryInfo = async (req, res) => {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE));
     }
 
-    const result = await Item.getCategoryInfo()
+    const result = await Item.getCategoryInfo(userIdx)
 
     if (result === null) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
@@ -109,6 +109,10 @@ exports.getItemInfo = async (req, res) => {
         }
         result[j].lastDay = lastDay.getDay();
         result[j].stocksInfo = stocksInfo
+    }
+
+    for(i in result){
+        delete result[i].userIdx
     }
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.GET_ITEM_INFO_SUCCESS, {

@@ -35,9 +35,9 @@ exports.signup = async (req, res) => {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
     }*/ 
 
-/*     if (await User.checkUser(email)) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.DUPLICATED_EMAIL))
-    } */
+     if (await User.checkUser(email)) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_DUPLICATED_EMAIL))
+    } 
 
     const salt = crypto.randomBytes(32).toString()
     const hashedPw = crypto.pbkdf2Sync(password, salt, 1, 32, 'sha512').toString('hex')
@@ -48,7 +48,7 @@ exports.signup = async (req, res) => {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.CREATED_USER))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.AUTH_CREATED_USER))
 }
 
 exports.signin = async (req, res) => {
