@@ -174,6 +174,18 @@ const post = {
         } catch (err) {
             throw err;
         }
+    },
+    searchUserPost : async(userIdx) => {
+        const query = `SELECT postIdx,productName,productImg,price,isSold,expDate,uploadDate
+                        FROM ${table_post}
+                        WHERE userIdx=${userIdx};`;
+                        try {
+                            const result = await pool.queryParam(query);
+                            return result;
+                        } catch (err) {
+                            console.log('searchUserPost ERROR : ', err);
+                            throw err;
+                        }
     }
 }
 

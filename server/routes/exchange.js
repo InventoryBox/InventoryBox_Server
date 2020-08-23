@@ -22,7 +22,7 @@ router.get('/post/:postIdx', authUtil, exchangeController.postView);
 router.get('/favorite/list', authUtil, exchangeController.searchUserLikes);
 
 // 사용자 게시글 조회 - 없어도 됌
-// router.get('/post-modify', exchangeController.deleteItem);
+router.get('/user/post', authUtil,exchangeController.searchUserPost);
 
 // 게시글 수정 화면 - 완료
 router.get('/post/modify/:postIdx', authUtil, exchangeController.modifyPost_View);

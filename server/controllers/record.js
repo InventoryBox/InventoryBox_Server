@@ -9,6 +9,7 @@ const database = require('../config/database');
 const {
     searchInfo
 } = require('../models/item');
+const item = require('../models/item');
 
 function replaceAll(str, searchStr, replaceStr) {
     return str.split(searchStr).join(replaceStr);
@@ -188,6 +189,18 @@ const record = {
             result[a].img = iconImg[0].img;
         }
         var itemInfo = result;
+        if(itemInfo.length === 0){
+            // 현재 가지고 있는 재료 기준으로 조회해서 item 반환
+            itemInfo = await itemModel.searchInfo_today(userIdx);
+            for(var a in itemInfo)
+            {
+                // img 추가
+                const iconImg = await itemModel.searchIcon_ItemIdx(itemInfo[a].itemIdx);
+                itemInfo[a].img = iconImg[0].img;
+                // stocksCnt 추가
+                itemInfo[a].stocksCnt=-1;
+            }
+        }
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_MODIFY_VIEW_SUCCESS, {
             itemInfo: itemInfo,
             categoryInfo: categoryInfo

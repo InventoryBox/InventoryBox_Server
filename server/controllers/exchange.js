@@ -311,6 +311,17 @@ const exchange = {
             coverPrice, unit);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_MODIFY_SUCCESS));
         return;
+    },
+    searchUserPost : async (req,res) => {
+        const userIdx = req.idx;
+        const result = await postModel.searchUserPost(userIdx);
+        for(var a in result)
+        {
+            result[a].uploadDate = dateToDotString(result[a].uploadDate).slice(2);
+        }
+        res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.EXCHANGE_SEARCH_USER_LIKE_POST_SUCCESS,{
+            itemInfo : result
+        }));
     }
 }
 
