@@ -124,9 +124,8 @@ const exchange = {
     },
     postView: async (req, res) => {
         const postIdx = req.params.postIdx;
-        //var uploadDate = getTimeStamp();
         var userInfo;
-        //console.log(uploadDate);
+        const userIdx = req.idx;
         if (!postIdx) {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
@@ -146,7 +145,9 @@ const exchange = {
         var user = await userModel.getUserByIdx(itemInfo[0].userIdx);
         var dist = getDistance(user[0].latitude, user[0].longitude, userLoc[0].latitude, userLoc[0].longitude);
         itemInfo[0].distDiff = dist;
-        //console.log(itemInfo[0].uploadDate);
+        // userCheck (판매자인지 사용자인지 여부)
+        const userCheck = await postModel.checkUser(postIdx,userIdx);
+        itemInfo[0].userCheck = userCheck.length;
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_VIEW_SUCCESS, {
             itemInfo: itemInfo[0],
             userInfo: userInfo[0]

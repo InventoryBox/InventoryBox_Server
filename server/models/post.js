@@ -1,4 +1,5 @@
 const pool = require('../modules/pool');
+const user = require('./user');
 const table_post = 'post';
 const table_likes = 'likes';
 const table_user = 'user';
@@ -186,6 +187,16 @@ const post = {
                             console.log('searchUserPost ERROR : ', err);
                             throw err;
                         }
+    },
+    checkUser : async(postIdx, userIdx) => {
+        const query = `SELECT * FROM ${table_post} WHERE userIdx=${userIdx} and postIdx=${postIdx};`;
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('checkUser ERROR : ', err);
+            throw err;
+        }
     }
 }
 
