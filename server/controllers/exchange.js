@@ -281,10 +281,10 @@ const exchange = {
             tmp[0].likes = 1;
             postInfo.push(tmp[0]);
         }
+        console.log(postInfo);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_SEARCH_USER_LIKE_POST_SUCCESS, {
             postInfo: postInfo
         }));
-        return;
     },
     modifyPost: async (req, res) => {
         const productImg = req.file.location;
