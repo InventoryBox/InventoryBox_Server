@@ -57,11 +57,11 @@ exports.signin = async (req, res) => {
     } = req.body;
 
     if (!email || !password) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_LOGIN_NULL_VALUE))
     }
 
     if (await User.checkUser(email) === false) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_LOGIN_ERROR))
     }
 
     const result = await User.signin(email, password)
@@ -104,7 +104,7 @@ exports.email = async (req, res) => {
     });
 }
 
-exports.find_id = async (req, res) => {
+exports.findEmail = async (req, res) => {
     const {
         repName,
         coName,
@@ -112,7 +112,7 @@ exports.find_id = async (req, res) => {
     } = req.body;
 
     if (!repName || !coName || !phoneNumber) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_FIND_ID_NULL_VALUE))
     }
 
     const findEmail = await User.findEmail(repName, coName, phoneNumber)
@@ -149,7 +149,7 @@ exports.getNicknamePicture = async (req, res) => {
     const userIdx = req.idx
 
     if (userIdx === null) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_GET_NICKNAME_AND_PICTURE_NULL))
     }
 
     const getUserData = await User.getUserByIdx(userIdx)
@@ -158,7 +158,7 @@ exports.getNicknamePicture = async (req, res) => {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.FIND_EMAIL_SUCCESS, {
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.AUTH_GET_NICKNAME_AND_PICTURE_SUCCESS, {
         nickname: getUserData[0].nickname,
         img: getUserData[0].img
     }))

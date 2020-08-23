@@ -16,6 +16,11 @@ module.exports = {
     OUT_OF_VALUE: '파라미터 값이 잘못되었습니다',
 
     // 유저 ( Auth )
+    AUTH_GET_NICKNAME_AND_PICTURE_SUCCESS:'닉네임과 사진 가져오기 성공',
+    AUTH_GET_NICKNAME_AND_PICTURE_NULL_ERROR:'user token에 문제가 있습니다',
+    AUTH_FIND_ID_NULL_VALUE:'유저를 조회하는데 필요한 값이 없습니다',
+    AUTH_LOGIN_NULL_VALUE:'아이디나 패스워드 정보가 비었습니다',
+    AUTH_LOGIN_ERROR:'로그인 정보가 맞지 않습니다',
     AUTH_EMAIL_SUCCESS:'이메일 보내기 성공',
     AUTH_EMAIL_FAIL:'이메일 보내기 실패',
     AUTH_CREATED_USER: '회원 가입 성공',
