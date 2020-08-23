@@ -20,7 +20,7 @@ router.post('/signin', userController.signin)
 router.post('/email', userController.email)
 
 // 아이디 찾기 4
-router.post('/find-id', userController.find_id)
+router.post('/find-email', userController.findEmail)
 
 // 홈 유저 정보 가져오기 5
 router.get('/user', authUtil, userController.getUser)
