@@ -319,7 +319,7 @@ const exchange = {
         {
             result[a].uploadDate = dateToDotString(result[a].uploadDate).slice(2);
         }
-        res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.EXCHANGE_SEARCH_USER_LIKE_POST_SUCCESS,{
+        res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.EXCHANGE_SEARCH_USER_POST_SUCCESS,{
             itemInfo : result
         }));
     }
