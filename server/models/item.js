@@ -101,7 +101,7 @@ const item = {
     },
     // 해당 date에 재고기록을 했는지 여부 조회
     searchIsRecorded: async (date, userIdx) => {
-        const query = `SELECT * FROM ${table_date} WHERE userIdx=${userIdx} and date ="${date}"`;
+        const query = `SELECT * FROM ${table_date} WHERE userIdx=${userIdx} and date ="${date}" and stocksCnt>-1`;
         try {
             const result = await pool.queryParam(query);
             return result.length ? 1 : 0;
