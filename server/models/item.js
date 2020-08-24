@@ -89,10 +89,11 @@ const item = {
     },
     // DB에 저장된 가장 최근 item의 날짜 조회
     searchLastDate: async (userIdx) => {
-        const query = `SELECT date FROM ${table_date} ORDER BY date DESC WHERE userIdx=${userIdx}`;
+        const query = `SELECT userIdx,date FROM ${table_date} ORDER BY date DESC`;
         try {
             const result = await pool.queryParam(query);
-            return result[0].date;
+            const returnData = result.filter(item=>item.userIdx==`${userIdx}`)
+            return returnData[0].date;
         } catch (err) {
             console.log('searchLastDate ERROR : ', err);
             throw err;
@@ -229,7 +230,6 @@ const item = {
     getItemInfo: async (userIdx) => {
         const query = 
         `
-
         SELECT category.categoryIdx, category.userIdx, item.itemIdx, category.name AS categoryName,item.flag,item.Name AS itemName,item.unit,item.alarmCnt,item.memoCnt,item.presentCnt,icon.img,icon.name AS iconName FROM item JOIN icon ON item.iconIdx=icon.iconIdx JOIN category ON item.categoryIdx=category.categoryIdx ORDER BY itemIdx
          `;
 

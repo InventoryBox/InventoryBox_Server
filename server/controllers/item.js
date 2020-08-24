@@ -95,7 +95,7 @@ exports.getItemInfo = async (req, res) => {
         return prev_dates;
     }
 
-    var date_send = await item.searchLastDate();
+    var date_send = await item.searchLastDate(userIdx);
 
     const lastDay = new Date(date_send);
     var week = pre5daysFromDay(lastDay);
