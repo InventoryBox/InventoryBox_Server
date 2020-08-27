@@ -160,6 +160,24 @@ const user = {
             console.log('update profile ERROR : ', err);
             throw err;
         }
+    },
+    updateUserEmailAndPassword: async(userIdx,updatedEmail,hashedPw)=>{
+        const query = `UPDATE ${table} SET email="${updatedEmail}", password="${hashedPw}" WHERE userIdx=${userIdx}`
+        try{
+            const result = await pool.queryParam(query)
+            return result;
+        }catch(err){
+            throw err;
+        }
+    },
+    getAllNickname: async()=>{
+        const query = `SELECT nickname FROM ${table_user}`
+        try{
+            const result = await pool.queryParam(query);
+            return result;
+        }catch(err){
+            throw err;
+        }
     }
 }
 

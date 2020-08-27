@@ -129,7 +129,7 @@ exports.getUser = async (req, res) => {
     const userIdx = req.idx
 
     if (userIdx === null) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.ITEM_NULL_USER_IDX))
     }
 
     const getUserData = await User.getUserByIdxCustom(userIdx)
@@ -149,7 +149,7 @@ exports.getNicknamePicture = async (req, res) => {
     const userIdx = req.idx
 
     if (userIdx === null) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_GET_NICKNAME_AND_PICTURE_NULL))
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.ITEM_NULL_USER_IDX))
     }
 
     const getUserData = await User.getUserByIdx(userIdx)
@@ -169,7 +169,7 @@ exports.deleteUser = async (req, res) => {
     const userIdx = req.idx
 
     if (userIdx === null) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.ITEM_NULL_USER_IDX))
     }
 
     const result = await User.deleteUser(userIdx)
@@ -188,7 +188,7 @@ exports.getPersonal = async (req, res) => {
     const userIdx = req.idx
 
     if (userIdx === null) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.ITEM_NULL_USER_IDX))
     }
 
     const result = await User.getPersonal(userIdx)
@@ -239,6 +239,51 @@ exports.insertSalt = async (req, res) => {
     }))
 }
 
+exports.updateUserEmailAndPassword = async(req,res)=>{
+    
+    const userIdx = req.idx;
+    
+    const{
+        updatedEmail,updatedPassword
+    } = req.body;
+
+    if (userIdx === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.ITEM_NULL_USER_IDX))
+    }
+
+    if (!updatedEmail || !updatedPassword) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
+    }
+
+    const salt = crypto.randomBytes(32).toString()
+    const hashedPw = crypto.pbkdf2Sync(updatedPassword, salt, 1, 32, 'sha512').toString('hex')
+
+    const result = await User.updateUserEmailAndPassword(userIdx,updatedEmail,hashedPw)
+
+    if (result === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
+    }
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.AUTH_UPDATE_EMAIL_AND_PW_SUCCESS, {
+        result: result.protocol41
+    }));
+}
+
+exports.updateProfile = async(req,res)=>{
+    
+}
+
+exports.getAllNickname = async(req,res)=>{
+    const result = await User.getAllNickname();
+
+    if (result === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
+    }
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.AUTH_GET_ALL_NICK_NAME_SUCCESS, {
+        result: result
+    }));
+}
 /*
 
 보류

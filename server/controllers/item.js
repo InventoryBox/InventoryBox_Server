@@ -50,11 +50,11 @@ exports.updateOrderMemo = async (req, res) => {
     } = req.body
 
     if (userIdx === null) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE));
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.ITEM_NULL_USER_IDX));
     }
 
     if (!itemIdx || !memoCnt) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.ITEM_NULL_VALUE))
     }
 
     const result = await Item.updateOrderMemo(itemIdx, memoCnt)
@@ -70,11 +70,31 @@ exports.updateOrderMemo = async (req, res) => {
 
 }
 
+exports.updateOrderMemoIOS = async(req,res)=>{
+    const userIdx = req.idx;
+    if (userIdx === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.ITEM_NULL_USER_IDX));
+    }
+    const {
+        itemInfo
+    } = req.body
+    for (var a in itemInfo) {
+        if (!itemInfo[a].itemIdx || !itemInfo[a].memoCnt) {
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.ITEM_NULL_VALUE))
+        }
+        const result = await Item.updateOrderMemo(itemInfo[a].itemIdx, itemInfo[a].memoCnt);
+        if (result === null) {
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
+        }
+    }
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.ITEM_UPDATE_MEMO_COUNT_SUCCESS))
+}
+
 exports.getItemInfo = async (req, res) => {
     const userIdx = req.idx;
 
     if (userIdx === null) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE));
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.ITEM_NULL_USER_IDX));
     }
     const result = await Item.getItemInfo(userIdx)
 
@@ -115,7 +135,7 @@ exports.getItemInfo = async (req, res) => {
         delete result[i].userIdx
     }
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.GET_ITEM_INFO_SUCCESS, {
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.ITEM_GET_ITEM_INFO_SUCCESS, {
         result: result
     }))
 }
@@ -158,9 +178,8 @@ exports.fiveDays = async (req, res) => {
 exports.pushFlag = async (req, res) => {
 
     const itemIdx = req.params.itemIdx;
-    const {
-        flag
-    } = req.body;
+    const flag = req.params.flag;
+
 
     if (!itemIdx || flag > 1 || flag < 0) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE));
@@ -172,29 +191,10 @@ exports.pushFlag = async (req, res) => {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.PUSH_FLAG_SUCCESS))
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.ITEM_PUSH_FLAG_SUCCESS))
 
 }
 
-exports.updateOrderMemoIOS = async(req,res)=>{
-    const userIdx = req.idx;
-    if (userIdx === null) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE));
-    }
-    const {
-        itemInfo
-    } = req.body
-    for (var a in itemInfo) {
-        if (!itemInfo[a].itemIdx || !itemInfo[a].memoCnt) {
-            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
-        }
-        const result = await Item.updateOrderMemo(itemInfo[a].itemIdx, itemInfo[a].memoCnt);
-        if (result === null) {
-            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
-        }
-    }
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.UPDATE_MEMO_COUNT_SUCCESS))
-}
 
 exports.dummy=async(req,res)=>{
 

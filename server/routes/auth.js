@@ -37,7 +37,23 @@ router.put('/profile', authUtil, upload.single('profile'), userController.profil
 // test case에 password salt 넣기
 router.post('/insertSalt', userController.insertSalt)
 
+//유저 정보 삭제
 router.delete('/user', authUtil, userController.deleteUser)
+
+//유저 이메일 패스워드 바꾸기
+router.put('/user/email-pw',authUtil,userController.updateUserEmailAndPassword)
+
+//유저 프로필 정보 바꾸기
+router.put('/user/profile',authUtil,userController.updateProfile)
+
+router.get('/user/all-nickname',userController.getAllNickname)
+
+// to do : 회원가입 때 img 넣기, profile multer 붙이기 
+// 구현 못한 api 5-6개 정도 되는 듯 그거 구현 
+// 하나씩 test 하면서 responseMessage update
+// 구현하고 수정한 api에 따른 git-wiki upload
+// 4-5시간정도 소요될듯
+
 
 /*
 // 카카오 ( 보류 )
@@ -66,7 +82,6 @@ router.get('/login/success', (req, res) => {
 router.put('/user/alarm',authUtil,userController.updateAlarm)
 router.put('/user/personal',authUtil,userController.updatePersonal)
 router.put('/user/email',authUtil,userController.updateEmail)
-router.put('/user/profile',authUtil,userController.updateProfile)
 */
 
 

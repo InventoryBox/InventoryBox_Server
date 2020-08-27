@@ -11,8 +11,12 @@ router.get('/order/memo/:categoryIdx',authUtil,itemController.getOrderNumber);
 // 카테고리 전체 정보 반환
 router.get('/category',authUtil,itemController.getCategoryInfo)
 
-// 발주 메모 정보 수정
+// 발주 메모 정보 수정 Android
 router.put('/order/memo',authUtil,itemController.updateOrderMemo)
+
+// 발주 메모 정보 수정 ios
+router.put('/order/memo/ios',authUtil,itemController.updateOrderMemoIOS)
+
 
 // 발주 메모 정보 가져오기 ( IF memoCnt > presentCnt )
 router.get('/order',authUtil,itemController.getItemInfo)
@@ -21,10 +25,7 @@ router.get('/order',authUtil,itemController.getItemInfo)
 router.get('/five-days/:itemIdx',authUtil,itemController.fiveDays)
 
 // flag 넣기
-router.put('/flag/:itemIdx',authUtil,itemController.pushFlag)
-
-// 발주 메모 정보 수정 IOS
-router.put('/order/memo/ios',authUtil,itemController.updateOrderMemoIOS)
+router.put('/flag/:itemIdx/:flag',itemController.pushFlag)
 
 router.get('/dummy',itemController.dummy)
 

@@ -16,9 +16,11 @@ module.exports = {
     OUT_OF_VALUE: '파라미터 값이 잘못되었습니다',
 
     // 유저 ( Auth )
+    AUTH_UPDATE_EMAIL_AND_PW_SUCCESS:"이메일 패스워드 업데이트 성공",
     AUTH_EMAIL_SUCCESS:'이메일 보내기 성공',
     AUTH_EMAIL_FAIL:'이메일 보내기 실패',
     AUTH_CREATED_USER: '회원 가입 성공',
+    AUTH_GET_ALL_NICK_NAME_SUCCESS:'모든 유저 닉네임 가져오기 성공',
     DELETE_USER: '회원 탈퇴 성공',
     ALREADY_ID: '이미 사용중인 아이디입니다.',
     AUTH_DUPLICATED_EMAIL: '이메일이 중복됐습니다',
@@ -27,8 +29,11 @@ module.exports = {
     SALT_PASSWORD_SUCCESS: '비밀번호 및 SALT값 넣기 성공',
 
     //아이템
-    UPDATE_ORDER_MEMO_SUCCESS:'IOS 재고 메모 수정 성공',
-    PUSH_FLAG_SUCCESS: 'flag 넣기 성공',
+    ITEM_NULL_USER_IDX:"유저 인덱스가 올바르지 않습니다",
+    ITEM_NULL_VALUE:"필요한 값이 없습니다",
+    ITEM_UPDATE_MEMO_COUNT_SUCCESS: '재고 메모 업데이트 성공',
+    ITEM_GET_ITEM_INFO_SUCCESS: '아이템 정보 가져오기 성공',
+    ITEM_PUSH_FLAG_SUCCESS: 'flag 업데이트 성공',
     DUMMY:'재고창고 화이팅',
 
     // 로그인
@@ -50,8 +55,6 @@ module.exports = {
 
     // 프로필 조회
     READ_PROFILE_SUCCESS: '프로필 조회 성공',
-    GET_ITEM_INFO_SUCCESS: '아이템 정보 가져오기 성공',
-    UPDATE_MEMO_COUNT_SUCCESS: '재고 메모 업데이트 성공',
     GET_FIVE_DAYS_SUCCESS: '5일간 정보 가져오기 성공',
     DB_ERROR: 'DB 오류',
 
