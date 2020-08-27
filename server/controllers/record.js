@@ -46,6 +46,19 @@ const record = {
             result[a].img = iconImg[0].img;  
         } 
         var itemInfo = result;
+        // 재료가 없으면 현재 가진 기준으로 재료 가져오기
+        // if(itemInfo.length === 0){
+        //     현재 가지고 있는 재료 기준으로 조회해서 item 반환
+        //     itemInfo = await itemModel.searchInfo_today(userIdx);
+        //     for(var a in itemInfo)
+        //     {
+        //         img 추가
+        //         const iconImg = await itemModel.searchIcon_ItemIdx(itemInfo[a].itemIdx);
+        //         itemInfo[a].img = iconImg[0].img;
+        //         stocksCnt 추가
+        //         itemInfo[a].stocksCnt=-1;
+        //     }
+        // }
         // addButton 계산
         if (date === date_is) {
             addButton = 1;
@@ -91,7 +104,7 @@ const record = {
         }
         // item table에 반영
         const result = await itemModel.addItem(name, unit, alarmCnt, memoCnt, iconIdx, categoryIdx);
-        // date table에 반영 
+        // // date table에 반영 
         var DateFunction = new Date();
         var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
         var day = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();

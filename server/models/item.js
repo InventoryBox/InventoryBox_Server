@@ -41,7 +41,7 @@ const item = {
     // date에 해당하는 item들의 정보 출력
     searchInfo_Date: async (date,userIdx) => {
         const query = `SELECT item.itemIdx,item.name,item.alarmCnt,item.unit,date.stocksCnt,item.categoryIdx
-                        FROM ${table_item}, ${table_date} WHERE ${table_item}.itemIdx = ${table_date}.itemIdx and userIdx=${userIdx} and date like '${date}%'`;
+                        FROM ${table_item}, ${table_date} WHERE ${table_item}.itemIdx = ${table_date}.itemIdx and userIdx=${userIdx} and date like '${date}%' and date.stocksCnt>-1`;
         try {
             const result = await pool.queryParamArr(query);
             return result;
@@ -101,7 +101,7 @@ const item = {
     },
     // 해당 date에 재고기록을 했는지 여부 조회
     searchIsRecorded: async (date, userIdx) => {
-        const query = `SELECT * FROM ${table_date} WHERE userIdx=${userIdx} and date ="${date}"`;
+        const query = `SELECT * FROM ${table_date} WHERE userIdx=${userIdx} and date ="${date}" and stocksCnt>-1`;
         try {
             const result = await pool.queryParam(query);
             return result.length ? 1 : 0;
