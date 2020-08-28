@@ -20,9 +20,9 @@ router.post('/item-add', authUtil, recordController.itemAdd_Save);
 router.post('/category-add', authUtil, recordController.addCategory);
 
 // 카테고리 삭제
-router.delete('/category-delete',authUtil, recordController.deleteCategory);
+router.delete('/category-delete/:categoryIdx',authUtil, recordController.deleteCategory);
 // 재료 삭제
-router.delete('/item-delete', authUtil, recordController.deleteItem);
+router.delete('/item-delete/:itemIdxList', authUtil, recordController.deleteItem);
 
 // 카테고리 이동
 router.put('/category-move',authUtil,recordController.moveCategory);

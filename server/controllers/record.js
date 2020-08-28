@@ -30,6 +30,7 @@ const record = {
         var date_is = DateFunction.getFullYear() + '-' + month + '-' + day;
         // 오늘 재고 기록 여부 확인
         var isRecorded = await itemModel.searchIsRecorded(date_is,userIdx);
+        console.log(date_is);
         // 요일 구하기
         var week = new Array('일', '월', '화', '수', '목', '금', '토');
         if (!date) {
@@ -106,12 +107,12 @@ const record = {
         // item table에 반영
         const result = await itemModel.addItem(name, unit, alarmCnt, memoCnt, iconIdx, categoryIdx);
         // // date table에 반영 
-        var DateFunction = new Date();
-        var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
-        var day = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
-        var date = DateFunction.getFullYear() + '-' + month + '-' + day;
+        // var DateFunction = new Date();
+        // var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
+        // var day = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
+        // var date = DateFunction.getFullYear() + '-' + month + '-' + day;
 
-        await itemModel.addDate_Item(-1, date, result, userIdx);
+        // await itemModel.addDate_Item(-1, date, result, userIdx);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_ITEMADD_DB_SUCCESS));
     },
     /*searchCategory : async(req,res)=>{
@@ -157,24 +158,29 @@ const record = {
         }
         const userIdx = req.idx;
 
-        var isRecorded = await itemModel.searchIsRecorded(date,userIdx);
+        //var isRecorded = await itemModel.searchIsRecorded(date,userIdx);
         for (var a in itemInfo) {
             // item table에 반영
             await itemModel.modifyItem(itemInfo[a].itemIdx, itemInfo[a].presentCnt);
+            // 해당 user가 date에 itemIdx에 대한 기록을 했는지 여부
+            var isRecorded = await itemModel.searchIsRecordedItem(date,userIdx,itemIdx);
             // date table에 반영
-            // 1) 오늘 재고기록을 처음 할 때
-            if (isRecorded == 0) {
+            // 1) 해당 item 재고기록을 처음 할 때
+            if (isRecorded === 0) {
                 await itemModel.addDate_Item(itemInfo[a].presentCnt, date, itemInfo[a].itemIdx,userIdx);
                 await itemModel.resetFlag(userIdx);
             } else {
-                // 2) 오늘 재고기록이 처음이 아닐 때 (기록수정)
+                // 2) 해당 item 재고기록이 처음이 아닐 때
                 await itemModel.modifyDate_Item(itemInfo[a].presentCnt, date, itemInfo[a].itemIdx);
             }
         }
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_MODIFY_ITEM_SUCCESS));
     },
     deleteItem: async (req, res) => {
-        const itemIdxList = req.params.itemIdxList;
+        const str = req.params.itemIdxList;
+        let itemIdxList = str.slice(1,str.length-1);
+        itemIdxList = itemIdxList.split(',');
+        console.log(itemIdxList);
         if (!itemIdxList) {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
@@ -256,7 +262,7 @@ const record = {
         }));
     },
     deleteCategory : async (req, res) => {
-        const {categoryIdx} = req.body;
+        const {categoryIdx} = req.params;
         if (!categoryIdx) {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
