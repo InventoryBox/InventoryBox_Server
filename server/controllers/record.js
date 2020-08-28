@@ -30,7 +30,6 @@ const record = {
         var date_is = DateFunction.getFullYear() + '-' + month + '-' + day;
         // 오늘 재고 기록 여부 확인
         var isRecorded = await itemModel.searchIsRecorded(date_is,userIdx);
-        console.log(date_is);
         // 요일 구하기
         var week = new Array('일', '월', '화', '수', '목', '금', '토');
         if (!date) {
@@ -163,7 +162,7 @@ const record = {
             // item table에 반영
             await itemModel.modifyItem(itemInfo[a].itemIdx, itemInfo[a].presentCnt);
             // 해당 user가 date에 itemIdx에 대한 기록을 했는지 여부
-            var isRecorded = await itemModel.searchIsRecordedItem(date,userIdx,itemIdx);
+            var isRecorded = await itemModel.searchIsRecordedItem(date,userIdx,itemInfo[a].itemIdx);
             // date table에 반영
             // 1) 해당 item 재고기록을 처음 할 때
             if (isRecorded === 0) {
