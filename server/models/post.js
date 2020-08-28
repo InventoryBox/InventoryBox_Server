@@ -53,6 +53,16 @@ const post = {
             throw err;
         }
     },
+    postDelete : async(postIdx) => {
+        const query = `DELETE FROM ${table_post} WHERE postIdx=${postIdx}`;
+        try {
+            const result = await pool.queryParam(query);
+            return;
+        } catch (err) {
+            console.log('postDelete ERROR : ', err);
+            throw err;
+        }
+    },
     modifyIsSold: async (postIdx, isSold) => {
         const query = `UPDATE ${table_post} SET isSold=1-${isSold} WHERE postIdx=${postIdx}`;
         try {
