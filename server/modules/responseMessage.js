@@ -20,7 +20,23 @@ module.exports = {
     AUTH_EMAIL_SUCCESS:'이메일 보내기 성공',
     AUTH_EMAIL_FAIL:'이메일 보내기 실패',
     AUTH_CREATED_USER: '회원 가입 성공',
+    AUTH_SIGNUP_EMAIL_AND_PASSWORD_SUCCESS:"이메일 패스워드 등록 성공",
     AUTH_GET_ALL_NICK_NAME_SUCCESS:'모든 유저 닉네임 가져오기 성공',
+    AUTH_SIGNUP_PERSONAL_INFO_SUCCESS:'개인정보 등록 성공',
+    AUTH_SIGNUP_PROFILE_INFO_SUCCESS:'프로필 등록 성공',
+    AUTH_SIGNUP_ASSIGN_SUCCESS:'회원 승인 성공',
+    AUTH_USER_IDX_NULL:"유저 인덱스가 올바르지 않습니다",
+    AUTH_DUPLICATED_NICKNAME:'닉네임이 중복됐습니다',
+    AUTH_DUPLICATED_EMAIL:'이메일이 중복됐습니다',
+    AUTH_UPDATE_PROFILE_SUCCESS:'유저 프로필 업데이트 성공',
+    AUTH_UPDATE_PERSONAL_INFO_SUCCESS:'개인정보 업데이트 성공',
+    AUTH_UPLOAD_PROFILE_IMG_SUCCESS:'프로필 이미지 등록 성공',
+    AUTH_TYPE_ERROR:'이미지 타입 에러',
+    AUTH_CHECK_NICKNAME_SUCCESS:"닉네임이 중복되지 않았습니다",
+    AUTH_CHECK_NICKNAME_FAIL:"닉네임이 중복됐습니다",
+    AUTH_GET_USER_SUCCESS: '유저 조회 성공',
+    AUTH_GET_USER_POST_SUCCESS:'유저가 쓴 게시글 가져오기 성공',
+    
     DELETE_USER: '회원 탈퇴 성공',
     ALREADY_ID: '이미 사용중인 아이디입니다.',
     AUTH_DUPLICATED_EMAIL: '이메일이 중복됐습니다',
@@ -51,7 +67,7 @@ module.exports = {
     FIND_EMAIL_SUCCESS: '가입된 이메일을 성공적으로 찾았습니다',
     NICKNAME_AND_PICTURE_SUCCESS: '닉네임과 사진 가져오기 성공',
     DELETE_SUCCESS: '유저 삭제 성공',
-    GET_USER_SUCCESS: '유저 조회 성공',
+    
 
     // 프로필 조회
     READ_PROFILE_SUCCESS: '프로필 조회 성공',

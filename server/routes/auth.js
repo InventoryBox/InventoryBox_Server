@@ -10,8 +10,9 @@ const userController = require('../controllers/user')
 
 const authUtil = require('../middlewares/auth').checkToken
 
+
 // 회원가입 1
-router.post('/signup', userController.signup)
+router.post('/signup',upload.single('img'),userController.signup)
 
 // 로그인 2
 router.post('/signin', userController.signin)
@@ -19,71 +20,56 @@ router.post('/signin', userController.signin)
 // 이메일 인증 3
 router.post('/email', userController.email)
 
-// 아이디 찾기 4
+// 이메일 찾기 4
 router.post('/find-email', userController.findEmail)
 
-// 홈 유저 정보 가져오기 5
-router.get('/user', authUtil, userController.getUser)
-
-// 유저 닉네임-사진 가져오기 6
-router.get('/user/nickname-picture', authUtil, userController.getNicknamePicture)
-
-// 유저 개인정보 가져오기 7
-router.get('/user/personal', authUtil, userController.getPersonal)
-
-// 회원가입 때 유저 사진 넣기 ( 구현 X ) 8
-router.put('/profile', authUtil, upload.single('profile'), userController.profileSignup)
-
-// test case에 password salt 넣기
-router.post('/insertSalt', userController.insertSalt)
-
-//유저 정보 삭제
+//유저 정보 삭제 5
 router.delete('/user', authUtil, userController.deleteUser)
 
-//유저 이메일 패스워드 바꾸기
+// 유저 닉네임 중복 확인 6
+router.post('/nickname',userController.checkNickname)
+
+// ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 햄버거 바 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ  //
+
+// 이메일 비밀번호 변경 7
 router.put('/user/email-pw',authUtil,userController.updateUserEmailAndPassword)
 
-//유저 프로필 정보 바꾸기
-router.put('/user/profile',authUtil,userController.updateProfile)
+// 유저 닉네임-사진-사업자 이름  ( 프로필 ) 가져오기 8
+router.get('/user/profile', authUtil, userController.getProfile)
 
-router.get('/user/all-nickname',userController.getAllNickname)
+//프로필 변경 9
+router.put('/user/profile',authUtil,upload.single('img'),userController.updateProfile)
 
-// to do : 회원가입 때 img 넣기, profile multer 붙이기 
-// 구현 못한 api 5-6개 정도 되는 듯 그거 구현 
-// 하나씩 test 하면서 responseMessage update
-// 구현하고 수정한 api에 따른 git-wiki upload
-// 4-5시간정도 소요될듯
+//개인정보 변경 10
+router.put('/user/personal',authUtil,userController.updatePersonalInfo)
 
+//개인정보 가져오기 11
+router.get('/user/personal',authUtil,userController.getPersonal)
 
-/*
-// 카카오 ( 보류 )
-router.get("/kakao", passport.authenticate("kakao-login"));
+// 내가 쓴 게시글 12
+router.get('/user/post',authUtil,userController.getUserPost)
 
+// ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 햄버거 바 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ  //
 
-router.get("/auth/kakao/callback",
-  passport.authenticate("kakao-login", {
-    successRedirect: '/auth/login/success',
-    failureRedirect: '/auth/login/fail'
-  })
-);
+// password salt 넣기
+router.post('/insertSalt', userController.insertSalt)
 
 
-router.get('/login/fail', (req, res) => {
-  return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.CREATED_USER))
-});
+// ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 회원가입 step별로 , 보류 ㅡㅡㅡㅡㅡㅡ //
+// 회원가입 step 1
+router.post('/signup/email-pw',userController.signupEmailAndPassword)
 
-router.get('/login/success', (req, res) => {
-  return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.CREATED_USER))
-});
+// 회원가입 step 2
+router.put('/signup/personal',userController.signupPersonalInfo)
 
-/*
-보류
+// 회원가입 step 3
+router.put('/signup/profile',upload.single('img'),userController.signupProfileInfo)
 
-router.put('/user/alarm',authUtil,userController.updateAlarm)
-router.put('/user/personal',authUtil,userController.updatePersonal)
-router.put('/user/email',authUtil,userController.updateEmail)
-*/
+// 회원가입 step 4
+router.put('/signup/assign',userController.signupAssign)
 
-
+// 회원가입 img
+router.put('/signup',authUtil,upload.single('img'),userController.uploadProfileImg)
+// ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 회원가입 step별로 , 보류 ㅡㅡㅡㅡㅡㅡ //
 
 module.exports = router;
