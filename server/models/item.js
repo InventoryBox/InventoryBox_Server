@@ -195,9 +195,9 @@ const item = {
             throw err;
         }
     },
-    searchModifyView: async (date) => {
+    searchModifyView: async (date,userIdx) => {
         const query = `SELECT item.itemIdx,item.name,item.categoryIdx,date.stocksCnt
-        FROM ${table_item}, ${table_date} WHERE ${table_item}.itemIdx = ${table_date}.itemIdx and date like '${date}%'`;
+        FROM ${table_item}, ${table_date} WHERE ${table_item}.itemIdx = ${table_date}.itemIdx and userIdx=${userIdx} and date like '${date}%'`;
         try {
             const result = await pool.queryParam(query);
             return result;

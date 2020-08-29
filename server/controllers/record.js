@@ -103,15 +103,19 @@ const record = {
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
+        var DateFunction = new Date();
+        var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
+        var day = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
+        var date_is = DateFunction.getFullYear() + '-' + month + '-' + day;
+
         // item table에 반영
         const result = await itemModel.addItem(name, unit, alarmCnt, memoCnt, iconIdx, categoryIdx);
-        // // date table에 반영 
-        // var DateFunction = new Date();
-        // var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
-        // var day = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
-        // var date = DateFunction.getFullYear() + '-' + month + '-' + day;
 
-        // await itemModel.addDate_Item(-1, date, result, userIdx);
+        var isRecorded = await itemModel.searchIsRecorded(date_is,userIdx);
+        // date table에 반영 
+        if(isRecorded === 1){
+            await itemModel.addDate_Item(-1, date_is, result, userIdx);
+        }
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_ITEMADD_DB_SUCCESS));
     },
     /*searchCategory : async(req,res)=>{
@@ -156,8 +160,6 @@ const record = {
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
         const userIdx = req.idx;
-
-        //var isRecorded = await itemModel.searchIsRecorded(date,userIdx);
         for (var a in itemInfo) {
             // item table에 반영
             await itemModel.modifyItem(itemInfo[a].itemIdx, itemInfo[a].presentCnt);
@@ -229,7 +231,7 @@ const record = {
             addButton = 0;
         }
         var categoryInfo = await categoryModel.searchInfoAll(userIdx);
-        const result = await itemModel.searchModifyView(date);
+        const result = await itemModel.searchModifyView(date,userIdx);
         for (var a in result) {
             const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
             result[a].img = iconImg[0].img;
