@@ -59,6 +59,7 @@ const record = {
         //         itemInfo[a].stocksCnt=-1;
         //     }
         // }
+
         // addButton 계산
         if (date === date_is) {
             addButton = 1;
@@ -102,15 +103,19 @@ const record = {
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
-        // item table에 반영
-        const result = await itemModel.addItem(name, unit, alarmCnt, memoCnt, iconIdx, categoryIdx);
-        // // date table에 반영 
         var DateFunction = new Date();
         var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
         var day = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
-        var date = DateFunction.getFullYear() + '-' + month + '-' + day;
+        var date_is = DateFunction.getFullYear() + '-' + month + '-' + day;
 
-        await itemModel.addDate_Item(-1, date, result, userIdx);
+        // item table에 반영
+        const result = await itemModel.addItem(name, unit, alarmCnt, memoCnt, iconIdx, categoryIdx);
+
+        var isRecorded = await itemModel.searchIsRecorded(date_is,userIdx);
+        // date table에 반영 
+        if(isRecorded === 1){
+            await itemModel.addDate_Item(-1, date_is, result, userIdx);
+        }
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_ITEMADD_DB_SUCCESS));
     },
     /*searchCategory : async(req,res)=>{
@@ -143,32 +148,44 @@ const record = {
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_TODAY_VIEW_SUCCESS, {
             itemInfo: itemInfo,
             categoryInfo: categoryInfo,
-            date: date + " " + yoil + "요일"
+            date: date + " " + yoil + "요일",
+            addButton : 1
         }));
     },
     modifyItem: async (req, res) => {
         const itemInfo = req.body.itemInfo;
         const date = req.body.date;
+        if (!itemInfo || !date) {
+            res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
         const userIdx = req.idx;
-
-        var isRecorded = await itemModel.searchIsRecorded(date,userIdx);
         for (var a in itemInfo) {
             // item table에 반영
             await itemModel.modifyItem(itemInfo[a].itemIdx, itemInfo[a].presentCnt);
+            // 해당 user가 date에 itemIdx에 대한 기록을 했는지 여부
+            var isRecorded = await itemModel.searchIsRecordedItem(date,userIdx,itemInfo[a].itemIdx);
             // date table에 반영
-            // 1) 오늘 재고기록을 처음 할 때
-            if (isRecorded == 0) {
+            // 1) 해당 item 재고기록을 처음 할 때
+            if (isRecorded === 0) {
                 await itemModel.addDate_Item(itemInfo[a].presentCnt, date, itemInfo[a].itemIdx,userIdx);
                 await itemModel.resetFlag(userIdx);
             } else {
-                // 2) 오늘 재고기록이 처음이 아닐 때 (기록수정)
+                // 2) 해당 item 재고기록이 처음이 아닐 때
                 await itemModel.modifyDate_Item(itemInfo[a].presentCnt, date, itemInfo[a].itemIdx);
             }
         }
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_MODIFY_ITEM_SUCCESS));
     },
     deleteItem: async (req, res) => {
-        const itemIdxList = req.body.itemIdxList;
+        const str = req.params.itemIdxList;
+        let itemIdxList = str.slice(1,str.length-1);
+        itemIdxList = itemIdxList.split(',');
+        console.log(itemIdxList);
+        if (!itemIdxList) {
+            res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
         // 오늘 날짜 구하기
         var DateFunction = new Date();
         var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
@@ -185,6 +202,10 @@ const record = {
     },
     addCategory: async (req, res) => {
         const name = req.body.name;
+        if (!name) {
+            res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
         const userIdx = req.idx;
         // const categoryCnt = await categoryModel.searchCategoryCnt(userIdx);
         const result = await categoryModel.addCategory(name, userIdx);
@@ -192,11 +213,25 @@ const record = {
     },
     modifyView: async (req, res) => {
         const date = req.params.date;
+        let addButton;
+        // 오늘 날짜 구하기
+        var DateFunction = new Date();
+        var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
+        var day = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
+        var date_is = DateFunction.getFullYear() + '-' + month + '-' + day;
         // token에서 userIdx 파싱
         const userIdx = req.idx;
-        //console.log(date);
+        // addButton 계산
+        if (!date) {
+            res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }else if (date === date_is) {
+            addButton = 1;
+        } else {
+            addButton = 0;
+        }
         var categoryInfo = await categoryModel.searchInfoAll(userIdx);
-        const result = await itemModel.searchModifyView(date);
+        const result = await itemModel.searchModifyView(date,userIdx);
         for (var a in result) {
             const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
             result[a].img = iconImg[0].img;
@@ -216,25 +251,32 @@ const record = {
         }
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_MODIFY_VIEW_SUCCESS, {
             itemInfo: itemInfo,
-            categoryInfo: categoryInfo
+            categoryInfo: categoryInfo,
+            addButton : addButton
         }));
     },
     searchCategory_All: async (req, res) => {
         const userIdx = req.idx;
-
         const result = await categoryModel.searchInfoAll(userIdx);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_SEARCH_CATEGORY_SUCCESS, {
             categoryInfo: result
         }));
     },
     deleteCategory : async (req, res) => {
-        const {categoryIdx} = req.body;
-
+        const {categoryIdx} = req.params;
+        if (!categoryIdx) {
+            res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
         const result = await categoryModel.deleteCategory(categoryIdx);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_DELETE_CATEGORY_SUCCESS));
     },
     moveCategory : async (req, res) => {
         const {itemInfo} = req.body;
+        if (!itemInfo) {
+            res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
         for(var a in itemInfo)
         {
             const result = await categoryModel.moveCategory(itemInfo[a].itemIdx,itemInfo[a].categoryIdx);

@@ -88,6 +88,7 @@ module.exports = {
     RECORD_MOVE_CATEGORY_SUCCESS : "카테고리 이동 성공",
 
     //재고교환
+    //성공
     EXCHANGE_HOME_SUCCESS: "재고교환 홈 성공",
     EXCHANGE_POST_VIEW_SUCCESS: "게시글 조회 성공",
     EXCHANGE_USER_INFO_SUCCESS: "사용자 정보 조회 성공",
@@ -98,7 +99,9 @@ module.exports = {
     EXCHANGE_SEARCH_USER_LIKE_POST_SUCCESS: "사용자 찜목록 조회 완료",
     RECORD_NULL_VALUES: '파라미터 값이 없습니다.',
     EXCHANGE_POST_MODIFY_SUCCESS : "게시글 수정 완료",
-    EXCHANGE_POST_NULL : "해당 게시글이 없습니다.",
-    EXCHANGE_SEARCH_USER_POST_SUCCESS : "사용자 작성 게시글 조회 완료"
+    EXCHANGE_SEARCH_USER_POST_SUCCESS : "사용자 작성 게시글 조회 완료",
+    EXCHANGE_DELETE_POST_SUCCESS : "게시글 삭제 완료",
 
+    //실패
+    EXCHANGE_POST_NULL : "해당 게시글이 없습니다.",
 };

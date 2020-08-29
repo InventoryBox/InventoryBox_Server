@@ -188,6 +188,10 @@ const exchange = {
     },
     modifyIsSold: async (req, res) => {
         const postIdx = req.body.postIdx;
+        if (!postIdx) {
+            res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
         const isSold = await postModel.getIsSold(postIdx);
         const result = await postModel.modifyIsSold(postIdx, isSold);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_MODIFY_ISSOLD_SUCCESS));
@@ -195,7 +199,10 @@ const exchange = {
     },
     modifyLikes: async (req, res) => {
         const postIdx = req.body.postIdx;
-        // userIdx = [~~~]
+        if (!postIdx) {
+            res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
         // 해당 user가 post를 like 하는지 여부 조회
         const userIdx = req.idx;
         const likes = await postModel.searchLikes(userIdx, postIdx);
@@ -213,7 +220,7 @@ const exchange = {
         const userIdx = req.idx;
         const keyword = req.params.keyword;
         const filter = req.params.filter;
-        if (!keyword) {
+        if (!keyword || !filter) {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
@@ -260,6 +267,10 @@ const exchange = {
     },
     modifyPost_View: async (req, res) => {
         const postIdx = await req.params.postIdx;
+        if (!postIdx) {
+            res.status(statusCode.BAD_REQUEST)
+                .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
         const itemInfo = await postModel.searchInfo(postIdx);
         const userInfo = await userModel.userInfo(itemInfo[0].userIdx);
         const uploadDate = dateToKORString(itemInfo[0].uploadDate);
@@ -282,7 +293,6 @@ const exchange = {
             tmp[0].likes = 1;
             postInfo.push(tmp[0]);
         }
-        console.log(postInfo);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_SEARCH_USER_LIKE_POST_SUCCESS, {
             postInfo: postInfo
         }));
@@ -304,7 +314,7 @@ const exchange = {
         /*var productImg_before = await postModel.SearchPost(PostIdx);
         if(productImg != productImg_before){
         }*/
-        if (!productName || !isFood || !price || !productImg || !quantity || !description || !coverPrice || !unit) {
+        if (!postIdx || !productName || !isFood || !price || !productImg || !quantity || !description || !coverPrice || !unit) {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
@@ -323,6 +333,14 @@ const exchange = {
         res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.EXCHANGE_SEARCH_USER_POST_SUCCESS,{
             itemInfo : result
         }));
+    },
+    deletePost : async (req, res) => {
+        const {postIdx} = req.params;
+        if(!postIdx){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST,resMessage.NULL_VALUE));
+        }
+        const result = await postModel.postDelete(postIdx);
+        res.status(statusCode.OK).send(util.success(statusCode.OK,resMessage.EXCHANGE_DELETE_POST_SUCCESS,));
     }
 }
 
