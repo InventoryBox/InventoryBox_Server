@@ -207,6 +207,17 @@ const post = {
             console.log('checkUser ERROR : ', err);
             throw err;
         }
+    },
+    searchPostImg : async(postIdx)=>{
+        const query = `SELECT productImg FROM ${table_post} WHERE postIdx=${postIdx};`;
+        try {
+            const result = await pool.queryParam(query);
+            //console.log(result);
+            return result[0].productImg;
+        } catch (err) {
+            console.log('searchPostImg ERROR : ', err);
+            throw err;
+        }
     }
 }
 

@@ -205,15 +205,19 @@ const exchange = {
         }
         // 해당 user가 post를 like 하는지 여부 조회
         const userIdx = req.idx;
-        const likes = await postModel.searchLikes(userIdx, postIdx);
+        var likes = await postModel.searchLikes(userIdx, postIdx);
         if (likes == 1) {
-            // like table에서 row 삭제
+            // like table에서 row 삭제 
             const result = await postModel.deleteLikes(userIdx, postIdx);
         } else {
             // like table에 row 추가
             const result = await postModel.addLikes(userIdx, postIdx);
         }
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_MODIFY_LIKE_SUCCESS));
+        // 현재 유저가 게시글 좋아하는지 여부
+        likes = await postModel.searchLikes(userIdx, postIdx);
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_MODIFY_LIKE_SUCCESS,{
+            likes : likes
+        }))
         return;
     },
     searchPost: async (req, res) => {
@@ -298,7 +302,8 @@ const exchange = {
         }));
     },
     modifyPost: async (req, res) => {
-        const productImg = req.file.location;
+        if(req.file !== undefined)
+            var productImg = req.file.location;
         const {
             postIdx,
             productName,
@@ -314,14 +319,19 @@ const exchange = {
         /*var productImg_before = await postModel.SearchPost(PostIdx);
         if(productImg != productImg_before){
         }*/
-        if (!postIdx || !productName || !isFood || !price || !productImg || !quantity || !description || !coverPrice || !unit) {
+        if (!postIdx || !isFood || !price || !quantity || !description || !coverPrice || !unit) {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return ; 
         }
+        //console.log(productImg);
+        if(productImg === undefined){
+            productImg = await postModel.searchPostImg(postIdx);
+        }
+        //console.log(productImg);
         const result = await postModel.modifyPost(postIdx, productImg, productName, quantity, isFood, price, description, expDate,
             coverPrice, unit);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_MODIFY_SUCCESS));
-        return;
     },
     searchUserPost : async (req,res) => {
         const userIdx = req.idx;
