@@ -310,12 +310,12 @@ const exchange = {
             productName,
             isFood,
             price,
-            quantity,
-            expDate, // 공산품이면 expDate null 값임
+            quantity, // 공산품이면 expDate null 값임
             description,
             coverPrice,
             unit
         } = req.body;
+        var {expDate} = req.body;
         //console.log(expDate);
         if(expDate === undefined)
             expDate = null;
