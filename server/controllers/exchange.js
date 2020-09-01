@@ -176,6 +176,7 @@ const exchange = {
             coverPrice,
             unit
         } = req.body;
+        console.log(expDate);
         if (!productName || !isFood || !price || !productImg || !quantity || !description || !coverPrice || !unit) {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
@@ -315,6 +316,7 @@ const exchange = {
             coverPrice,
             unit
         } = req.body;
+        console.log(expDate);
         // postIdx에 해당하는 현재 이미지 값과 새로받은 이미지가 다르면 기존거 삭제!
         /*var productImg_before = await postModel.SearchPost(PostIdx);
         if(productImg != productImg_before){
