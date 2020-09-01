@@ -318,7 +318,7 @@ const exchange = {
         var {expDate} = req.body;
         //console.log(expDate);
         if(expDate === undefined)
-            expDate = null;
+            expDate = '';
         // postIdx에 해당하는 현재 이미지 값과 새로받은 이미지가 다르면 기존거 삭제!
         /*var productImg_before = await postModel.SearchPost(PostIdx);
         if(productImg != productImg_before){
