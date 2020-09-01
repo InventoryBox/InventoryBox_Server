@@ -7,7 +7,7 @@ const table_user = 'user';
 const post = {
 
     getAllPostsInfo: async (filterStr) => {
-        const query = `SELECT postIdx, productImg, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by ${filterStr}`;
+        const query = `SELECT postIdx, productImg, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} where post.isSold=0 order by ${filterStr}`;
         try {
             const result = await pool.queryParam(query);
             return (!result.length) ? -1 : result;
@@ -105,7 +105,7 @@ const post = {
     },
     searchPartInfo_search: async (keyword, filter) => {
         const query = `SELECT latitude, longitude, postIdx,productImg,productName,price,expDate,isSold,uploadDate
-        from ${table_post} natural join ${table_user} WHERE productName like "%${keyword}%" order by ${filter}`;
+        from ${table_post} natural join ${table_user} WHERE productName like "%${keyword}%" and post.isSold=0 order by ${filter}`;
         try {
             const result = await pool.queryParam(query);
             return (!result.length) ? -1 : result;

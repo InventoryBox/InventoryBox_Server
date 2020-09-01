@@ -193,7 +193,7 @@ const exchange = {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
-        const isSold = await postModel.getIsSold(postIdx);
+        var isSold = await postModel.getIsSold(postIdx);
         const result = await postModel.modifyIsSold(postIdx, isSold);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_MODIFY_ISSOLD_SUCCESS));
         return;
