@@ -115,6 +115,7 @@ const record = {
         // date table에 반영 
         if(isRecorded === 1){
             await itemModel.addDate_Item(-1, date_is, result, userIdx);
+            console.log('기록수정 데이터 추가 성공');
         }
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_ITEMADD_DB_SUCCESS));
     },

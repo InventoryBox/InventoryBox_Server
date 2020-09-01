@@ -22,7 +22,7 @@ router.get('/post/modify/:postIdx', authUtil, exchangeController.modifyPost_View
 router.get('/user/info', authUtil, exchangeController.searchUserInfo);
 
 // 게시글 수정 저장 - 완료
-router.post('/post/modify', authUtil, upload.single('productImg'), exchangeController.modifyPost);
+router.put('/post/modify', authUtil, upload.single('productImg'), exchangeController.modifyPost);
 // 사용자 주소 수정
 router.post('/modifyLoc', authUtil, exchangeController.updateLoc);
 // 게시글 등록 - 완료

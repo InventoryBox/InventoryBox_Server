@@ -51,7 +51,7 @@ const item = {
         }
     },
 
-    // 해당 date에 기록한 재료(item)의 정보 조회
+    // 현재 유저가 가지고 있는 item에 대한 정보 (오늘 재고 기록)
     searchInfo_today: async (userIdx) => {
         const query = `SELECT item.itemIdx,item.name,category.categoryIdx FROM ${table_category} INNER JOIN ${table_item} ON category.categoryIdx = item.categoryIdx
              WHERE category.userIdx = ${userIdx} and item.presentCnt> -2;`;

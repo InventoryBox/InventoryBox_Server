@@ -101,6 +101,7 @@ module.exports = {
     EXCHANGE_POST_MODIFY_SUCCESS : "게시글 수정 완료",
     EXCHANGE_SEARCH_USER_POST_SUCCESS : "사용자 작성 게시글 조회 완료",
     EXCHANGE_DELETE_POST_SUCCESS : "게시글 삭제 완료",
+    EXCHANGE_MODIFY_POST_SUCCESS : "게시글 수정화면 조회 완료",
 
     //실패
     EXCHANGE_POST_NULL : "해당 게시글이 없습니다.",
