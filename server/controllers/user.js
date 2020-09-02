@@ -74,6 +74,9 @@ exports.signup = async (req, res) => {
     const salt = crypto.randomBytes(32).toString()
     const hashedPw = crypto.pbkdf2Sync(password, salt, 1, 32, 'sha512').toString('hex')
 
+    console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
+    console.log(email,password,nickname,repName,coName,phoneNumber)
+    console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
     const insertIdx = await User.signup(email, hashedPw, salt, nickname, repName, coName, phoneNumber,pushAlarm,img)
 
     if (insertIdx == 0) {
@@ -152,7 +155,7 @@ exports.findEmail = async (req, res) => {
 
     const findEmail = await User.findEmail(repName, coName, phoneNumber)
 
-    if (findEmail === null) {
+    if (findEmail.length<1) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
     return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.FIND_EMAIL_SUCCESS, {

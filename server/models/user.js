@@ -1,6 +1,7 @@
 const pool = require('../modules/pool');
 const table = 'user';
 const crypto = require('crypto');
+const { value } = require('../config/database');
 const table_user = 'user';
 const table_post = 'post';
 
@@ -40,6 +41,9 @@ const user = {
 
         const query = `INSERT INTO ${table}(${fields}) VALUES(?,?,?,?,?,?,?,?,?)`;
         try {
+    console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
+            console.log("value :" + values)
+    console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
             const result = await pool.queryParamArr(query, values);
             const insertIdx = result.insertId;
             return insertIdx;
@@ -63,10 +67,10 @@ const user = {
         }
     },
     findEmail: async (repName, coName, phoneNumber) => {
-        const query = `SELECT * FROM ${table} WHERE repName="${repName}" AND coName="${coName}" AND phoneNumber="${phoneNumber}"`
+        const query = `SELECT * FROM ${table_user} WHERE repName="${repName}" AND coName="${coName}" AND phoneNumber="${phoneNumber}"`
         try {
             const findEmail = await pool.queryParam(query)
-            return findEmail[0].email
+            return findEmail
         } catch (err) {
             throw err
         }
