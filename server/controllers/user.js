@@ -74,9 +74,6 @@ exports.signup = async (req, res) => {
     const salt = crypto.randomBytes(32).toString()
     const hashedPw = crypto.pbkdf2Sync(password, salt, 1, 32, 'sha512').toString('hex')
 
-    console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
-    console.log(email,password,nickname,repName,coName,phoneNumber)
-    console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
     const insertIdx = await User.signup(email, hashedPw, salt, nickname, repName, coName, phoneNumber,pushAlarm,img)
 
     if (insertIdx == 0) {
@@ -253,7 +250,14 @@ exports.updateUserEmailAndPassword = async(req,res)=>{
 
 exports.updateProfile = async(req,res)=>{
     const userIdx = req.idx;
-    const img = req.file.location;
+
+    if(req.file !==undefined){
+        var img = req.file.location;
+    }
+
+     if(req.file === undefined){
+        var img = await User.findImg(userIdx)
+    }
 
     const {nickname} = req.body;
     

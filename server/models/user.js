@@ -41,9 +41,6 @@ const user = {
 
         const query = `INSERT INTO ${table}(${fields}) VALUES(?,?,?,?,?,?,?,?,?)`;
         try {
-    console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
-            console.log("value :" + values)
-    console.log("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
             const result = await pool.queryParamArr(query, values);
             const insertIdx = result.insertId;
             return insertIdx;
@@ -235,6 +232,16 @@ const user = {
         try{
             const result = await pool.queryParam(query)
             return result;
+        }catch(err){
+            throw err;
+        }
+    },
+    findImg:async(userIdx)=>{
+        const query = `SELECT img FROM ${table_user} WHERE userIdx=${userIdx}`
+        try{
+            const result = await pool.queryParam(query)
+            console.log(result)
+            return result[0].img
         }catch(err){
             throw err;
         }
