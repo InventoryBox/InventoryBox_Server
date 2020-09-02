@@ -50,8 +50,9 @@ exports.uploadProfileImg = async(req,res)=>{
 }
 
 exports.signup = async (req, res) => {
-
-    const img = req.file.location;
+    if(req.file !== undefined)
+    var img = req.file.location;
+    
     const {
         email,
         password,
