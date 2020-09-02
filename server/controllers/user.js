@@ -50,8 +50,9 @@ exports.uploadProfileImg = async(req,res)=>{
 }
 
 exports.signup = async (req, res) => {
+    var img='';
     if(req.file !== undefined)
-    var img = req.file.location;
+        img = req.file.location;
     
     const {
         email,
@@ -75,6 +76,7 @@ exports.signup = async (req, res) => {
     const hashedPw = crypto.pbkdf2Sync(password, salt, 1, 32, 'sha512').toString('hex')
 
     const insertIdx = await User.signup(email, hashedPw, salt, nickname, repName, coName, phoneNumber,pushAlarm,img)
+    //console.log(insertIdx);
 
     if (insertIdx == 0) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
