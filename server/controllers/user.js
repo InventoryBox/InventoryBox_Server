@@ -63,9 +63,9 @@ exports.signup = async (req, res) => {
         pushAlarm
     } = req.body;
 
-    /*if (!email || !password || !nickname || !repName || !coName || !phoneNumber) {
+    if (!email || !password || !nickname || !repName || !coName || !phoneNumber) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
-    }  null check 풀어놓음 */
+    }  
 
      if (await User.checkUser(email)) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_DUPLICATED_EMAIL))
