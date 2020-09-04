@@ -16,7 +16,7 @@ module.exports = {
     OUT_OF_VALUE: '파라미터 값이 잘못되었습니다',
 
     // 유저 ( Auth )
-    AUTH_UPDATE_EMAIL_AND_PW_SUCCESS:"이메일 패스워드 업데이트 성공",
+    AUTH_UPDATE_PW_SUCCESS:"패스워드 업데이트 성공",
     AUTH_EMAIL_SUCCESS:'이메일 보내기 성공',
     AUTH_EMAIL_FAIL:'이메일 보내기 실패',
     AUTH_CREATED_USER: '회원 가입 성공',

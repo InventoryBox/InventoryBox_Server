@@ -254,32 +254,32 @@ exports.insertSalt = async (req, res) => {
     }))
 }
 
-exports.updateUserEmailAndPassword = async(req,res)=>{
+exports.updateUserPassword = async(req,res)=>{
     
     const userIdx = req.idx;
     
     const{
-        updatedEmail,updatedPassword
+       updatedPassword
     } = req.body;
 
     if (userIdx === null) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_USER_IDX_NULL))
     }
 
-    if (!updatedEmail || !updatedPassword) {
+    if (!updatedPassword) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
     }
 
     const salt = crypto.randomBytes(32).toString()
     const hashedPw = crypto.pbkdf2Sync(updatedPassword, salt, 1, 32, 'sha512').toString('hex')
 
-    const result = await User.updateUserEmailAndPassword(userIdx,updatedEmail,hashedPw)
+    const result = await User.updateUserPassword(userIdx,hashedPw,salt)
 
     if (result === null) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.AUTH_UPDATE_EMAIL_AND_PW_SUCCESS, {
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.AUTH_UPDATE_PW_SUCCESS, {
         result: result.protocol41
     }));
 }

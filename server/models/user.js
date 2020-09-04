@@ -2,6 +2,7 @@ const pool = require('../modules/pool');
 const table = 'user';
 const crypto = require('crypto');
 const { value } = require('../config/database');
+const { SALT_PASSWORD_SUCCESS } = require('../modules/responseMessage');
 const table_user = 'user';
 const table_post = 'post';
 
@@ -164,8 +165,8 @@ const user = {
             throw err;
         }
     },
-    updateUserEmailAndPassword: async(userIdx,updatedEmail,hashedPw)=>{
-        const query = `UPDATE ${table} SET email="${updatedEmail}", password="${hashedPw}" WHERE userIdx=${userIdx}`
+    updateUserPassword: async(userIdx,hashedPw,salt)=>{
+        const query = `UPDATE ${table_user} SET password="${hashedPw}", salt="${salt}" WHERE userIdx=${userIdx}`
         try{
             const result = await pool.queryParam(query)
             return result;
