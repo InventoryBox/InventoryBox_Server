@@ -38,9 +38,9 @@ const item = {
         }
     },
     // date에 해당하는 item들의 정보 출력
-    searchInfo_Date: async (date) => {
+    searchInfo_Date: async (date,userIdx) => {
         const query = `SELECT item.itemIdx,item.name,item.alarmCnt,item.unit,date.stocksCnt,item.categoryIdx
-                        FROM ${table_item}, ${table_date} WHERE ${table_item}.itemIdx = ${table_date}.itemIdx and date like '${date}%'`;
+                        FROM ${table_item}, ${table_date} WHERE ${table_item}.itemIdx = ${table_date}.itemIdx and userIdx=${userIdx} and date like '${date}'`;
         try {
             const result = await pool.queryParamArr(query);
             return result;
@@ -87,19 +87,20 @@ const item = {
         }
     },
     // DB에 저장된 가장 최근 item의 날짜 조회
-    searchLastDate: async () => {
-        const query = `SELECT date FROM ${table_date} ORDER BY date DESC`;
+    searchLastDate: async (userIdx) => {
+        const query = `SELECT userIdx,date FROM ${table_date} ORDER BY date DESC`;
         try {
             const result = await pool.queryParam(query);
-            return result[0].date;
+            const returnData = result.filter(item=>item.userIdx==`${userIdx}`)
+            return returnData[0].date;
         } catch (err) {
             console.log('searchLastDate ERROR : ', err);
             throw err;
         }
     },
     // 해당 date에 재고기록을 했는지 여부 조회
-    searchIsRecorded: async (date) => {
-        const query = `SELECT * FROM ${table_date} WHERE date="${date}"`;
+    searchIsRecorded: async (date, userIdx) => {
+        const query = `SELECT * FROM ${table_date} WHERE userIdx=${userIdx} and date ="${date}" and stocksCnt>-1`;
         try {
             const result = await pool.queryParam(query);
             return result.length ? 1 : 0;
@@ -160,8 +161,8 @@ const item = {
         }
     },
     // date table에 해당 item 추가 반영
-    addDate_Item: async (stocksCnt, date, itemIdx) => {
-        const query = `INSERT INTO ${table_date}(stocksCnt, date, itemIdx) VALUES(${stocksCnt},"${date}",${itemIdx});`
+    addDate_Item: async (stocksCnt, date, itemIdx, userIdx) => {
+        const query = `INSERT INTO ${table_date}(stocksCnt, date, itemIdx, userIdx) VALUES(${stocksCnt},"${date}",${itemIdx},${userIdx});`
         try {
             const result = await pool.queryParam(query);
             const insertId = result.insertId;
@@ -193,10 +194,9 @@ const item = {
             throw err;
         }
     },
-
-    searchModifyView: async (date) => {
+    searchModifyView: async (date,userIdx) => {
         const query = `SELECT item.itemIdx,item.name,item.categoryIdx,date.stocksCnt
-        FROM ${table_item}, ${table_date} WHERE ${table_item}.itemIdx = ${table_date}.itemIdx and date like '${date}%'`;
+        FROM ${table_item}, ${table_date} WHERE ${table_item}.itemIdx = ${table_date}.itemIdx and userIdx=${userIdx} and date like '${date}%'`;
         try {
             const result = await pool.queryParam(query);
             return result;
@@ -216,8 +216,8 @@ const item = {
             throw err;
         }
     },
-    getCategoryInfo: async () => {
-        const query = `SELECT categoryIdx,name FROM ${table_category}`
+    getCategoryInfo: async (userIdx) => {
+        const query = `SELECT categoryIdx,name FROM ${table_category} WHERE userIdx=${userIdx}`
         try {
             const result = await pool.queryParam(query);
             return result
@@ -229,13 +229,13 @@ const item = {
     getItemInfo: async (userIdx) => {
         const query = 
         `
-        SELECT item.itemIdx,item.flag,item.name AS itemName,item.unit,item.alarmCnt,item.memoCnt,item.presentCnt,icon.img,icon.name AS iconName FROM item JOIN icon ON item.iconIdx=icon.iconIdx JOIN category
-        ON item.categoryIdx=category.categoryIdx ORDER BY itemIdx;
-        `
+        SELECT category.categoryIdx, category.userIdx, item.itemIdx, category.name AS categoryName,item.flag,item.Name AS itemName,item.unit,item.alarmCnt,item.memoCnt,item.presentCnt,icon.img,icon.name AS iconName FROM item JOIN icon ON item.iconIdx=icon.iconIdx JOIN category ON item.categoryIdx=category.categoryIdx ORDER BY itemIdx
+         `;
+
         try {
             const result = await pool.queryParam(query);
             // const resultFilter = result.filter(item=>item.userIdx==userIdx) userIdx=1 이므로 그냥 무시
-            const resultFilter = result.filter(item => item.memoCnt >= item.presentCnt)
+            const resultFilter = result.filter(item=>item.userIdx==userIdx).filter(item => item.memoCnt >= item.presentCnt).filter(item=>item.presentCnt>0)
             return resultFilter
         } catch (err) {
             throw err;
@@ -267,6 +267,25 @@ const item = {
             return result;
         } catch (err) {
             console.log('resetFlag ERROR : ', err);
+            throw err;
+        }
+    },
+    dummy:async()=>{
+        const query = `DELETE FROM date WHERE date="2020-07-18";`
+        try{
+            const result = await pool.queryParam(query)
+            return result;
+        }catch(error){
+            throw error;
+        }
+    },
+    searchIsRecordedItem : async(date, userIdx, itemIdx) => {
+        const query = `SELECT * FROM ${table_date} WHERE userIdx=${userIdx} and itemIdx=${itemIdx} and date like '${date}%'`;
+        try {
+            const result = await pool.queryParam(query);
+            return result.length ? 1 : 0;
+        } catch (err) {
+            console.log('searchIsRecordedItem ERROR : ', err);
             throw err;
         }
     }

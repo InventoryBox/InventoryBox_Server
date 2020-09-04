@@ -1,4 +1,5 @@
 const pool = require('../modules/pool');
+const user = require('./user');
 const table_post = 'post';
 const table_likes = 'likes';
 const table_user = 'user';
@@ -6,7 +7,7 @@ const table_user = 'user';
 const post = {
 
     getAllPostsInfo: async (filterStr) => {
-        const query = `SELECT postIdx, productImg, location, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by ${filterStr}`;
+        const query = `SELECT postIdx, productImg, latitude, longitude, isFood, price, productName, expDate, uploadDate from ${table_post} natural join ${table_user} order by ${filterStr}`;
         try {
             const result = await pool.queryParam(query);
             return (!result.length) ? -1 : result;
@@ -52,6 +53,16 @@ const post = {
             throw err;
         }
     },
+    postDelete: async (postIdx) => {
+        const query = `DELETE FROM ${table_post} WHERE postIdx=${postIdx}`;
+        try {
+            const result = await pool.queryParam(query);
+            return;
+        } catch (err) {
+            console.log('postDelete ERROR : ', err);
+            throw err;
+        }
+    },
     modifyIsSold: async (postIdx, isSold) => {
         const query = `UPDATE ${table_post} SET isSold=1-${isSold} WHERE postIdx=${postIdx}`;
         try {
@@ -93,8 +104,11 @@ const post = {
         }
     },
     searchPartInfo_search: async (keyword, filter) => {
+        console.log("before", keyword);
+        let keywords = keyword.replace(' ', '%');
+        console.log("after", keywords);
         const query = `SELECT latitude, longitude, postIdx,productImg,productName,price,expDate,isSold,uploadDate
-        from ${table_post} natural join ${table_user} WHERE productName like "%${keyword}%" order by ${filter}`;
+        from ${table_post} natural join ${table_user} WHERE productName like "%${keywords}%" order by ${filter}`;
         try {
             const result = await pool.queryParam(query);
             return (!result.length) ? -1 : result;
@@ -172,6 +186,28 @@ const post = {
             const result = await pool.queryParam(query);
             return result.length ? 1 : 0;
         } catch (err) {
+            throw err;
+        }
+    },
+    searchUserPost: async (userIdx) => {
+        const query = `SELECT postIdx,productName,productImg,price,isSold,expDate,uploadDate
+                        FROM ${table_post}
+                        WHERE userIdx=${userIdx};`;
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('searchUserPost ERROR : ', err);
+            throw err;
+        }
+    },
+    checkUser: async (postIdx, userIdx) => {
+        const query = `SELECT * FROM ${table_post} WHERE userIdx=${userIdx} and postIdx=${postIdx};`;
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('checkUser ERROR : ', err);
             throw err;
         }
     }

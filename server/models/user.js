@@ -2,6 +2,7 @@ const pool = require('../modules/pool');
 const table = 'user';
 const crypto = require('crypto');
 const table_user = 'user';
+const table_post = 'post';
 
 const user = {
     userInfo: async (userIdx) => {
@@ -33,11 +34,11 @@ const user = {
             throw err;
         }
     },
-    signup: async (email, password, salt, nickname, repName, coName, phoneNumber) => {
-        const fields = 'email,password,salt,nickname,repName,coName,phoneNumber'
-        const values = [email, password, salt, nickname, repName, coName, phoneNumber]
+    signup: async (email, password, salt, nickname, repName, coName, phoneNumber, pushAlarm, img) => {
+        const fields = 'email,password,salt,nickname,repName,coName,phoneNumber,pushAlarm,img'
+        const values = [email, password, salt, nickname, repName, coName, phoneNumber, pushAlarm, img]
 
-        const query = `INSERT INTO ${table}(${fields}) VALUES(?,?,?,?,?,?,?)`;
+        const query = `INSERT INTO ${table}(${fields}) VALUES(?,?,?,?,?,?,?,?,?)`;
         try {
             const result = await pool.queryParamArr(query, values);
             const insertIdx = result.insertId;
@@ -51,12 +52,7 @@ const user = {
         try {
             const userData = await pool.queryParam(query);
             const hashedPw = crypto.pbkdf2Sync(password, userData[0].salt, 1, 32, 'sha512').toString('hex')
-<<<<<<< HEAD
-=======
 
-            // console.log(userData[0].password)
-            // console.log(hashedPw)
->>>>>>> e21a3f82d4bc015c8494d6f1edb9ffa238ff531e
             if (userData[0].password === hashedPw) {
                 return true
             } else {
@@ -86,16 +82,6 @@ const user = {
         }
     },
 
-    getUserByIdxCustom: async (idx) => {
-        const query = `SELECT email,nickname,repName,coName,phoneNumber FROM ${table} WHERE userIdx="${idx}"`;
-        try {
-            const result = await pool.queryParam(query);
-            return result;
-        } catch (error) {
-            throw error
-        }
-    },
-
     // -password -salt
     getUserByIdx: async (idx) => {
         const query = `SELECT * FROM ${table} WHERE userIdx="${idx}"`;
@@ -111,7 +97,7 @@ const user = {
         const query = `DELETE FROM ${table} WHERE userIdx=${idx}`
         try {
             const result = await pool.queryParam(query);
-            return result;
+            return result.protocol41;
         } catch (error) {
             throw error
         }
@@ -131,8 +117,23 @@ const user = {
             console.log('checkUser :', error)
         }
     },
+    checkNickname: async (nickname) => {
+        const query = `SELECT * FROM ${table_user} WHERE nickname="${nickname}"`;
+        try {
+            const result = await pool.queryParam(query);
+            if (result.length === 0) {
+                return true;
+            } else return false;
+        } catch (error) {
+            if (error.errno = 1062) {
+                console.log('checkUser ERROR :', err.errno, err.code);
+                return -1;
+            }
+            console.log('checkUser :', error)
+        }
+    },
     getPersonal: async (idx) => {
-        const query = `SELECT repName,coName,location FROM ${table} WHERE userIdx="${idx}"`;
+        const query = `SELECT repName,coName,phoneNumber,location FROM ${table} WHERE userIdx="${idx}"`;
         try {
             const result = await pool.queryParam(query);
             return result;
@@ -141,10 +142,8 @@ const user = {
         }
     },
     updateImg: async (insertIdx, profileImg) => {
-        let query = `UPDATE ${table} SET img="${profileImg}" WHERE userIdx="${insertIdx}"`;
+        let query = `UPDATE ${table_user} SET img="${profileImg}" WHERE userIdx="${insertIdx}"`;
         try {
-            await pool.queryParam(query);
-            query = `SELECT email, img FROM ${table} WHERE userIdx="${insertIdx}"`;
             const result = await pool.queryParam(query);
             return result;
         } catch (err) {
@@ -163,26 +162,79 @@ const user = {
             console.log('update profile ERROR : ', err);
             throw err;
         }
+    },
+    updateUserEmailAndPassword: async (userIdx, updatedEmail, hashedPw) => {
+        const query = `UPDATE ${table} SET email="${updatedEmail}", password="${hashedPw}" WHERE userIdx=${userIdx}`
+        try {
+            const result = await pool.queryParam(query)
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    },
+    signupEmailAndPassword: async (email, hashedPw, salt) => {
+        const query = `INSERT INTO ${table_user} (email,password,salt) VALUES ("${email}","${hashedPw}","${salt}")`
+        try {
+            const result = await pool.queryParam(query)
+            return result.insertId;
+        } catch (err) {
+            throw err;
+        }
+    },
+    signupPersonalInfo: async (insertIdx, repName, coName, phoneNumber) => {
+        const query = `UPDATE ${table_user} SET repName="${repName}", coName="${coName}", phoneNumber="${phoneNumber}" WHERE userIdx=${insertIdx}`
+        try {
+            const result = await pool.queryParam(query)
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    },
+    signupProfileInfo: async (insertIdx, nickname, img) => {
+        const query = `UPDATE ${table_user} SET nickname="${nickname}", img="${img}" WHERE userIdx=${insertIdx}`
+        try {
+            const result = await pool.queryParam(query)
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    },
+    signupAssign: async (insertIdx, pushAlarm) => {
+        const query = `UPDATE ${table_user} SET pushAlarm="${pushAlarm}", isSubmit=1 WHERE userIdx=${insertIdx}`
+        try {
+            const result = await pool.queryParam(query)
+            return result.protocol41;
+        } catch (err) {
+            throw err;
+        }
+    },
+    updateProfile: async (userIdx, nickname, img) => {
+        const query = `UPDATE ${table_user} SET nickname="${nickname}", img="${img}" WHERE userIdx=${userIdx}`
+        try {
+            const result = await pool.queryParam(query)
+            return result.protocol41;
+        } catch (err) {
+            throw err;
+        }
+    },
+    updatePersonalInfo: async (userIdx, repName, coName, location, phoneNumber) => {
+        const query = `UPDATE ${table_user} SET repName="${repName}", coName="${coName}", location="${location}", phoneNumber="${phoneNumber}" WHERE userIdx=${userIdx}`
+        try {
+            const result = await pool.queryParam(query)
+            return result.protocol41;
+        } catch (err) {
+            throw err;
+        }
+    },
+    getUserPost: async (userIdx) => {
+        const query = `SELECT postIdx,productImg,productName,expDate,coverPrice,isSold,uploadDate FROM ${table_post} WHERE userIdx=${userIdx};`
+        try {
+            const result = await pool.queryParam(query)
+            return result;
+        } catch (err) {
+            throw err;
+        }
     }
 }
 
 module.exports = user;
-
-/*
-보류
-getPersonal:async()=>{
-
-    },
-    updateAlarm:async()=>{
-
-    },
-    updatePersonal:async()=>{
-
-    },
-    updateEmail:async()=>{
-
-    },
-    updateProfile:async()=>{
-
-    },
-*/
