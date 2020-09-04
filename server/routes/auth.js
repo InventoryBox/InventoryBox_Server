@@ -18,7 +18,9 @@ router.post('/signup',upload.single('img'),userController.signup)
 router.post('/signin', userController.signin)
 
 // 이메일 인증 3
-router.post('/email', userController.email)
+router.post('/email/signup', userController.emailSignup)
+
+router.post('/email/findpw', userController.emailFindpw)
 
 // 이메일 찾기 4
 router.post('/find-email', userController.findEmail)

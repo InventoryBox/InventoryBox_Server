@@ -117,33 +117,63 @@ exports.signin = async (req, res) => {
 
 }
 
-exports.email = async (req, res) => {
+exports.emailSignup = async (req, res) => {
     const {
         sendEmail
     } = req.body;
 
-    if (await User.checkUser(sendEmail)) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_DUPLICATED_EMAIL))
+        if (await User.checkUser(sendEmail)) {
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_DUPLICATED_EMAIL))
+        } 
+
+        const mailOptions = {
+            from: "재고창고",
+            to: sendEmail,
+            subject: "[재고창고]인증 관련 이메일 입니다",
+            text: "오른쪽 숫자 6자리를 입력해주세요 : " + number
+        };
+    
+        const result = await smtpTransport.sendMail(mailOptions, (error, responses) => {
+            if (error) {
+                return res.status(statusCode.OK).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_EMAIL_FAIL))
+            } else {
+                return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.AUTH_EMAIL_SUCCESS, {
+                    number: number
+                }))
+            }
+            smtpTransport.close();
+        });
+}
+  
+exports.emailFindpw = async (req, res) => {
+    const {
+        sendEmail
+    } = req.body;
+
+    if (!await User.checkUser(sendEmail)) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_NOT_EXIST))
     } 
 
-    const mailOptions = {
-        from: "재고창고",
-        to: sendEmail,
-        subject: "[재고창고]인증 관련 이메일 입니다",
-        text: "오른쪽 숫자 6자리를 입력해주세요 : " + number
-    };
-
-    const result = await smtpTransport.sendMail(mailOptions, (error, responses) => {
-        if (error) {
-            return res.status(statusCode.OK).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_EMAIL_FAIL))
-        } else {
-            return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.AUTH_EMAIL_SUCCESS, {
-                number: number
-            }))
-        }
-        smtpTransport.close();
-    });
+        const mailOptions = {
+            from: "재고창고",
+            to: sendEmail,
+            subject: "[재고창고]인증 관련 이메일 입니다",
+            text: "오른쪽 숫자 6자리를 입력해주세요 : " + number
+        };
+    
+        const result = await smtpTransport.sendMail(mailOptions, (error, responses) => {
+            if (error) {
+                return res.status(statusCode.OK).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_EMAIL_FAIL))
+            } else {
+                return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.AUTH_EMAIL_SUCCESS, {
+                    number: number
+                }))
+            }
+            smtpTransport.close();
+        });
 }
+
+
 
 exports.findEmail = async (req, res) => {
     const {

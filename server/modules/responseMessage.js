@@ -36,6 +36,7 @@ module.exports = {
     AUTH_CHECK_NICKNAME_FAIL:"닉네임이 중복됐습니다",
     AUTH_GET_USER_SUCCESS: '유저 조회 성공',
     AUTH_GET_USER_POST_SUCCESS:'유저가 쓴 게시글 가져오기 성공',
+    AUTH_NOT_EXIST:"존재하지 않는 계정입니다",
     
     DELETE_USER: '회원 탈퇴 성공',
     ALREADY_ID: '이미 사용중인 아이디입니다.',
