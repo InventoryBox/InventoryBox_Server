@@ -122,6 +122,10 @@ exports.email = async (req, res) => {
         sendEmail
     } = req.body;
 
+    if (await User.checkUser(sendEmail)) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_DUPLICATED_EMAIL))
+    } 
+
     const mailOptions = {
         from: "재고창고",
         to: sendEmail,
