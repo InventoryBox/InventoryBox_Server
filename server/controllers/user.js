@@ -145,7 +145,7 @@ exports.emailSignup = async (req, res) => {
         });
 }
   
-exports.emailFindpw = async (req, res) => {
+exports.setPw = async (req, res) => {
     const {
         sendEmail
     } = req.body;
