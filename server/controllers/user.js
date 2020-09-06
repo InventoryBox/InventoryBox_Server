@@ -8,7 +8,12 @@ const { truncate } = require('fs');
 const { getUserByIdx } = require('../models/user');
 
 const smtpTransport = require('../config/email').smtpTransport
-const number = require('../config/email').number
+
+var generateRandom = function (min, max) {
+    var ranNum = Math.floor(Math.random()*(max-min+1)) + min;
+    return ranNum;
+  }
+  
 
 exports.updateLoc = async (req, res) => {
     const userIdx = req.idx;
@@ -118,6 +123,9 @@ exports.signin = async (req, res) => {
 }
 
 exports.emailSignup = async (req, res) => {
+    
+    const number = generateRandom(111111,999999)
+
     const {
         sendEmail
     } = req.body;
@@ -146,6 +154,9 @@ exports.emailSignup = async (req, res) => {
 }
   
 exports.setPw = async (req, res) => {
+
+  const number = generateRandom(111111,999999)
+
     const {
         sendEmail
     } = req.body;

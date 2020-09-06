@@ -5,6 +5,8 @@ const { value } = require('../config/database');
 const { SALT_PASSWORD_SUCCESS } = require('../modules/responseMessage');
 const table_user = 'user';
 const table_post = 'post';
+const table_category = 'category'
+
 
 const user = {
     userInfo: async (userIdx) => {
@@ -44,6 +46,8 @@ const user = {
         try {
             const result = await pool.queryParamArr(query, values);
             const insertIdx = result.insertId;
+            const queryCategory = `INSERT INTO ${table_category}(userIdx,name) VALUES(${insertIdx},"전체")`
+            const categoryResult = await pool.queryParam(queryCategory)
             return insertIdx;
         } catch (err) {
             throw err
