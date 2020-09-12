@@ -245,8 +245,16 @@ const user = {
         const query = `SELECT img FROM ${table_user} WHERE userIdx=${userIdx}`
         try{
             const result = await pool.queryParam(query)
-            console.log(result)
             return result[0].img
+        }catch(err){
+            throw err;
+        }
+    },
+    findNickname:async(userIdx)=>{
+        const query = `SELECT nickname FROM ${table_user} WHERE userIdx=${userIdx}`
+        try{
+            const result = await pool.queryParam(query)
+            return result[0].nickname
         }catch(err){
             throw err;
         }

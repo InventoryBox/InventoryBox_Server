@@ -306,14 +306,19 @@ exports.updateProfile = async(req,res)=>{
         var img = await User.findImg(userIdx)
     }
 
-    const {nickname} = req.body;
-    
+    var {nickname} = req.body;
+
     if (userIdx === null) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_USER_IDX_NULL))
     }
 
     if (await User.checkNickname(nickname) === false) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_DUPLICATED_NICKNAME))
+    }
+
+
+    if(nickname === undefined){
+        nickname = await User.findNickname(userIdx)
     }
 
     const result = await User.updateProfile(userIdx,nickname,img)
