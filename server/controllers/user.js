@@ -312,12 +312,15 @@ exports.updateProfile = async(req,res)=>{
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_USER_IDX_NULL))
     }
 
+
     if (await User.checkNickname(nickname) === false) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_DUPLICATED_NICKNAME))
     }
 
-
-    if(nickname === undefined){
+    if(nickname === undefined ){
+        nickname = await User.findNickname(userIdx)
+    }else if(nickname === "" || nickname === " " || nickname === null){
+        nickname = null;
         nickname = await User.findNickname(userIdx)
     }
 
@@ -328,7 +331,7 @@ exports.updateProfile = async(req,res)=>{
     }
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.AUTH_UPDATE_PROFILE_SUCCESS, {
-        result: result
+       result:result
     }));
 }
 
