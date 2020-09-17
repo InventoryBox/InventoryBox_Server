@@ -22,12 +22,9 @@ if(ENV_NODE === 'production'){
     key: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/privkey.pem'),
     cert: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/cert.pem')
     };
+
     http.createServer(app).listen(3000);
     https.createServer(options, app).listen(443);
-    
-    http.get('*', function(req, res) {  
-      res.redirect('https://' + req.headers.host + req.url);
-      });
 
     }else
     {
