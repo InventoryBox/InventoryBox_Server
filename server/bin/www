@@ -10,7 +10,6 @@ var https = require('https');
 const fs = require('fs');
 
 const ENV_NODE = require('../config/mode'); // 임시 처리
-const { catch } = require('../config/database');
 console.log(ENV_NODE);
 
 
