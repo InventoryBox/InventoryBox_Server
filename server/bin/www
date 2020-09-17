@@ -12,7 +12,8 @@ const express = require('express');
 const fs = require('fs');
 require('dotenv').config();
 const prod = process.env.NODE_ENV === 'production';
-console.log(process.env);
+console.log(process.env.env);
+console.log(prod);
 console.log(prod);
 
 /**
