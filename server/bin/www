@@ -5,13 +5,11 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('server:server');
 var http = require('http');
 var https = require('https');
-const express = require('express');
 const fs = require('fs');
 
-const ENV_NODE = require('../config/mode');
+const ENV_NODE = require('../config/mode'); // 임시 처리
 console.log(ENV_NODE);
 
 
@@ -24,11 +22,8 @@ if(ENV_NODE === 'production'){
     key: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/privkey.pem'),
     cert: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/cert.pem')
     };
-    app.use((req,res)=>{
-  
-    });
     http.get('*', function(req, res) {  
-      res.redirect('https://' + req.headers.host + req.url);
+    res.redirect('https://' + req.headers.host + req.url);
   
       // Or, if you don't want to automatically detect the domain name from the request header, you can hard code it:
       // res.redirect('https://example.com' + req.url);
