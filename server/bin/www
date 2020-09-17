@@ -9,23 +9,42 @@ var debug = require('debug')('server:server');
 var http = require('http');
 var https = require('https');
 const express = require('express');
-const greenlockExpress = require('greenlock-express');
+const fs = require('fs');
+
 /**
      HTTPS 설정
  */
-var lex = greenlockExpress.create({ 
-  version: 'v02',
-  configDir: '/etc/letsencrypt',
-  server: 'https://acme-v02.api.letsencrypt.org/directory', 
-  email: 'neity16@daum.net', 
-  approveDomains: ['ec2.inventoryboxserver.com'], 
-  agreeTos: true, 
-  renewWithin: 81 * 24 * 60 * 60 * 1000, 
-  renewBy: 80 * 24 * 60 * 60 * 1000, 
-  app: app });
 
-  https.createServer(lex.httpsOptions, lex.middleware(app).listen(3000)); 
-  http.createServer(lex.middleware(require('redirect-https')())).listen(process.env.PORT || 80);
+const options = { // letsencrypt로 받은 인증서 경로를 입력해 줍니다.
+
+  ca: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/fullchain.pem'),
+  
+  key: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/privkey.pem'),
+  
+  cert: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/cert.pem')
+  
+  };
+  
+  
+  http.createServer(app).listen(80);
+  
+  https.createServer(options, app).listen(443);
+
+// var lex = require('greenlock-express').create({ 
+//   version: 'v02',
+//   configDir: '/etc/letsencrypt',
+//   server: 'https://acme-v02.api.letsencrypt.org/directory', 
+//   email: 'neity16@daum.net', 
+//   approveDomains: ['ec2.inventoryboxserver.com'], 
+//   agreeTos: true, 
+//   renewWithin: 81 * 24 * 60 * 60 * 1000, 
+//   renewBy: 80 * 24 * 60 * 60 * 1000, 
+//   app: app });
+
+//   https.createServer(lex.httpsOptions, lex.middleware(app).listen(3000)); 
+//   http.createServer(lex.middleware(require('redirect-https')())).listen(process.env.PORT || 80);
+
+
 
 /**
  * Get port from environment and store in Express.
