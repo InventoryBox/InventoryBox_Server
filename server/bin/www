@@ -10,9 +10,10 @@ var http = require('http');
 var https = require('https');
 const express = require('express');
 const fs = require('fs');
-
+let dotenv = require('dotenv');
+require('dotenv').config({ path: '/home/allinux/.env' });
 const prod = process.env.NODE_ENV === 'production';
-console.log(process);
+console.log(process.env);
 console.log(prod);
 
 /**
