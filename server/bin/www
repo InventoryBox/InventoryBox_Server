@@ -11,23 +11,32 @@ var https = require('https');
 const express = require('express');
 const fs = require('fs');
 
+const prod = process.env.NODE_ENV === 'production';
+
 /**
      HTTPS 설정
  */
-
-const options = { // letsencrypt로 받은 인증서 경로를 입력해 줍니다.
-
-  ca: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/fullchain.pem'),
+if(prod){
+  const options = { // letsencrypt로 받은 인증서 경로를 입력해 줍니다.
+    ca: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/fullchain.pem'),
+    key: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/cert.pem')
+    };
+    app.use((req,res)=>{
   
-  key: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/privkey.pem'),
+    });
+    http.get('*', function(req, res) {  
+      res.redirect('https://' + req.headers.host + req.url);
   
-  cert: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/cert.pem')
-  
-  };
-  
-  
-  http.createServer(app).listen(3000);
-  https.createServer(options, app).listen(443);
+      // Or, if you don't want to automatically detect the domain name from the request header, you can hard code it:
+      // res.redirect('https://example.com' + req.url);
+    });
+    http.createServer(app).listen(3000);
+    https.createServer(options, app).listen(443);
+    }else
+    {
+      http.createServer(app).listen(3000);
+    }
 
 // var lex = require('greenlock-express').create({ 
 //   version: 'v02',
