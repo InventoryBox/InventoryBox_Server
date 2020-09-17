@@ -10,16 +10,15 @@ var http = require('http');
 var https = require('https');
 const express = require('express');
 const fs = require('fs');
-require('dotenv').config();
-const prod = process.env.NODE_ENV === 'production';
-console.log(process.env.env);
-console.log(prod);
-console.log(prod);
+
+const ENV_NODE = require('../config/mode');
+
+
 
 /**
      HTTPS 설정
  */
-if(prod){
+if(ENV_NODE === 'production'){
   const options = { // letsencrypt로 받은 인증서 경로를 입력해 줍니다.
     ca: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/fullchain.pem'),
     key: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/privkey.pem'),
