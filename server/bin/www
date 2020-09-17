@@ -26,7 +26,7 @@ const options = { // letsencrypt로 받은 인증서 경로를 입력해 줍니�
   };
   
   
-  http.createServer(app).listen(80);
+  http.createServer(app).listen(3000);
   https.createServer(options, app).listen(443);
 
 // var lex = require('greenlock-express').create({ 
