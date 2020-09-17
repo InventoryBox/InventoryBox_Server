@@ -18,9 +18,9 @@ console.log(ENV_NODE);
  */
 if(ENV_NODE === 'production'){
   const options = { // letsencrypt로 받은 인증서 경로를 입력해 줍니다.
-    ca: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/fullchain2.pem'),
-    key: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/privkey2.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/cert2.pem')
+    ca: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/fullchain.pem'),
+    key: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/cert.pem')
     };
 
     http.get('*', function(req, res) {  
