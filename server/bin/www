@@ -22,14 +22,13 @@ if(ENV_NODE === 'production'){
     key: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/privkey.pem'),
     cert: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/cert.pem')
     };
-    // http.get('*', function(req, res) {  
-    // res.redirect('https://' + req.headers.host + req.url);
-  
-    //   // Or, if you don't want to automatically detect the domain name from the request header, you can hard code it:
-    //   // res.redirect('https://example.com' + req.url);
-    // });
     http.createServer(app).listen(3000);
     https.createServer(options, app).listen(443);
+    
+    http.get('*', function(req, res) {  
+      res.redirect('https://' + req.headers.host + req.url);
+      });
+
     }else
     {
       http.createServer(app).listen(3000);
