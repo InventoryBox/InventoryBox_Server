@@ -8,27 +8,45 @@ var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
 var https = require('https');
+const express = require('express');
+const greenlockExpress = require('greenlock-express');
+/**
+     HTTPS 설정
+ */
+var lex = greenlockExpress.create({ 
+  version: 'v02',
+  configDir: '/etc/letsencrypt',
+  server: 'https://acme-v02.api.letsencrypt.org/directory', 
+  email: 'neity16@daum.net', 
+  approveDomains: ['ec2.inventoryboxserver.com'], 
+  agreeTos: true, 
+  renewWithin: 81 * 24 * 60 * 60 * 1000, 
+  renewBy: 80 * 24 * 60 * 60 * 1000, 
+  app: app });
 
+  https.createServer(lex.httpsOptions, lex.middleware(app).listen(3000)); 
+  http.createServer(lex.middleware(require('redirect-https')())).listen(process.env.PORT || 80);
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+//1 var port = normalizePort(process.env.PORT || '3000');
+//2 app.set('port', port);
 
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+//3 var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+//4 server.listen(port);
+
 server.on('error', onError);
 server.on('listening', onListening);
 
