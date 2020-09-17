@@ -10,6 +10,7 @@ var https = require('https');
 const fs = require('fs');
 
 const ENV_NODE = require('../config/mode'); // 임시 처리
+const { catch } = require('../config/database');
 console.log(ENV_NODE);
 
 
@@ -17,6 +18,11 @@ console.log(ENV_NODE);
      HTTPS 설정
  */
 if(ENV_NODE === 'production'){
+  
+    http.get('*', function(req, res) {  
+      res.redirect('https://' + req.headers.host + req.path);
+      });
+
   const options = { // letsencrypt로 받은 인증서 경로를 입력해 줍니다.
     ca: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/fullchain.pem'),
     key: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/privkey.pem'),
