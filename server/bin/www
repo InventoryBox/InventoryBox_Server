@@ -18,23 +18,26 @@ console.log(ENV_NODE);
  */
 if(ENV_NODE === 'production'){
   console.log('insert prod mode!');
-  try{
-    http.get('*', function(req, res) {
-      console.log('insert http -> https');  
-      res.redirect('https://' + req.headers.host + req.url);
-      }).on("error", function(error){
-        console.log(error.message);
-      });
-    }catch(e){
-      console.log(e);
-    }
+
   const options = { // letsencrypt로 받은 인증서 경로를 입력해 줍니다.
     ca: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/fullchain.pem'),
     key: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/privkey.pem'),
     cert: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/cert.pem')
     };
 
-    http.createServer(app).listen(3000);
+    http.createServer(app);
+    try{
+      http.get('*', function(req, res) {
+        console.log('insert http -> https');  
+        res.redirect('https://' + req.headers.host + req.url);
+        }).on("error", function(error){
+          console.log(error.message);
+        });
+      }catch(e){
+        console.log(e);
+      }
+      
+    http.listen(3000);
     https.createServer(options, app).listen(443);
 
     }else
