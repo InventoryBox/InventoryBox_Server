@@ -507,6 +507,13 @@ exports.getPersonal = async (req, res) => {
 }
 
 exports.getUserPost = async(req,res)=>{
+
+    function dateToDotString(DateFunction) {
+        var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
+        var date = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
+        return DateFunction.getFullYear() + '.' + month + '.' + date;
+    }
+
     const userIdx = req.idx
 
     if (userIdx === null) {
@@ -514,6 +521,13 @@ exports.getUserPost = async(req,res)=>{
     }
 
     const result = await User.getUserPost(userIdx)
+
+
+
+    for(i in result){
+        var uploadDate = dateToDotString(result[i].uploadDate);
+        result[i].uploadDate = uploadDate;
+    }
 
     if (result === null) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
