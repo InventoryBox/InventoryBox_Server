@@ -93,7 +93,11 @@ const item = {
         try {
             const result = await pool.queryParam(query);
             const returnData = result.filter(item=>item.userIdx==`${userIdx}`)
-            return returnData[0].date;
+            if(returnData[0].data !==null){
+                return returnData[0].date;
+            }else{
+                return null;
+            }
         } catch (err) {
             console.log('searchLastDate ERROR : ', err);
             throw err;

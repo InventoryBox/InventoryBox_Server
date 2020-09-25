@@ -252,21 +252,34 @@ const exchange = {
             return res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_POSTS));
 
+        var postList_re = [];
         if (filter == 1) postList.sort((a, b) => (getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) > getDistance(b.latitude, b.longitude, userLoc[0].latitude, userLoc[0].longitude)) ? 1 : -1)
         for (var i = 0; i < postList.length; i++) {
             var dist = getDistance(postList[i].latitude, postList[i].longitude, userLoc[0].latitude, userLoc[0].longitude);
-            // console.log(postList[i], dist);
             if (dist <= 2000) {
                 const likes = await postModel.searchLikes(userIdx, postList[i].postIdx);
                 postList[i].distDiff = dist;
                 postList[i].uploadDate = dateToKORString(postList[i].uploadDate);
                 postList[i].likes = likes;
+                postList_re.push(postList[i]);
             }
-        }
+        }        
+
+        // if (filter == 1) postList.sort((a, b) => (getDistance(a.latitude, a.longitude, userLoc[0].latitude, userLoc[0].longitude) > getDistance(b.latitude, b.longitude, userLoc[0].latitude, userLoc[0].longitude)) ? 1 : -1)
+        // for (var i = 0; i < postList.length; i++) {
+        //     var dist = getDistance(postList[i].latitude, postList[i].longitude, userLoc[0].latitude, userLoc[0].longitude);
+        //     // console.log(postList[i], dist);
+        //     if (dist <= 2000) {
+        //         const likes = await postModel.searchLikes(userIdx, postList[i].postIdx);
+        //         postList[i].distDiff = dist;
+        //         postList[i].uploadDate = dateToKORString(postList[i].uploadDate);
+        //         postList[i].likes = likes;
+        //     }
+        // }
         //addressInfo 구하기
         var addressInfo = await userModel.getUserByIdx(userIdx);
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EXCHANGE_POST_SEARCH_SUCCESS, {
-            postInfo: postList,
+            postInfo: postList_re,
             addressInfo: addressInfo[0].location
         }));
     },
