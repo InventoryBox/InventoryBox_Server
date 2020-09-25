@@ -49,7 +49,7 @@ router.put('/user/personal',authUtil,userController.updatePersonalInfo)
 router.get('/user/personal',authUtil,userController.getPersonal)
 
 // 내가 쓴 게시글 12
-router.get('/user/post',authUtil,userController.getUserPost)
+router.get('/user/post/ios',authUtil,userController.getUserPostIos)
 
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 햄버거 바 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ  //
 

@@ -506,12 +506,20 @@ exports.getPersonal = async (req, res) => {
     }))
 }
 
-exports.getUserPost = async(req,res)=>{
+exports.getUserPostIos = async(req,res)=>{
+    
+    Date.prototype.hhmmss = function() {
+        var hh = this.getHours().toString();
+        var mm = this.getMinutes().toString();
+        var ss = this.getSeconds().toString();
+        return (hh[1] ? hh : "0" + hh[0]) + ":" + (mm[1] ? mm : "0" + mm[0]) + ":" + (ss[1] ? ss : "0" + ss[0]);
+    }
 
     function dateToDotString(DateFunction) {
         var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
         var date = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
-        return DateFunction.getFullYear() + '.' + month + '.' + date;
+        var time = DateFunction.hhmmss()
+        return DateFunction.getFullYear() + '.' + month + '.' + date + ' '+ time;
     }
 
     const userIdx = req.idx
