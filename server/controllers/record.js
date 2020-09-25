@@ -36,7 +36,7 @@ const record = {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         } else if (date === '0') {
-            // 재고기록 탭 눌렀을 때
+            // 재고기록 탭 눌렀을 때 
             date = date_is;
             picker = 0;
         }
