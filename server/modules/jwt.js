@@ -8,8 +8,8 @@ const TOKEN_INVALID = -2;
 module.exports = {
     sign: async (user) => {
         const payload = {
-            idx: user.idx,
-            name: user.name,
+            idx: user.userIdx,
+            email: user.email,
         };
         const result = {
             //sign메소드를 통해 access token 발급

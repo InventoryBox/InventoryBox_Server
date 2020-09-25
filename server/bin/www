@@ -5,86 +5,141 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('server:server');
 var http = require('http');
+var https = require('https');
+const fs = require('fs');
+
+const ENV_NODE = require('../config/mode'); // 임시 처리
+console.log(ENV_NODE);
+
+
+/**
+     HTTPS 설정
+ */
+if(ENV_NODE === 'production'){
+  console.log('insert prod mode!');
+  
+  const options = { // letsencrypt로 받은 인증서 경로를 입력해 줍니다.
+    ca: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/fullchain.pem'),
+    key: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/cert.pem')
+    };
+
+    var server = http.createServer(app);
+    try{
+      http.get('*', function(req, res) {
+        console.log('insert http -> https');  
+        res.redirect('https://' + req.headers.host + req.url);
+        }).on("error", function(error){
+          console.log(error.message);
+        });
+      }catch(e){
+        console.log(e);
+      }
+    server.listen(3000);
+
+    https.createServer(options, app).listen(443);
+
+    }else
+    {
+      http.createServer(app).listen(3000);
+    }
+
+// var lex = require('greenlock-express').create({ 
+//   version: 'v02',
+//   configDir: '/etc/letsencrypt',
+//   server: 'https://acme-v02.api.letsencrypt.org/directory', 
+//   email: 'neity16@daum.net', 
+//   approveDomains: ['ec2.inventoryboxserver.com'], 
+//   agreeTos: true, 
+//   renewWithin: 81 * 24 * 60 * 60 * 1000, 
+//   renewBy: 80 * 24 * 60 * 60 * 1000, 
+//   app: app });
+
+//   https.createServer(lex.httpsOptions, lex.middleware(app).listen(3000)); 
+//   http.createServer(lex.middleware(require('redirect-https')())).listen(process.env.PORT || 80);
+
+
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+//1 var port = normalizePort(process.env.PORT || '3000');
+//2 app.set('port', port);
+
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+//3 var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+//4 server.listen(port);
 
-/**
- * Normalize a port into a number, string, or false.
- */
+// server.on('error', onError);
+// server.on('listening', onListening);
 
-function normalizePort(val) {
-  var port = parseInt(val, 10);
+// /**
+//  * Normalize a port into a number, string, or false.
+//  */
 
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
+// function normalizePort(val) {
+//   var port = parseInt(val, 10);
 
-  if (port >= 0) {
-    // port number
-    return port;
-  }
+//   if (isNaN(port)) {
+//     // named pipe
+//     return val;
+//   }
 
-  return false;
-}
+//   if (port >= 0) {
+//     // port number
+//     return port;
+//   }
 
-/**
- * Event listener for HTTP server "error" event.
- */
+//   return false;
+// }
 
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+// /**
+//  * Event listener for HTTP server "error" event.
+//  */
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+// function onError(error) {
+//   if (error.syscall !== 'listen') {
+//     throw error;
+//   }
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
+//   var bind = typeof port === 'string'
+//     ? 'Pipe ' + port
+//     : 'Port ' + port;
 
-/**
- * Event listener for HTTP server "listening" event.
- */
+//   // handle specific listen errors with friendly messages
+//   switch (error.code) {
+//     case 'EACCES':
+//       console.error(bind + ' requires elevated privileges');
+//       process.exit(1);
+//       break;
+//     case 'EADDRINUSE':
+//       console.error(bind + ' is already in use');
+//       process.exit(1);
+//       break;
+//     default:
+//       throw error;
+//   }
+// }
 
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
-}
+// /**
+//  * Event listener for HTTP server "listening" event.
+//  */
+
+// function onListening() {
+//   var addr = server.address();
+//   var bind = typeof addr === 'string'
+//     ? 'pipe ' + addr
+//     : 'port ' + addr.port;
+//   debug('Listening on ' + bind);
+// }
