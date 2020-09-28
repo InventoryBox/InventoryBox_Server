@@ -27,7 +27,7 @@
 
 ## :bookmark_tabs: WorkFlow
 
-![node_badge](https://github.com/InventoryBox/InventoryBox_Server/blob/master/img/workflow.JPG)
+![node_badge](https://user-images.githubusercontent.com/63707317/86822421-92f7ea80-c0c6-11ea-965f-0d14951ce44e.png)
 
 <br>
 
