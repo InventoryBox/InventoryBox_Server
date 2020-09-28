@@ -247,6 +247,11 @@ const record = {
             addButton = 0;
         }
         var categoryInfo = await categoryModel.searchInfoAll(userIdx);
+        categoryInfo.map((category,index)=>{
+            if(category.name === '전체'){
+                category.categoryIdx = 0;
+            }
+        });
         const result = await itemModel.searchModifyView(date,userIdx);
         for (var a in result) {
             const iconImg = await itemModel.searchIcon_ItemIdx(result[a].itemIdx);
@@ -274,6 +279,11 @@ const record = {
     searchCategory_All: async (req, res) => {
         const userIdx = req.idx;
         const result = await categoryModel.searchInfoAll(userIdx);
+        categoryInfo.map((category,index)=>{
+            if(category.name === '전체'){
+                category.categoryIdx = 0;
+            }
+        });
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_SEARCH_CATEGORY_SUCCESS, {
             categoryInfo: result
         }));
