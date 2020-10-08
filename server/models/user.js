@@ -100,11 +100,7 @@ const user = {
     },
 
     deleteUser: async (idx) => {
-        const query = `
-        SET foreign_key_checks = 0;
-        DELETE FROM ${table} WHERE userIdx=${idx};
-        SET foreign_key_checks = 1;
-        `
+        const query = `DELETE FROM user WHERE userIdx=${idx}`
         try {
             const result = await pool.queryParam(query);
             return result.protocol41;
