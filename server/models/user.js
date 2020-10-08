@@ -102,7 +102,7 @@ const user = {
     deleteUser: async (idx) => {
         const query = `
         SET foreign_key_checks = 0;
-        DELETE FROM ${table} WHERE userIdx=${idx}
+        DELETE FROM ${table} WHERE userIdx=${idx};
         SET foreign_key_checks = 1;
         `
         try {
