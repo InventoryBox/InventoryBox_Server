@@ -240,7 +240,7 @@ const item = {
         try {
             const result = await pool.queryParam(query);
             // const resultFilter = result.filter(item=>item.userIdx==userIdx) userIdx=1 이므로 그냥 무시
-            const resultFilter = result.filter(item=>item.userIdx==userIdx).filter(item => item.memoCnt >= item.presentCnt).filter(item=>item.presentCnt>0)
+            const resultFilter = result.filter(item=>item.userIdx==userIdx).filter(item => item.memoCnt >= item.presentCnt).filter(item=>item.presentCnt>=0)
             return resultFilter
         } catch (err) {
             throw err;

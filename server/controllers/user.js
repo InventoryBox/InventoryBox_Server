@@ -557,6 +557,8 @@ exports.getUserPostIos = async(req,res)=>{
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
 
+    
+
     return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.AUTH_GET_USER_POST_SUCCESS, {
         result:result
     }))
