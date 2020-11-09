@@ -26,6 +26,8 @@ module.exports = {
     AUTH_SIGNUP_PROFILE_INFO_SUCCESS:'프로필 등록 성공',
     AUTH_SIGNUP_ASSIGN_SUCCESS:'회원 승인 성공',
     AUTH_USER_IDX_NULL:"유저 인덱스가 올바르지 않습니다",
+    AUTH_USER_EMAIL_NULL:"유저 이메일값이 올바르지 않습니다",
+    AUTH_USER_DB_EMAIL_NULL:"등록된 유저 이메일이 없습니다",
     AUTH_DUPLICATED_NICKNAME:'닉네임이 중복됐습니다',
     AUTH_DUPLICATED_EMAIL:'이메일이 중복됐습니다',
     AUTH_UPDATE_PROFILE_SUCCESS:'유저 프로필 업데이트 성공',

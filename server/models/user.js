@@ -171,6 +171,15 @@ const user = {
             throw err;
         }
     },
+    updateUserPasswordByEmail: async(email,hashedPw,salt)=>{
+        const query = `UPDATE ${table_user} SET password="${hashedPw}", salt="${salt}" WHERE email="${email}"`
+        try{
+            const result = await pool.queryParam(query)
+            return result;
+        }catch(err){
+            throw err;
+        }
+    },
     updateUserPassword: async(userIdx,hashedPw,salt)=>{
         const query = `UPDATE ${table_user} SET password="${hashedPw}", salt="${salt}" WHERE userIdx=${userIdx}`
         try{
