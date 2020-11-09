@@ -21,6 +21,11 @@ const record = {
         const userIdx = req.idx;
         var date = req.params.date;
         var categoryInfo = await categoryModel.searchInfoAll(userIdx);
+        categoryInfo.map((category,index)=>{
+            if(category.name === '전체'){
+                category.categoryIdx = 0;
+            }
+        });
         var addButton;
         var picker=1;
         // 오늘 날짜 구하기
@@ -36,7 +41,7 @@ const record = {
             res.status(statusCode.BAD_REQUEST)
                 .send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         } else if (date === '0') {
-            // 재고기록 탭 눌렀을 때
+            // 재고기록 탭 눌렀을 때 
             date = date_is;
             picker = 0;
         }
@@ -84,6 +89,11 @@ const record = {
         const userIdx = req.idx;
         const iconInfo = await categoryModel.searchIcon();
         const categoryInfo = await categoryModel.searchInfoAll(userIdx);
+        categoryInfo.map((category,index)=>{
+            if(category.name === '전체'){
+                category.categoryIdx = 0;
+            }
+        });
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_ITEMADD_VIEW_SUCCESS, {
             iconInfo: iconInfo,
             categoryInfo: categoryInfo
@@ -138,6 +148,11 @@ const record = {
         const userIdx = req.idx;
         // 카테고리 정보 조회
         var categoryInfo = await categoryModel.searchInfoAll(userIdx);
+        categoryInfo.map((category,index)=>{
+            if(category.name === '전체'){
+                category.categoryIdx = 0;
+            }
+        });
         const result = await itemModel.searchInfo_today(userIdx);
         //console.log(result);
 

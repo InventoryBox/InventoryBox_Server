@@ -56,9 +56,11 @@ const user = {
     signin: async (email, password) => {
         const query = `SELECT * FROM ${table} WHERE email="${email}"`
         try {
-            const userData = await pool.queryParam(query);
-            const hashedPw = crypto.pbkdf2Sync(password, userData[0].salt, 1, 32, 'sha512').toString('hex')
 
+            const userData = await pool.queryParam(query);
+
+            const hashedPw = crypto.pbkdf2Sync(password, userData[0].salt, 1, 32, 'sha512').toString('hex')
+        
             if (userData[0].password === hashedPw) {
                 return true
             } else {
@@ -100,7 +102,7 @@ const user = {
     },
 
     deleteUser: async (idx) => {
-        const query = `DELETE FROM ${table} WHERE userIdx=${idx}`
+        const query = `DELETE FROM user WHERE userIdx=${idx}`
         try {
             const result = await pool.queryParam(query);
             return result.protocol41;

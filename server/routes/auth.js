@@ -51,6 +51,9 @@ router.get('/user/personal',authUtil,userController.getPersonal)
 // 내가 쓴 게시글 12
 router.get('/user/post/ios',authUtil,userController.getUserPostIos)
 
+// 내가 쓴 게시글 13 ios
+router.get('/user/post/ios',authUtil,userController.getUserPostIos)
+
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 햄버거 바 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ  //
 
 // password salt 넣기

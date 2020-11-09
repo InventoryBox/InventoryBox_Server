@@ -13,6 +13,11 @@ const dashboard = {
     home: async (req, res) => {
         const userIdx = req.idx;
         const categoryInfo = await categoryModel.searchInfoAll(userIdx);
+        categoryInfo.map((category,index)=>{
+            if(category.name === '전체'){
+                category.categoryIdx = 0;
+            }
+        });
         const itemList = await itemModel.getItemsInfoToday(userIdx);
         if ((itemList == -1) || !userIdx || (categoryInfo == -1))
             res.status(statusCode.BAD_REQUEST)
