@@ -34,7 +34,7 @@ router.post('/nickname',userController.checkNickname)
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 햄버거 바 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ  //
 
 // 이메일 비밀번호 변경 7
-router.put('/user/pw',authUtil,userController.updateUserPassword)
+router.put('/user/pw',userController.updateUserPassword)
 
 // 유저 닉네임-사진-사업자 이름  ( 프로필 ) 가져오기 8
 router.get('/user/profile', authUtil, userController.getProfile)

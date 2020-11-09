@@ -272,9 +272,8 @@ exports.insertSalt = async (req, res) => {
 
 exports.updateUserPassword = async(req,res)=>{
     
-    const userIdx = req.idx;
-    
     const{
+       userIdx,
        updatedPassword
     } = req.body;
 
