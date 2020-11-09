@@ -202,8 +202,13 @@ exports.findEmail = async (req, res) => {
     if (findEmail.length<1) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
+
+    var emailArray = [{email:findEmail[0].email}]
+
+    
+
     return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.FIND_EMAIL_SUCCESS, {
-        email: findEmail
+        email: emailArray
     }))
 }
 
