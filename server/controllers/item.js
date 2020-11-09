@@ -108,6 +108,7 @@ exports.getItemInfo = async (req, res) => {
         var date = DateFunction.getFullYear() + '-' + month + '-' + day;
         return date;
     }
+
     function pre5daysFromDay(lastDay) {
         var prev_dates = new Array();
         for (var i = 0; i < 5; i++)
@@ -116,9 +117,9 @@ exports.getItemInfo = async (req, res) => {
     }
 
     var date_send = await item.searchLastDate(userIdx);
-
     const lastDay = new Date(date_send);
     var week = pre5daysFromDay(lastDay);
+
     for (var j = 0; j < result.length; j++) {
         var itemIdx = result[j].itemIdx;
         var stocksInfo = new Array(5);

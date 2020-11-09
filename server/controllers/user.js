@@ -5,7 +5,7 @@ let User = require('../models/user');
 const crypto = require('crypto');
 const jwt = require('../modules/jwt');
 const { truncate } = require('fs');
-const { getUserByIdx } = require('../models/user');
+const { getUserByIdx, checkUser } = require('../models/user');
 
 const smtpTransport = require('../config/email').smtpTransport
 
@@ -202,8 +202,13 @@ exports.findEmail = async (req, res) => {
     if (findEmail.length<1) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
+
+    var emailArray = [{email:findEmail[0].email}]
+
+    
+
     return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.FIND_EMAIL_SUCCESS, {
-        email: findEmail
+        email: emailArray
     }))
 }
 
@@ -267,14 +272,17 @@ exports.insertSalt = async (req, res) => {
 
 exports.updateUserPassword = async(req,res)=>{
     
-    const userIdx = req.idx;
-    
     const{
+       email,
        updatedPassword
     } = req.body;
 
-    if (userIdx === null) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_USER_IDX_NULL))
+    if (email === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_USER_EMAIL_NULL))
+    }
+
+    if(User.checkUser(email)){
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_USER_DB_EMAIL_NULL))
     }
 
     if (!updatedPassword) {
@@ -284,7 +292,7 @@ exports.updateUserPassword = async(req,res)=>{
     const salt = crypto.randomBytes(32).toString()
     const hashedPw = crypto.pbkdf2Sync(updatedPassword, salt, 1, 32, 'sha512').toString('hex')
 
-    const result = await User.updateUserPassword(userIdx,hashedPw,salt)
+    const result = await User.updateUserPasswordByEmail(email,hashedPw,salt)
 
     if (result === null) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
@@ -518,6 +526,46 @@ exports.getUserPost = async(req,res)=>{
     if (result === null) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
     }
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.AUTH_GET_USER_POST_SUCCESS, {
+        result:result
+    }))
+}
+
+exports.getUserPostIos = async(req,res)=>{
+
+    Date.prototype.hhmmss = function() {
+        var hh = this.getHours().toString();
+        var mm = this.getMinutes().toString();
+        var ss = this.getSeconds().toString();
+        return (hh[1] ? hh : "0" + hh[0]) + ":" + (mm[1] ? mm : "0" + mm[0]) + ":" + (ss[1] ? ss : "0" + ss[0]);
+    }
+
+    function dateToDotString(DateFunction) {
+        var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);
+        var date = DateFunction.getDate() < 10 ? '0' + DateFunction.getDate() : DateFunction.getDate();
+        var time = DateFunction.hhmmss()
+        return DateFunction.getFullYear() + '.' + month + '.' + date + ' '+ time;
+    }
+
+    const userIdx = req.idx
+
+    if (userIdx === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_USER_IDX_NULL))
+    }
+
+    const result = await User.getUserPost(userIdx)
+
+    for(i in result){
+        var uploadDate = dateToDotString(result[i].uploadDate);
+        result[i].uploadDate = uploadDate;
+    }
+
+    if (result === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.INTERNAL_SERVER_ERROR, responseMsg.DB_ERROR))
+    }
+
+    
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.AUTH_GET_USER_POST_SUCCESS, {
         result:result
