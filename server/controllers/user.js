@@ -4,8 +4,6 @@ let util = require('../modules/util');
 let User = require('../models/user');
 const crypto = require('crypto');
 const jwt = require('../modules/jwt');
-const { truncate } = require('fs');
-const { getUserByIdx, checkUser } = require('../models/user');
 
 const smtpTransport = require('../config/email').smtpTransport
 
@@ -281,9 +279,9 @@ exports.updateUserPassword = async(req,res)=>{
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_USER_EMAIL_NULL))
     }
 
-    if(User.checkUser(email)){
+    if (!(await User.checkUser(email))) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_USER_DB_EMAIL_NULL))
-    }
+    } 
 
     if (!updatedPassword) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))

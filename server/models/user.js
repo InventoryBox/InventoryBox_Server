@@ -125,6 +125,23 @@ const user = {
             console.log('checkUser :', error)
         }
     },
+    checkUserByEmail: async (email) => {
+        const query = `SELECT * FROM ${table} WHERE email="${email}"`;
+        try {
+            const result = await pool.queryParam(query);
+            if (result.length > 0) {
+                return false;
+            } else{
+                return true;
+            } 
+        } catch (error) {
+            if (error.errno = 1062) {
+                console.log('checkUser ERROR :', err.errno, err.code);
+                return -1;
+            }
+            console.log('checkUser :', error)
+        }
+    },
     checkNickname: async (nickname) => {
         const query = `SELECT * FROM ${table_user} WHERE nickname="${nickname}"`;
         try {
