@@ -10,7 +10,6 @@ const userController = require('../controllers/user')
 
 const authUtil = require('../middlewares/auth').checkToken
 
-
 // 회원가입 1
 router.post('/signup',upload.single('img'),userController.signup)
 
