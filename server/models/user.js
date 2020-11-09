@@ -76,7 +76,6 @@ const user = {
         } catch (err) {
             throw err
         }
-
     },
     getUserByEmail: async (email) => {
         const query = `SELECT * FROM ${table} WHERE email="${email}"`;

@@ -21,11 +21,6 @@ const record = {
         const userIdx = req.idx;
         var date = req.params.date;
         var categoryInfo = await categoryModel.searchInfoAll(userIdx);
-        categoryInfo.map((category,index)=>{
-            if(category.name === '전체'){
-                category.categoryIdx = 0;
-            }
-        });
         var addButton;
         var picker=1;
         // 오늘 날짜 구하기
@@ -92,8 +87,8 @@ const record = {
         categoryInfo.map((category,index)=>{
             if(category.name === '전체'){
                 category.categoryIdx = 0;
-            }
-        });
+            } 
+        });    
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_ITEMADD_VIEW_SUCCESS, {
             iconInfo: iconInfo,
             categoryInfo: categoryInfo
