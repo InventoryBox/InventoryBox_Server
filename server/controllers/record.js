@@ -83,12 +83,7 @@ const record = {
     itemAdd_View: async (req, res) => {
         const userIdx = req.idx;
         const iconInfo = await categoryModel.searchIcon();
-        const categoryInfo = await categoryModel.searchInfoAll(userIdx);
-        categoryInfo.map((category,index)=>{
-            if(category.name === '전체'){
-                category.categoryIdx = 0;
-            } 
-        });    
+        const categoryInfo = await categoryModel.searchInfoAll(userIdx); 
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECORD_ITEMADD_VIEW_SUCCESS, {
             iconInfo: iconInfo,
             categoryInfo: categoryInfo
@@ -143,11 +138,6 @@ const record = {
         const userIdx = req.idx;
         // 카테고리 정보 조회
         var categoryInfo = await categoryModel.searchInfoAll(userIdx);
-        categoryInfo.map((category,index)=>{
-            if(category.name === '전체'){
-                category.categoryIdx = 0;
-            }
-        });
         const result = await itemModel.searchInfo_today(userIdx);
         //console.log(result);
 
