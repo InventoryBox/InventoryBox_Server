@@ -93,7 +93,6 @@ const item = {
         try {
             const result = await pool.queryParam(query);
             const returnData = result.filter(item=>item.userIdx==`${userIdx}`)
-            console.log(returnData)
             if(returnData[0] !=null || returnData[0] !==[] || returnData[0] !=undefined || returnData[0] !={}){
                 if(returnData[0].date !==null || returnData[0].date !==[] || returnData[0].date !==undefined){
                     return returnData[0].date;
