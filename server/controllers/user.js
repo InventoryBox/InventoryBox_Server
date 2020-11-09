@@ -281,7 +281,7 @@ exports.updateUserPassword = async(req,res)=>{
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_USER_EMAIL_NULL))
     }
 
-    if(!User.checkUser(email)){
+    if(User.checkUser(email)){
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_USER_DB_EMAIL_NULL))
     }
 
