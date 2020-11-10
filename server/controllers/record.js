@@ -103,7 +103,7 @@ const record = {
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
-        if( !iconIdx )
+        if( !iconIdx || iconIdx === 0)
         {
             iconIdx=87;
         }
