@@ -95,13 +95,17 @@ const record = {
             unit,
             alarmCnt,
             memoCnt,
-            iconIdx,
             categoryIdx
         } = req.body;
+        let {iconIdx} = req.body;
         const userIdx = req.idx;
-        if (!name || !unit || !alarmCnt || !memoCnt || !iconIdx || !categoryIdx) {
+        if (!name || !unit || !alarmCnt || !memoCnt || !categoryIdx) {
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
+        }
+        if( !iconIdx )
+        {
+            iconIdx=87;
         }
         var DateFunction = new Date();
         var month = (DateFunction.getMonth() + 1) < 10 ? '0' + (DateFunction.getMonth() + 1) : (DateFunction.getMonth() + 1);

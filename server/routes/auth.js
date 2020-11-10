@@ -51,7 +51,7 @@ router.get('/user/personal',authUtil,userController.getPersonal)
 router.get('/user/post',authUtil,userController.getUserPost)
 
 // 내가 쓴 게시글 13 ios
-router.get('/user/post/ios',authUtil,userController.getUserPostIos)
+/* router.get('/user/post/ios',authUtil,userController.getUserPostIos) */
 
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 햄버거 바 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ  //
 
