@@ -12,7 +12,7 @@ module.exports = {
             email: user.email,
         };
         const result = {
-            //sign메소드를 통해 access token 발급
+            //sign메소드를 통해 access token 발급!
             token: jwt.sign(payload, secretKey, options),
             refreshToken: randToken.uid(256)
         };
@@ -21,6 +21,7 @@ module.exports = {
     verify: async (token) => {
         let decoded;
         try {
+            // verify를 통해 값 decode!
             decoded = jwt.verify(token, secretKey);
         } catch (err) {
             if (err.message === 'jwt expired') {
