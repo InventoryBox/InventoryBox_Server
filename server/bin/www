@@ -16,7 +16,7 @@ console.log(ENV_NODE);
 /**
      HTTPS 설정
  */
-/*if(ENV_NODE === 'production'){
+if(ENV_NODE === 'production'){
   const options = { // letsencrypt로 받은 인증서 경로를 입력해 줍니다.
     ca: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/fullchain.pem'),
     key: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/privkey.pem'),
@@ -42,8 +42,6 @@ console.log(ENV_NODE);
     {
       http.createServer(app).listen(3000);
     }
-    */
-   http.createServer(app).listen(3000);
 // var lex = require('greenlock-express').create({ 
 //   version: 'v02',
 //   configDir: '/etc/letsencrypt',
