@@ -264,15 +264,18 @@ exports.insertSalt = async (req, res) => {
 
 exports.updateUserPassword = async(req,res)=>{
     
-    const userIdx = req.idx;
-    
     const{
+       email,
        updatedPassword
     } = req.body;
 
-    if (userIdx === null) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_USER_IDX_NULL))
+    if (email === null) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_USER_EMAIL_NULL))
     }
+
+    if (!(await User.checkUser(email))) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.AUTH_USER_DB_EMAIL_NULL))
+    } 
 
     if (!updatedPassword) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, responseMsg.NULL_VALUE))
