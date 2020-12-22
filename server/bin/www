@@ -6,7 +6,7 @@
 
 var app = require('../app');
 var http = require('http');
-var https = require('https');
+//var https = require('https');
 const fs = require('fs');
 
 const ENV_NODE = require('../config/mode'); // 임시 처리
@@ -16,9 +16,7 @@ console.log(ENV_NODE);
 /**
      HTTPS 설정
  */
-if(ENV_NODE === 'production'){
-  console.log('insert prod mode!');
-  
+/*if(ENV_NODE === 'production'){
   const options = { // letsencrypt로 받은 인증서 경로를 입력해 줍니다.
     ca: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/fullchain.pem'),
     key: fs.readFileSync('/etc/letsencrypt/live/ec2.inventoryboxserver.com/privkey.pem'),
@@ -44,7 +42,8 @@ if(ENV_NODE === 'production'){
     {
       http.createServer(app).listen(3000);
     }
-
+    */
+   http.createServer(app).listen(3000);
 // var lex = require('greenlock-express').create({ 
 //   version: 'v02',
 //   configDir: '/etc/letsencrypt',
